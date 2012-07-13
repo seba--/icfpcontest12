@@ -69,6 +69,7 @@ public class State {
     State state = this;
     while (state != null) {
       states.add(state);
+      state = state.parent;
     }
 
     // collect the commands to move from each state to the next
