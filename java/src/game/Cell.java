@@ -7,7 +7,7 @@ package game;
  *
  */
 public enum Cell {
-  Robot, Wall, Rock, FallingRock, Lambda, Lift, Earth, Empty;
+  Robot, Wall, Rock, FallingRock, Lambda, Lift, Earth, Empty, RobotAndLift;
   
   public String toString() {
     return shortName();
@@ -31,6 +31,8 @@ public enum Cell {
       return ".";
     case Empty:
       return " ";
+    case RobotAndLift:
+      return "r";
     default:
       throw new IllegalStateException();
     }
@@ -54,6 +56,8 @@ public enum Cell {
       return "Earth";
     case Empty:
       return "Empty";
+    case RobotAndLift:
+      return "RobotAndLift";
     default:
       throw new IllegalStateException();
     }
@@ -77,8 +81,10 @@ public enum Cell {
       return Earth;
     case ' ':
       return Empty;
+    case 'r':
+      return RobotAndLift;
     default:
-      throw new IllegalStateException("Unkown cell " + c);
+      throw new IllegalStateException("Unkown cell " + (int)c);
     }
   }
 }
