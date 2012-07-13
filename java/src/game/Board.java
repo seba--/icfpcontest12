@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- *
  * Board as specified in Section 2.1
+ * EXCEPT: we start counting at (0,0).
  * 
  * @author seba
  */
