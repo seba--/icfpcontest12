@@ -39,8 +39,9 @@ public class Driver {
 
   public State bestState;
 
-  public Driver(Selector strategySelector, Fitness scorer) {
+  public Driver(Selector strategySelector, Fitness fitness) {
     this.strategySelector = strategySelector;
+    this.fitness = fitness;
   }
 
   public void solve(State initial) {
@@ -56,6 +57,10 @@ public class Driver {
 
     while (!liveStates.isEmpty()) {
       State state = liveStates.peek();
+      
+      System.out.printf("%s\n\n", state);
+      
+      
       Strategy strategy = strategySelector.selectStrategy(state);
 
       if (strategy == null) {
@@ -72,7 +77,7 @@ public class Driver {
               bestState = newState;
             }
 
-            if (newState.ending == Ending.None) {
+            if (newState.ending == Ending.None && newState.steps < newState.board.width * newState.board.height) {
               liveStates.add(newState);
               newState.fitness = fitness.evaluate(newState);
               strategySelector.prepareState(newState);

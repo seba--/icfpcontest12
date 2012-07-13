@@ -178,4 +178,66 @@ public class State {
 
     return new State(new StaticConfig(floodingRate, waterResistance), board, waterLevel);
   }
+  
+  @Override
+  public String toString() {
+    return board.toString();
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((board == null) ? 0 : board.hashCode());
+    result = prime * result + collectedLambdas;
+    result = prime * result + ((ending == null) ? 0 : ending.hashCode());
+    result = prime * result + lambdasLeft;
+    result = prime * result + robotCol;
+    result = prime * result + robotRow;
+    result = prime * result + score;
+    result = prime * result + steps;
+    result = prime * result + stepsUnderwater;
+    result = prime * result + stepsUntilNextRise;
+    result = prime * result + waterLevel;
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    State other = (State) obj;
+    if (board == null) {
+      if (other.board != null)
+        return false;
+    } else if (!board.equals(other.board))
+      return false;
+    if (collectedLambdas != other.collectedLambdas)
+      return false;
+    if (ending != other.ending)
+      return false;
+    if (lambdasLeft != other.lambdasLeft)
+      return false;
+    if (robotCol != other.robotCol)
+      return false;
+    if (robotRow != other.robotRow)
+      return false;
+    if (score != other.score)
+      return false;
+    if (steps != other.steps)
+      return false;
+    if (stepsUnderwater != other.stepsUnderwater)
+      return false;
+    if (stepsUntilNextRise != other.stepsUntilNextRise)
+      return false;
+    if (waterLevel != other.waterLevel)
+      return false;
+    return true;
+  }
+  
+  
 }
