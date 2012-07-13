@@ -1,0 +1,11 @@
+*~
+*.bak
+
+# Eclipse project
+.metadata/
+
+
+# Eclipse-generated files
+java/bin/
+.cache
+
