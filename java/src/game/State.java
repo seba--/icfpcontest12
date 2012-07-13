@@ -102,7 +102,7 @@ public class State {
     
     int rcol = -1;
     int rrow = -1;
-    int lambas = 0;
+    int lambdas = 0;
     
     for (int col = 0; col < board.width; ++col)
       for (int row = 0; row < board.height; ++row)
@@ -112,7 +112,7 @@ public class State {
           rrow = row;
           break;
         case Lambda:
-          lambas++;
+          ++lambdas;
           break;
         default:
           ;
@@ -120,7 +120,7 @@ public class State {
     
     this.robotCol = rcol;
     this.robotRow = rrow;
-    this.lambdasLeft = lambas;
+    this.lambdasLeft = lambdas;
   }
   
   public State makeFinal() {
