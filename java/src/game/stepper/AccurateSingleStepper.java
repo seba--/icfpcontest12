@@ -109,8 +109,9 @@ public class AccurateSingleStepper implements IStepper {
     for (int row = 0; row < b.height; row++) 
       for (int col = 0; col < b.width; col++) {
         if (st.board.grid[col][row] == Cell.Rock || st.board.grid[col][row] == Cell.FallingRock) {
-          // fall straight down
+          st.board.grid[col][row] = Cell.Rock;
           if (st.board.get(col, row - 1) == Cell.Empty)
+            // fall straight down
             moveRock(b, col, row, col, row - 1);
           else if (st.board.get(col, row - 1) == Cell.Rock || st.board.get(col, row - 1) == Cell.FallingRock) {
             // there is a rock below
