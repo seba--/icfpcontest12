@@ -9,10 +9,9 @@ import game.State;
 /**
  * @author seba
  */
-public class AccurateSingleStepper implements IStepper {
+public class SingleStepper {
 
-  @Override
-  public void moveRobot(State st, Command cmd) {
+  protected void moveRobot(State st, Command cmd) {
     int nextCol;
     int nextRow;
     
@@ -79,7 +78,7 @@ public class AccurateSingleStepper implements IStepper {
     }
   }
 
-  private void moveRobot(State st, int nextCol, int nextRow) {
+  protected void moveRobot(State st, int nextCol, int nextRow) {
     if (st.board.grid[nextCol][nextRow] == Cell.Lift)
       st.board.grid[nextCol][nextRow] = Cell.RobotAndLift;
     else
@@ -94,52 +93,45 @@ public class AccurateSingleStepper implements IStepper {
     st.robotRow = nextRow;
   }
 
-  private void moveRock(Board board, int oldCol, int oldRow, int newCol, int newRow) {
+  protected void moveRock(Board board, int oldCol, int oldRow, int newCol, int newRow) {
     board.grid[oldCol][oldRow] = Cell.Empty;
     board.grid[newCol][newRow] = Cell.FallingRock;
   }
 
-  @Override
-  public void updateBoard(State st) {
-    // read from st.board
-    // write to b
+  protected void updateBoard(Board oldBoard, State st) {
+    // read from b
+    // write to st.board
     
-    Board b = st.board.clone();
-    
-    for (int row = 0; row < b.height; row++) 
-      for (int col = 0; col < b.width; col++) {
-        if (st.board.grid[col][row] == Cell.Rock || st.board.grid[col][row] == Cell.FallingRock) {
-          st.board.grid[col][row] = Cell.Rock;
-          if (st.board.get(col, row - 1) == Cell.Empty)
+    for (int row = 0; row < st.board.height; row++) 
+      for (int col = 0; col < st.board.width; col++) {
+        if (oldBoard.grid[col][row] == Cell.Rock || oldBoard.grid[col][row] == Cell.FallingRock) {
+          oldBoard.grid[col][row] = Cell.Rock;
+          if (oldBoard.get(col, row - 1) == Cell.Empty)
             // fall straight down
-            moveRock(b, col, row, col, row - 1);
-          else if (st.board.get(col, row - 1) == Cell.Rock || st.board.get(col, row - 1) == Cell.FallingRock) {
+            moveRock(st.board, col, row, col, row - 1);
+          else if (oldBoard.get(col, row - 1) == Cell.Rock || oldBoard.get(col, row - 1) == Cell.FallingRock) {
             // there is a rock below
-            if (st.board.get(col + 1,  row) == Cell.Empty &&
-                st.board.get(col + 1, row - 1) == Cell.Empty)
+            if (oldBoard.get(col + 1,  row) == Cell.Empty &&
+                oldBoard.get(col + 1, row - 1) == Cell.Empty)
               // rock slides to the right
-              moveRock(b, col, row, col + 1, row - 1);
-            else if (st.board.get(col - 1, row) == Cell.Empty &&
-                     st.board.get(col - 1, row - 1) == Cell.Empty)
+              moveRock(st.board, col, row, col + 1, row - 1);
+            else if (oldBoard.get(col - 1, row) == Cell.Empty &&
+                     oldBoard.get(col - 1, row - 1) == Cell.Empty)
               // rock slides to the left
-              moveRock(b, col, row, col - 1, row - 1);
+              moveRock(st.board, col, row, col - 1, row - 1);
           }
-          else if (st.board.get(col, row - 1) == Cell.Lambda &&
-                   st.board.get(col + 1, row) == Cell.Empty &&
-                   st.board.get(col + 1, row - 1) == Cell.Empty)
+          else if (oldBoard.get(col, row - 1) == Cell.Lambda &&
+                   oldBoard.get(col + 1, row) == Cell.Empty &&
+                   oldBoard.get(col + 1, row - 1) == Cell.Empty)
             // rock slides to the right off the back of a lambda
-            moveRock(b, col, row, col + 1, row - 1);
+            moveRock(st.board, col, row, col + 1, row - 1);
           
           // skip checking whether we should open lambda lifts
         }
       }
-    
-    // replace old board with new one
-    st.board = b;
   }
 
-  @Override
-  public void checkEnding(State st) {
+  protected void checkEnding(State st) {
     if (st.lambdasLeft == 0 && st.board.grid[st.robotCol][st.robotRow] == Cell.RobotAndLift)
       st.ending = Ending.Win;
     else if (st.board.get(st.robotCol, st.robotRow + 1) == Cell.FallingRock)
@@ -147,11 +139,13 @@ public class AccurateSingleStepper implements IStepper {
     // abort action sets the ending field directly during movement
   }
 
-  @Override
-  public void executeRound(State st, Command cmd) {
-    moveRobot(st, cmd);
-    updateBoard(st);
-    checkEnding(st);
+  public State step(State st, Command cmd) {
+    State newSt = new State(st.board.clone(), st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas);
+    moveRobot(newSt, cmd);
+    updateBoard(st.board, newSt);
+    checkEnding(newSt);
+    
+    return newSt.makeFinal();
   }
 
 }

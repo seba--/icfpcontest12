@@ -1,12 +1,11 @@
 package unittest;
 
-import junit.framework.Assert;
 import game.Board;
 import game.Command;
 import game.Ending;
 import game.State;
-import game.stepper.AccurateSingleStepper;
-import game.stepper.IStepper;
+import game.stepper.SingleStepper;
+import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -50,13 +49,18 @@ public class TestAccurateSingleStepper {
     Board board = Board.parse(map1);
     State st = new State(board);
     
-    IStepper stepper = new AccurateSingleStepper();
+    SingleStepper stepper = new SingleStepper();
     
     for (Command cmd : solution1Map1()) {
-      stepper.executeRound(st, cmd);
+      st = stepper.step(st, cmd);
     }
     
     Assert.assertEquals(Ending.Win, st.ending);
+    Assert.assertEquals(3, st.collectedLambdas);
+    Assert.assertEquals(0, st.lambdasLeft);
+    Assert.assertEquals(12345, st.score);
+    Assert.assertEquals(0, st.robotCol);
+    Assert.assertEquals(1, st.robotRow);
   }
 
 }

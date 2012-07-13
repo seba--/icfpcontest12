@@ -7,40 +7,61 @@ public class State {
   public Board board;
   public int score;
 
-  /*
-   * data initialized from board
-   */
   public int robotCol;
   public int robotRow;
   public int lambdasLeft;
-  
-  public Ending ending;
   public int collectedLambdas;
+  public Ending ending;
   
+  public State(Board board, int score, int robotCol, int robotRow, int lambdasLeft, int collectedLambdas) {
+    this.board = board;
+    this.score = score;
+    ending = Ending.None;
+    
+    this.robotCol = robotCol;
+    this.robotRow = robotRow;
+    
+    this.collectedLambdas = collectedLambdas;
+    this.lambdasLeft = lambdasLeft;
+  }
+  
+  /**
+   * Auto-initialize state from intial board.
+   */
   public State(Board board) {
     this.board = board;
     this.score = 0;
-    ending = Ending.None;
-    collectedLambdas = 0;
+    this.collectedLambdas = 0;
+    this.ending = Ending.None;
     
-    initStateFromBoard();
-  }
-  
-  private void initStateFromBoard() {
-    lambdasLeft = 0;
+    int rcol = -1;
+    int rrow = -1;
+    int lambas = 0;
     
     for (int col = 0; col < board.width; col++)
       for (int row = 0; row < board.height; row++)
         switch (board.grid[col][row]) {
         case Robot:
-          robotCol = col;
-          robotRow = row;
+          rcol = col;
+          rrow = row;
           break;
         case Lambda:
-          lambdasLeft++;
+          lambas++;
           break;
         default:
           ;
         }
+    
+    this.robotCol = rcol;
+    this.robotRow = rrow;
+    this.lambdasLeft = lambas;
+  }
+  
+  public State makeFinal() {
+    /*
+     * From now on, you should not change any of the fields stored in this object.
+     * We don't enforce that, though.
+     */
+    return this;
   }
 }
