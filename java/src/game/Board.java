@@ -17,7 +17,7 @@ public class Board {
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
    */
-  public final Cell[][] grid;
+  public final Cell[] grid;
   
   public final int width;
   public final int height;
@@ -25,7 +25,7 @@ public class Board {
   public Board(int width, int height) {
     this.width = width;
     this.height = height;
-    this.grid = new Cell[width][height];
+    this.grid = new Cell[width * height];
   }
   
   /**
@@ -35,7 +35,7 @@ public class Board {
   public Cell get(int col, int row) {
     if (col < 0 || col >= width || row < 0 || row >= height)
       return Cell.Wall;
-    return grid[col][row];
+    return grid[col * height + row];
   }
 
   /**
@@ -45,14 +45,14 @@ public class Board {
   public void set(int col, int row, Cell c) {
     if (col < 0 || col >= width || row < 0 || row >= height)
       return;
-    grid[col][row] = c;
+    grid[col * height + row] = c;
   }
   
   public String toString() {
     StringBuilder sb = new StringBuilder();
     for (int rrow = height - 1; rrow >= 0; --rrow) {
       for (int col = 0; col < width; ++col)
-        sb.append(grid[col][rrow].shortName());
+        sb.append(grid[col * height + rrow].shortName());
       if (rrow > 0)
         sb.append('\n');
     }
@@ -83,10 +83,10 @@ public class Board {
         int rrow = rowCount - row - 1;
         List<Cell> rowList = flippedBoard.get(rrow);
         if (col < rowList.size())
-          board.grid[col][row] = rowList.get(col);
+          board.grid[col * rowCount + row] = rowList.get(col);
         else 
           // Section 2.5: "Shorter lines are assumed to be padded out with spaces"
-          board.grid[col][row] = Cell.Empty;
+          board.grid[col * rowCount + row] = Cell.Empty;
       }
     
     return board;
@@ -95,10 +95,7 @@ public class Board {
   @Override
   public Board clone() {
     Board b = new Board(width, height);
-    
-    for (int i = 0; i < width; ++i)
-      System.arraycopy(grid[i], 0, b.grid[i], 0, height);
-    
+    System.arraycopy(grid, 0, b.grid, 0, grid.length);
     return b;
   }
 

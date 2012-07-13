@@ -80,23 +80,23 @@ public class SingleStepper {
   }
 
   protected void moveRobot(State st, int nextCol, int nextRow) {
-    if (st.board.grid[nextCol][nextRow] == Cell.Lift)
-      st.board.grid[nextCol][nextRow] = Cell.RobotAndLift;
+    if (st.board.get(nextCol,nextRow) == Cell.Lift)
+      st.board.set(nextCol, nextRow, Cell.RobotAndLift);
     else
-      st.board.grid[nextCol][nextRow] = Cell.Robot;
+      st.board.set(nextCol, nextRow, Cell.Robot);
     
-    if (st.board.grid[st.robotCol][st.robotRow] == Cell.RobotAndLift)
-      st.board.grid[st.robotCol][st.robotRow] = Cell.Lift;
+    if (st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
+      st.board.set(st.robotCol, st.robotRow, Cell.Lift);
     else
-      st.board.grid[st.robotCol][st.robotRow] = Cell.Empty;
+      st.board.set(st.robotCol, st.robotRow, Cell.Empty);
     
     st.robotCol = nextCol;
     st.robotRow = nextRow;
   }
 
   protected void moveRock(Board board, int oldCol, int oldRow, int newCol, int newRow) {
-    board.grid[oldCol][oldRow] = Cell.Empty;
-    board.grid[newCol][newRow] = Cell.FallingRock;
+    board.set(oldCol, oldRow, Cell.Empty);
+    board.set(newCol, newRow, Cell.FallingRock);
   }
 
   protected void updateBoard(State st) {
@@ -104,8 +104,8 @@ public class SingleStepper {
     
     for (int row = 0; row < st.board.height; ++row) 
       for (int col = 0; col < st.board.width; ++col) {
-        if (oldBoard.grid[col][row] == Cell.Rock || oldBoard.grid[col][row] == Cell.FallingRock) {
-          st.board.grid[col][row] = Cell.Rock;
+        if (oldBoard.get(col, row) == Cell.Rock || oldBoard.get(col, row) == Cell.FallingRock) {
+          st.board.set(col, row, Cell.Rock);
           
           if (oldBoard.get(col, row - 1) == Cell.Empty)
             // fall straight down
@@ -145,7 +145,7 @@ public class SingleStepper {
   }
 
   protected void checkEnding(State st) {
-    if (st.lambdasLeft == 0 && st.board.grid[st.robotCol][st.robotRow] == Cell.RobotAndLift)
+    if (st.lambdasLeft == 0 && st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
       st.ending = Ending.Win;
     else if (st.board.get(st.robotCol, st.robotRow + 1) == Cell.FallingRock)
       st.ending = Ending.LoseRock;
