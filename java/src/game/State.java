@@ -6,28 +6,41 @@ package game;
 public class State {
   public Board board;
   public int score;
-  
+
+  /*
+   * data initialized from board
+   */
   public int robotCol;
   public int robotRow;
+  public int lambdasLeft;
   
-  public boolean isAborted;
+  public Ending ending;
   public int collectedLambdas;
   
   public State(Board board) {
     this.board = board;
     this.score = 0;
-    findRobot();
-    isAborted = false;
+    ending = Ending.None;
     collectedLambdas = 0;
+    
+    initStateFromBoard();
   }
   
-  public void findRobot() {
+  private void initStateFromBoard() {
+    lambdasLeft = 0;
+    
     for (int col = 0; col < board.width; col++)
       for (int row = 0; row < board.height; row++)
-        if (board.grid[col][row] == Cell.Robot) {
+        switch (board.grid[col][row]) {
+        case Robot:
           robotCol = col;
           robotRow = row;
-          return;
+          break;
+        case Lambda:
+          lambdasLeft++;
+          break;
+        default:
+          ;
         }
   }
 }

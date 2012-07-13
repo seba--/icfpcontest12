@@ -3,6 +3,7 @@ package game.stepper;
 import game.Board;
 import game.Cell;
 import game.Command;
+import game.Ending;
 import game.State;
 
 /**
@@ -35,7 +36,7 @@ public class AccurateSingleStepper implements IStepper {
     case Wait:
       return;
     case Abort:
-      st.isAborted = true;
+      st.ending = Ending.Abort;
       return;
     default:
       throw new IllegalArgumentException("Unknown command " + cmd);
@@ -45,13 +46,20 @@ public class AccurateSingleStepper implements IStepper {
     switch (next) {
     case Lambda:
       st.collectedLambdas++;
+      st.lambdasLeft--;
     case Empty:
     case Earth:
-    case Lift:
       moveRobot(st, nextCol, nextRow);
       break;
-    
+
+    case Lift:
+      if (st.lambdasLeft == 0) {
+        moveRobot(st, nextCol, nextRow);
+        break;
+      }
+        
     case Rock:
+    case FallingRock:
       if (cmd == Command.Left && st.board.get(nextCol - 1, nextRow) == Cell.Empty) {
         // push rock to the left
         moveRock(st.board, nextCol, nextRow, nextCol - 1, nextRow);
@@ -88,7 +96,7 @@ public class AccurateSingleStepper implements IStepper {
 
   private void moveRock(Board board, int oldCol, int oldRow, int newCol, int newRow) {
     board.grid[oldCol][oldRow] = Cell.Empty;
-    board.grid[newCol][newRow] = Cell.Rock;
+    board.grid[newCol][newRow] = Cell.FallingRock;
   }
 
   @Override
@@ -100,11 +108,11 @@ public class AccurateSingleStepper implements IStepper {
     
     for (int row = 0; row < b.height; row++) 
       for (int col = 0; col < b.width; col++) {
-        if (st.board.grid[col][row] == Cell.Rock) {
+        if (st.board.grid[col][row] == Cell.Rock || st.board.grid[col][row] == Cell.FallingRock) {
           // fall straight down
           if (st.board.get(col, row - 1) == Cell.Empty)
             moveRock(b, col, row, col, row - 1);
-          else if (st.board.get(col, row - 1) == Cell.Rock) {
+          else if (st.board.get(col, row - 1) == Cell.Rock || st.board.get(col, row - 1) == Cell.FallingRock) {
             // there is a rock below
             if (st.board.get(col + 1,  row) == Cell.Empty &&
                 st.board.get(col + 1, row - 1) == Cell.Empty)
@@ -131,8 +139,11 @@ public class AccurateSingleStepper implements IStepper {
 
   @Override
   public void checkEnding(State st) {
-    // TODO Auto-generated method stub
-
+    if (st.lambdasLeft == 0 && st.board.grid[st.robotCol][st.robotRow] == Cell.RobotAndLift)
+      st.ending = Ending.Win;
+    else if (st.board.get(st.robotCol, st.robotRow + 1) == Cell.FallingRock)
+      st.ending = Ending.Lose;
+    // abort action sets the ending field directly during movement
   }
 
   @Override
