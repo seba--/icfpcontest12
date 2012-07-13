@@ -31,20 +31,20 @@ public class Board {
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
    */
-  public Cell get(int n, int m) {
-    if (n < 0 || n >= width || m < 0 || m >= height)
+  public Cell get(int col, int row) {
+    if (col < 0 || col >= width || row < 0 || row >= height)
       return Cell.Wall;
-    return grid[n][m];
+    return grid[col][row];
   }
 
   /**
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
    */
-  public void set(int n, int m, Cell c) {
-    if (n < 0 || n >= width || m < 0 || m >= height)
+  public void set(int col, int row, Cell c) {
+    if (col < 0 || col >= width || row < 0 || row >= height)
       return;
-    grid[n][m] = c;
+    grid[col][row] = c;
   }
   
   public String toString() {
