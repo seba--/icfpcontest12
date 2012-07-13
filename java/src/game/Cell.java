@@ -59,6 +59,9 @@ public enum Cell {
     }
   }
   
+  /**
+   * Also interprets forward slash as backslash to avoid string escaping (which breaks column alignment in maps).
+   */
   public static Cell parse(char c) {
     switch (c) {
     case 'R':
@@ -69,6 +72,8 @@ public enum Cell {
       return Rock;
     case '\\':
       return Lambda;
+    case '/':
+      return Lambda;
     case 'L':
       return Lift;
     case 'O':
@@ -78,7 +83,7 @@ public enum Cell {
     case ' ':
       return Empty;
     default:
-      throw new IllegalStateException();
+      throw new IllegalStateException("Unkown cell " + c);
     }
   }
 }
