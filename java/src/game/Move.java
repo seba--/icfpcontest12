@@ -50,11 +50,8 @@ public enum Move {
     }
   }
   
-  public static Move parse(String s) {
-    if (s == null || s.isEmpty())
-      return null;
-    
-    switch (s.charAt(0)) {
+  public static Move parse(char c) {
+    switch (c) {
     case 'L':
       return Left;
     case 'R':
@@ -68,7 +65,7 @@ public enum Move {
     case 'A':
       return Abort;
     default:
-      throw new IllegalArgumentException("Cannot parse move " + s);
+      throw new IllegalArgumentException("Cannot parse move " + c);
     }
   }
   
