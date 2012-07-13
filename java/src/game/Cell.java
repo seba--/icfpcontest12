@@ -59,9 +59,6 @@ public enum Cell {
     }
   }
   
-  /**
-   * Also interprets forward slash as backslash to avoid string escaping (which breaks column alignment in maps).
-   */
   public static Cell parse(char c) {
     switch (c) {
     case 'R':
@@ -71,8 +68,6 @@ public enum Cell {
     case '*':
       return Rock;
     case '\\':
-      return Lambda;
-    case '/':
       return Lambda;
     case 'L':
       return Lift;

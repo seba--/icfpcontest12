@@ -17,8 +17,13 @@ public class TestBoard {
        "#/ * #\n" +
        "L  ./#\n" +
        "######";
+    map1 = map1.replace("/", "\\");
 
-    Cell[][] grid = Board.parse(map1).grid;
+    Board board = Board.parse(map1);
+    
+    Assert.assertEquals(map1, board.toString());
+    
+    Cell[][] grid = board.grid;
     
     Assert.assertEquals(Cell.Wall,   grid[0][0]);
     Assert.assertEquals(Cell.Lift,   grid[0][1]);
