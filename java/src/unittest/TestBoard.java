@@ -20,46 +20,46 @@ public class TestBoard {
 
     Cell[][] grid = Board.parse(map1).grid;
     
-    Assert.assertEquals(grid[0][0], Cell.Wall);
-    Assert.assertEquals(grid[0][1], Cell.Lift);
-    Assert.assertEquals(grid[0][2], Cell.Wall);
-    Assert.assertEquals(grid[0][3], Cell.Wall);
-    Assert.assertEquals(grid[0][4], Cell.Wall);
-    Assert.assertEquals(grid[0][5], Cell.Wall);
-
-    Assert.assertEquals(grid[1][0], Cell.Wall);
-    Assert.assertEquals(grid[1][1], Cell.Empty);
-    Assert.assertEquals(grid[1][2], Cell.Lambda);
-    Assert.assertEquals(grid[1][3], Cell.Empty);
-    Assert.assertEquals(grid[1][4], Cell.Earth);
-    Assert.assertEquals(grid[1][5], Cell.Wall);
-
-    Assert.assertEquals(grid[2][0], Cell.Wall);
-    Assert.assertEquals(grid[2][1], Cell.Empty);
-    Assert.assertEquals(grid[2][2], Cell.Empty);
-    Assert.assertEquals(grid[2][3], Cell.Empty);
-    Assert.assertEquals(grid[2][4], Cell.Empty);
-    Assert.assertEquals(grid[2][5], Cell.Wall);
-
-    Assert.assertEquals(grid[3][0], Cell.Wall);
-    Assert.assertEquals(grid[3][1], Cell.Earth);
-    Assert.assertEquals(grid[3][2], Cell.Rock);
-    Assert.assertEquals(grid[3][3], Cell.Lambda);
-    Assert.assertEquals(grid[3][4], Cell.Rock);
-    Assert.assertEquals(grid[3][5], Cell.Wall);
-
-    Assert.assertEquals(grid[4][0], Cell.Wall);
-    Assert.assertEquals(grid[4][1], Cell.Lambda);
-    Assert.assertEquals(grid[4][2], Cell.Empty);
-    Assert.assertEquals(grid[4][3], Cell.Earth);
-    Assert.assertEquals(grid[4][4], Cell.Robot);
-    Assert.assertEquals(grid[4][5], Cell.Wall);
- 
-    Assert.assertEquals(grid[5][0], Cell.Wall);
-    Assert.assertEquals(grid[5][1], Cell.Lift);
-    Assert.assertEquals(grid[5][2], Cell.Wall);
-    Assert.assertEquals(grid[5][3], Cell.Wall);
-    Assert.assertEquals(grid[5][4], Cell.Wall);
-    Assert.assertEquals(grid[5][5], Cell.Wall);
+    Assert.assertEquals(Cell.Wall,   grid[0][0]);
+    Assert.assertEquals(Cell.Lift,   grid[0][1]);
+    Assert.assertEquals(Cell.Wall,   grid[0][2]);
+    Assert.assertEquals(Cell.Wall,   grid[0][3]);
+    Assert.assertEquals(Cell.Wall,   grid[0][4]);
+    Assert.assertEquals(Cell.Wall,   grid[0][5]);
+                                               
+    Assert.assertEquals(Cell.Wall,   grid[1][0]);
+    Assert.assertEquals(Cell.Empty,  grid[1][1]);
+    Assert.assertEquals(Cell.Lambda, grid[1][2]);
+    Assert.assertEquals(Cell.Empty,  grid[1][3]);
+    Assert.assertEquals(Cell.Earth,  grid[1][4]);
+    Assert.assertEquals(Cell.Wall,   grid[1][5]);
+                                               
+    Assert.assertEquals(Cell.Wall,   grid[2][0]);
+    Assert.assertEquals(Cell.Empty,  grid[2][1]);
+    Assert.assertEquals(Cell.Empty,  grid[2][2]);
+    Assert.assertEquals(Cell.Empty,  grid[2][3]);
+    Assert.assertEquals(Cell.Empty,  grid[2][4]);
+    Assert.assertEquals(Cell.Wall,   grid[2][5]);
+                                               
+    Assert.assertEquals(Cell.Wall,   grid[3][0]);
+    Assert.assertEquals(Cell.Earth,  grid[3][1]);
+    Assert.assertEquals(Cell.Rock,   grid[3][2]);
+    Assert.assertEquals(Cell.Lambda, grid[3][3]);
+    Assert.assertEquals(Cell.Rock,   grid[3][4]);
+    Assert.assertEquals(Cell.Wall,   grid[3][5]);
+                                               
+    Assert.assertEquals(Cell.Wall,   grid[4][0]);
+    Assert.assertEquals(Cell.Lambda, grid[4][1]);
+    Assert.assertEquals(Cell.Empty,  grid[4][2]);
+    Assert.assertEquals(Cell.Earth,  grid[4][3]);
+    Assert.assertEquals(Cell.Robot,  grid[4][4]);
+    Assert.assertEquals(Cell.Wall,   grid[4][5]);
+                                               
+    Assert.assertEquals(Cell.Wall,   grid[5][0]);
+    Assert.assertEquals(Cell.Wall,   grid[5][1]);
+    Assert.assertEquals(Cell.Wall,   grid[5][2]);
+    Assert.assertEquals(Cell.Wall,   grid[5][3]);
+    Assert.assertEquals(Cell.Wall,   grid[5][4]);
+    Assert.assertEquals(Cell.Wall,   grid[5][5]);
   }
 }
