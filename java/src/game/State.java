@@ -29,15 +29,15 @@ public class State {
   private void initStateFromBoard() {
     lambdasLeft = 0;
     
-    for (int col = 0; col < board.width; col++)
-      for (int row = 0; row < board.height; row++)
+    for (int col = 0; col < board.width; ++col)
+      for (int row = 0; row < board.height; ++row)
         switch (board.grid[col][row]) {
         case Robot:
           robotCol = col;
           robotRow = row;
           break;
         case Lambda:
-          lambdasLeft++;
+          ++lambdasLeft;
           break;
         default:
           ;

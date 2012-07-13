@@ -45,8 +45,8 @@ public class AccurateSingleStepper implements IStepper {
     Cell next = st.board.get(nextCol, nextRow); 
     switch (next) {
     case Lambda:
-      st.collectedLambdas++;
-      st.lambdasLeft--;
+      ++st.collectedLambdas;
+      --st.lambdasLeft;
     case Empty:
     case Earth:
       moveRobot(st, nextCol, nextRow);
@@ -106,8 +106,8 @@ public class AccurateSingleStepper implements IStepper {
     
     Board b = st.board.clone();
     
-    for (int row = 0; row < b.height; row++) 
-      for (int col = 0; col < b.width; col++) {
+    for (int row = 0; row < b.height; ++row)
+      for (int col = 0; col < b.width; ++col) {
         if (st.board.grid[col][row] == Cell.Rock || st.board.grid[col][row] == Cell.FallingRock) {
           st.board.grid[col][row] = Cell.Rock;
           if (st.board.get(col, row - 1) == Cell.Empty)
