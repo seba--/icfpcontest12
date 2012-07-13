@@ -48,16 +48,22 @@ public class AccurateSingleStepper implements IStepper {
     case Earth:
     case Lift:
       moveRobot(st, nextCol, nextRow);
+      break;
     
     case Rock:
+      if (cmd == Command.Left && st.board.get(nextCol - 1, nextRow) == Cell.Empty) {
+        moveRock(st, nextCol, nextRow, nextCol - 1, nextRow);
+        moveRobot(st, nextCol, nextRow);
+        break;
+      }
       if (cmd == Command.Right && st.board.get(nextCol + 1, nextRow) == Cell.Empty) {
         moveRock(st, nextCol, nextRow, nextCol + 1, nextRow);
         moveRobot(st, nextCol, nextRow);
+        break;
       }
-      
-      break;
 
     default:
+      // the move was invalid => execute Wait
       break;
     }
   }
@@ -76,8 +82,11 @@ public class AccurateSingleStepper implements IStepper {
     st.robotCol = nextCol;
     st.robotRow = nextRow;
   }
-  
-  
+
+  private void moveRock(State st, int oldCol, int oldRow, int newCol, int newRow) {
+    st.board.grid[oldCol][oldRow] = Cell.Empty;
+    st.board.grid[newCol][newRow] = Cell.Rock;
+  }
 
   @Override
   public void updateBoard(State st) {
@@ -92,8 +101,9 @@ public class AccurateSingleStepper implements IStepper {
 
   @Override
   public void executeRound(State st, Command cmd) {
-    // TODO Auto-generated method stub
-
+    moveRobot(st, cmd);
+    updateBoard(st);
+    checkEnding(st);
   }
 
 }
