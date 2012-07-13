@@ -11,12 +11,14 @@ public class State {
   public int robotRow;
   
   public boolean isAborted;
+  public int collectedLambdas;
   
   public State(Board board) {
     this.board = board;
     this.score = 0;
     findRobot();
     isAborted = false;
+    collectedLambdas = 0;
   }
   
   public void findRobot() {
