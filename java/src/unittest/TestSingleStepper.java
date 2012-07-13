@@ -9,7 +9,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class TestAccurateSingleStepper {
+public class TestSingleStepper {
 
   public static Command[] solution1Map1() {
     Command L = Command.Left;
@@ -58,7 +58,7 @@ public class TestAccurateSingleStepper {
     Assert.assertEquals(Ending.Win, st.ending);
     Assert.assertEquals(3, st.collectedLambdas);
     Assert.assertEquals(0, st.lambdasLeft);
-    Assert.assertEquals(12345, st.score);
+    Assert.assertEquals(212, st.score);
     Assert.assertEquals(0, st.robotCol);
     Assert.assertEquals(1, st.robotRow);
   }

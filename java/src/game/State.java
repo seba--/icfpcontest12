@@ -11,9 +11,10 @@ public class State {
   public int robotRow;
   public int lambdasLeft;
   public int collectedLambdas;
+  public int steps;
   public Ending ending;
   
-  public State(Board board, int score, int robotCol, int robotRow, int lambdasLeft, int collectedLambdas) {
+  public State(Board board, int score, int robotCol, int robotRow, int lambdasLeft, int collectedLambdas, int steps) {
     this.board = board;
     this.score = score;
     ending = Ending.None;
@@ -23,6 +24,8 @@ public class State {
     
     this.collectedLambdas = collectedLambdas;
     this.lambdasLeft = lambdasLeft;
+    
+    this.steps = steps;
   }
   
   /**
@@ -33,6 +36,7 @@ public class State {
     this.score = 0;
     this.collectedLambdas = 0;
     this.ending = Ending.None;
+    this.steps = 0;
     
     int rcol = -1;
     int rrow = -1;

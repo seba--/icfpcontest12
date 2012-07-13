@@ -4,6 +4,7 @@ import game.Board;
 import game.Cell;
 import game.Command;
 import game.Ending;
+import game.Scoring;
 import game.State;
 
 /**
@@ -138,12 +139,13 @@ public class SingleStepper {
       st.ending = Ending.Lose;
     // abort action sets the ending field directly during movement
   }
-
+  
   public State step(State st, Command cmd) {
-    State newSt = new State(st.board.clone(), st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas);
+    State newSt = new State(st.board.clone(), st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas, st.steps + 1);
     moveRobot(newSt, cmd);
     updateBoard(st.board, newSt);
     checkEnding(newSt);
+    newSt.score = Scoring.totalScore(newSt.steps, newSt.collectedLambdas, newSt.ending == Ending.Abort, newSt.ending == Ending.Win);
     
     return newSt.makeFinal();
   }
