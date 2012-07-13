@@ -96,7 +96,7 @@ public class Board {
     Board b = new Board(width, height);
     
     for (int i = 0; i < width; ++i)
-      System.arraycopy(grid, 0, b.grid, 0, height);
+      System.arraycopy(grid[i], 0, b.grid[i], 0, height);
     
     return b;
   }
