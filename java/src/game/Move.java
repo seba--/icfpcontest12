@@ -1,13 +1,36 @@
 package game;
 
 /**
- * @author seba
+ * Moves as specified in Section 2.2.
  * 
- * Moves as specified in Section 2.2
+ * @author seba
  */
 public enum Move {
   L, R, U, D, W, A;
+
+  public String toString() {
+    return shortName();
+  }
   
+  public String shortName() {
+    switch (this) {
+    case L:
+      return "L";
+    case R:
+      return "R";
+    case U:
+      return "U";
+    case D:
+      return "D";
+    case W:
+      return "W";
+    case A:
+      return "A";
+    default:
+      throw new IllegalStateException("Unknown move " + this);
+    }
+  }
+
   public String longName() {
     switch (this) {
     case L:
@@ -48,4 +71,5 @@ public enum Move {
       throw new IllegalArgumentException("Cannot parse move " + s);
     }
   }
+  
 }
