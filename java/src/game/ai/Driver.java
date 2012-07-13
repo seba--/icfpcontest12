@@ -1,6 +1,7 @@
 package game.ai;
 
 import game.Command;
+import game.Ending;
 import game.State;
 
 import java.util.Comparator;
@@ -62,7 +63,7 @@ public class Driver {
               bestState = newState;
             }
 
-          if (!newState.isFinal()) {
+          if (newState.ending == Ending.None) {
             liveStates.add(newState);
             strategySelector.prepareState(newState);
           }

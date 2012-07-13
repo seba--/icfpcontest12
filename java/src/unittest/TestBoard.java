@@ -8,17 +8,23 @@ import org.junit.Test;
 
 public class TestBoard {
 
+  public static String map1() {
+    String map1 = 
+        "######\n" + 
+        "#. *R#\n" +
+        "#  /.#\n" +
+        "#/ * #\n" +
+        "L  ./#\n" +
+        "######";
+     map1 = map1.replace("/", "\\");
+
+     return map1;
+  }
+  
   @Test
   public void testMap1() {
-    String map1 = 
-       "######\n" + 
-       "#. *R#\n" +
-       "#  /.#\n" +
-       "#/ * #\n" +
-       "L  ./#\n" +
-       "######";
-    map1 = map1.replace("/", "\\");
-
+    String map1 = map1();
+    
     Board board = Board.parse(map1);
     
     Assert.assertEquals(map1, board.toString());

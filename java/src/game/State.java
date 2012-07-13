@@ -13,6 +13,11 @@ import java.util.Set;
  */
 public class State {
   public Board board;
+  public int robotCol;
+  public int robotRow;
+  public int lambdasLeft;
+  public int collectedLambdas;
+  public Ending ending;
 
   /**
    * How much score we got so far.
@@ -49,12 +54,6 @@ public class State {
    */
   public List<Command> fromParent;
 
-  public State(Board board, int steps) {
-    this.board = board;
-    this.score = 0;
-    this.steps = steps;
-  }
-
   /**
    * Return the commands to reach this state from the initial state.
    */
@@ -76,11 +75,59 @@ public class State {
     return result;
   }
 
+  
+  public State(Board board, int score, int robotCol, int robotRow, int lambdasLeft, int collectedLambdas, int steps) {
+    this.board = board;
+    this.score = score;
+    ending = Ending.None;
+    
+    this.robotCol = robotCol;
+    this.robotRow = robotRow;
+    
+    this.collectedLambdas = collectedLambdas;
+    this.lambdasLeft = lambdasLeft;
+    
+    this.steps = steps;
+  }
+  
   /**
-   * A state is final if (1) we are dead (2) we won (3) we aborted.
+   * Auto-initialize state from initial board.
    */
-  public boolean isFinal() {
-    // TODO Implement this
-    return false;
+  public State(Board board) {
+    this.board = board;
+    this.score = 0;
+    this.collectedLambdas = 0;
+    this.ending = Ending.None;
+    this.steps = 0;
+    
+    int rcol = -1;
+    int rrow = -1;
+    int lambas = 0;
+    
+    for (int col = 0; col < board.width; ++col)
+      for (int row = 0; row < board.height; ++row)
+        switch (board.grid[col][row]) {
+        case Robot:
+          rcol = col;
+          rrow = row;
+          break;
+        case Lambda:
+          lambas++;
+          break;
+        default:
+          ;
+        }
+    
+    this.robotCol = rcol;
+    this.robotRow = rrow;
+    this.lambdasLeft = lambas;
+  }
+  
+  public State makeFinal() {
+    /*
+     * From now on, you should not change any of the fields stored in this object.
+     * We don't enforce that, though.
+     */
+    return this;
   }
 }
