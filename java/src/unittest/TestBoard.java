@@ -3,6 +3,7 @@ package unittest;
 import junit.framework.Assert;
 import game.Board;
 import game.Cell;
+import game.State;
 
 import org.junit.Test;
 
@@ -21,6 +22,27 @@ public class TestBoard {
      return map1;
   }
   
+  public static String floodMap1() {
+    String map1 = 
+        "###########\n" + 
+        "#....R....#\n" + 
+        "#.*******.#\n" + 
+        "#.///////.#\n" + 
+        "#.       .#\n" + 
+        "#..*///*..#\n" + 
+        "#.#*///*#.#\n" + 
+        "#########L#\n" + 
+        "\n" + 
+        "Water 1\n" + 
+        "Flooding 8\n" +  
+        "Waterproof 5";
+     
+    map1 = map1.replace("/", "\\");
+
+     return map1;
+  }
+  
+    
   @Test
   public void testMap1() {
     String map1 = map1();
@@ -73,4 +95,15 @@ public class TestBoard {
     Assert.assertEquals(Cell.Wall,   grid[5][4]);
     Assert.assertEquals(Cell.Wall,   grid[5][5]);
   }
+  
+  @Test
+  public void testFloodMap1() {
+    String floodMap1 = floodMap1();
+    
+    State st = State.parse(floodMap1);
+    
+    Assert.assertEquals(1, st.waterLevel);
+    Assert.assertEquals(8, st.staticConfig.floodingRate);
+    Assert.assertEquals(5, st.staticConfig.waterResistance);
+  }  
 }

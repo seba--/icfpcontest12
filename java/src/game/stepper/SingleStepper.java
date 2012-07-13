@@ -130,19 +130,42 @@ public class SingleStepper {
           // skip checking whether we should open lambda lifts
         }
       }
+    
+    /*
+     * update water level
+     */
+    if (st.staticConfig.floodingRate > 0) {
+      if (st.stepsUntilNextRise == 1) {
+        st.waterLevel++;
+        st.stepsUntilNextRise = st.staticConfig.floodingRate;
+      }
+      else
+        st.stepsUntilNextRise--;
+    }
   }
 
   protected void checkEnding(State st) {
     if (st.lambdasLeft == 0 && st.board.grid[st.robotCol][st.robotRow] == Cell.RobotAndLift)
       st.ending = Ending.Win;
     else if (st.board.get(st.robotCol, st.robotRow + 1) == Cell.FallingRock)
-      st.ending = Ending.Lose;
+      st.ending = Ending.LoseRock;
     // abort action sets the ending field directly during movement
+    
+    /*
+     * update underwater step counting
+     */
+    if (st.robotRow <= st.waterLevel)
+      st.stepsUnderwater++;
+    else
+      st.stepsUnderwater = 0;
+    
+    if (st.stepsUnderwater > st.staticConfig.waterResistance)
+      st.ending = Ending.LoseWater;
   }
   
   public State step(State st, Command cmd) {
-    State newSt = new State(st.board.clone(), st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas, st.steps + 1);
-    
+    State newSt = new State(st.staticConfig, st.board.clone(), st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas, st.steps + 1, st.waterLevel, st.stepsUnderwater, st.stepsUntilNextRise);
+
     moveRobot(newSt, cmd);
     if (st.ending != Ending.Abort) {
       updateBoard(st.board, newSt);
