@@ -99,9 +99,8 @@ public class SingleStepper {
     board.grid[newCol][newRow] = Cell.FallingRock;
   }
 
-  protected void updateBoard(Board oldBoard, State st) {
-    // read from b
-    // write to st.board
+  protected void updateBoard(State st) {
+    Board oldBoard = st.board.clone();
     
     for (int row = 0; row < st.board.height; ++row) 
       for (int col = 0; col < st.board.width; ++col) {
@@ -165,11 +164,11 @@ public class SingleStepper {
   }
   
   public State step(State st, Command cmd) {
-    State newSt = new State(st.staticConfig, st.board.clone(), st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas, st.steps + 1, st.waterLevel, st.stepsUnderwater, st.stepsUntilNextRise);
+    State newSt = new State(st.staticConfig, st.board, st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas, st.steps + 1, st.waterLevel, st.stepsUnderwater, st.stepsUntilNextRise);
     
     moveRobot(newSt, cmd);
     if (st.ending != Ending.Abort) {
-      updateBoard(st.board, newSt);
+      updateBoard(newSt);
       checkEnding(newSt);
     }
     newSt.score = Scoring.totalScore(newSt.steps, newSt.collectedLambdas, newSt.ending == Ending.Abort, newSt.ending == Ending.Win);
