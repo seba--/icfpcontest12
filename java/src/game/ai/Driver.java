@@ -6,6 +6,8 @@ import game.Ending;
 import game.State;
 import game.selector.SimpleSelector;
 
+import interrupt.ExitHandler;
+
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +42,7 @@ public class Driver {
     this.strategySelector = strategySelector;
   }
 
-  public List<Command> solve(State initial) {
+  public void solve(State initial) {
     strategySelector.prepareState(initial);
     liveStates.add(initial);
 
@@ -74,11 +76,18 @@ public class Driver {
       }
     }
 
-    return bestState.fromInitial();
   }
   
+  /**
+   * Print known best solution to System.out 
+   */
   public void printSolution() {
-    //TODO: print best solution to system out
+    //TODO: make threadsafe, might be called from exit handler
+    //      while already outputting... (use StringBuilder perhaps?!)
+    List<Command> solution = bestState.fromInitial();
+    for (Command command : solution) {
+      System.out.append(command.shortName());
+    }
   }
 
   // kill states that have no strategies left
@@ -103,10 +112,9 @@ public class Driver {
     String text = new Scanner(System.in).useDelimiter("\\A").next();
     Board board = Board.parse(text);
 
-    List<Command> solution = driver.solve(new State(board));
-    for (Command command : solution) {
-      System.out.append(command.shortName());
-    }
+    ExitHandler.register(driver);
+    driver.solve(new State(board));
+    driver.printSolution();
 
     System.out.println("A");
   }
