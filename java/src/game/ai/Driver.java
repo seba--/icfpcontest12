@@ -71,6 +71,10 @@ public class Driver {
       }
     }
   }
+  
+  public void printSolution() {
+    //TODO: print best solution to system out
+  }
 
   // kill states that have no strategies left
   private void killState(State state) {
@@ -83,4 +87,5 @@ public class Driver {
     State result = null;
     return result;
   }
+  
 }
