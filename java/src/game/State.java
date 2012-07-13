@@ -42,8 +42,8 @@ public class State {
     int rrow = -1;
     int lambas = 0;
     
-    for (int col = 0; col < board.width; col++)
-      for (int row = 0; row < board.height; row++)
+    for (int col = 0; col < board.width; ++col)
+      for (int row = 0; row < board.height; ++row)
         switch (board.grid[col][row]) {
         case Robot:
           rcol = col;

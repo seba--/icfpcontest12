@@ -45,8 +45,8 @@ public class SingleStepper {
     Cell next = st.board.get(nextCol, nextRow); 
     switch (next) {
     case Lambda:
-      st.collectedLambdas++;
-      st.lambdasLeft--;
+      ++st.collectedLambdas;
+      --st.lambdasLeft;
     case Empty:
     case Earth:
       moveRobot(st, nextCol, nextRow);
