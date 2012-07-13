@@ -66,7 +66,7 @@ public enum Cell {
     switch (c) {
     case 'R':
       return Robot;
-    case 'W':
+    case '#':
       return Wall;
     case '*':
       return Rock;

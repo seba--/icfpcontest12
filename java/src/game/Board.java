@@ -59,7 +59,8 @@ public class Board {
     Board board = new Board(colCount, rowCount);
     for (int row = 0; row < rowCount; row++)
       for (int col = 0; col < colCount; col++) {
-        List<Cell> rowList = flippedBoard.get(row);
+        int reverseRow = rowCount - row - 1;
+        List<Cell> rowList = flippedBoard.get(reverseRow);
         if (col < rowList.size())
           board.grid[col][row] = rowList.get(col);
         else 
