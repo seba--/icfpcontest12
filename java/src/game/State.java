@@ -10,10 +10,13 @@ public class State {
   public int robotCol;
   public int robotRow;
   
+  public boolean isAborted;
+  
   public State(Board board) {
     this.board = board;
     this.score = 0;
     findRobot();
+    isAborted = false;
   }
   
   public void findRobot() {
