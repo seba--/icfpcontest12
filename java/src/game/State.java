@@ -132,7 +132,7 @@ public class State {
 
     for (int col = 0; col < board.width; ++col)
       for (int row = 0; row < board.height; ++row)
-        switch (board.grid[col][row]) {
+        switch (board.get(col,row)) {
         case Robot:
           rcol = col;
           rrow = row;

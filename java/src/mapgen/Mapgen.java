@@ -61,11 +61,11 @@ public class Mapgen {
     Board tempBoard = createWalls(sizex, sizey, lifts);
     
     System.out.println("\tfill map");
-    Cell[][] grid = tempBoard.grid;
+    Cell[] grid = tempBoard.grid;
     
     for (int i = 1; i < sizex-1; i++) {
       for (int j = 1; j < sizey-1; j++) {
-        grid[i][j] = getNextRandomCell(probabilities);
+        grid[i * sizey + j] = getNextRandomCell(probabilities);
       }
     }
     
@@ -73,7 +73,7 @@ public class Mapgen {
     // place robot
     int robotXPos = rnd.nextInt(sizex-2)+1;
     int robotYPos = rnd.nextInt(sizey-2)+1;
-    grid[robotXPos][robotYPos] = Cell.Robot;
+    grid[robotXPos * sizey + robotYPos] = Cell.Robot;
     
     return tempBoard;
   }
@@ -111,17 +111,17 @@ public class Mapgen {
   public static Board createWalls(int sizex, int sizey, int lifts) {
     Board tempBoard = new Board(sizex, sizey);
 
-    Cell[][] grid = tempBoard.grid;
+    Cell[] grid = tempBoard.grid;
     
     // build walls
     
     for (int i = 0; i < sizex; i++) {
-      grid[i][0] = Cell.Wall;
-      grid[i][sizey-1] = Cell.Wall;      
+      grid[i * sizey + 0] = Cell.Wall;
+      grid[i * sizey + (sizey-1)] = Cell.Wall;      
     }
     for (int i = 1; i < sizey-1; i++) {
-      grid[0][i] = Cell.Wall;
-      grid[sizex-1][i] = Cell.Wall;
+      grid[0 * sizey + i] = Cell.Wall;
+      grid[(sizex-1) * sizey + i] = Cell.Wall;
     }
     
     for (int i = 0; i < lifts; i++) {
@@ -138,13 +138,13 @@ public class Mapgen {
       
       // build lift
       if (liftWall == 0) {
-        grid[liftPos][0] = Cell.Lift;
+        grid[liftPos * sizey + 0] = Cell.Lift;
       } else if (liftWall == 1) {
-        grid[0][liftPos] = Cell.Lift;
+        grid[0 * sizey + liftPos] = Cell.Lift;
       } else if (liftWall == 2) {
-        grid[liftPos][sizey-1] = Cell.Lift;
+        grid[liftPos * sizey + (sizey-1)] = Cell.Lift;
       } else if (liftWall == 3) {
-        grid[sizex-1][liftPos] = Cell.Lift;
+        grid[(sizex-1) * sizey + liftPos] = Cell.Lift;
       }
     }
     
