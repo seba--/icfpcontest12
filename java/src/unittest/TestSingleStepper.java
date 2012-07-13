@@ -1,6 +1,7 @@
 package unittest;
 
 import game.Board;
+import game.Cell;
 import game.Command;
 import game.Ending;
 import game.State;
@@ -24,6 +25,20 @@ public class TestSingleStepper {
     
     return cmds;
   }
+  
+  public static Command[] solution2Map1() {
+    Command L = Command.Left;
+    Command R = Command.Right;
+    Command U = Command.Up;
+    Command D = Command.Down;
+
+    Command[] cmds = new Command[] {
+      L
+    };
+    
+    return cmds;
+  }
+  
   
   public static Command[] solution1FloodMap1() {
     Command L = Command.Left;
@@ -94,6 +109,22 @@ public class TestSingleStepper {
     Assert.assertEquals(212, st.score);
     Assert.assertEquals(0, st.robotCol);
     Assert.assertEquals(1, st.robotRow);
+  }
+
+  @Test
+  public void testMap1variant() {
+    System.out.println("--------------------------------------------------------------------------");
+    System.out.println("testMap1variant");
+    
+    String map1 = TestBoard.map1();
+    Board board = Board.parse(map1);
+    State st = new State(new StaticConfig(0, 0), board, 0);
+    st = runStepper(st, solution2Map1());
+    
+    Assert.assertEquals(3, st.robotCol);
+    Assert.assertEquals(4, st.robotRow);
+    Assert.assertEquals(Cell.Robot, st.board.get(3, 4));
+    Assert.assertEquals(Cell.FallingRock, st.board.get(2, 3));
   }
 
   @Test
