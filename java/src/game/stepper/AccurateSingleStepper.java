@@ -1,5 +1,6 @@
 package game.stepper;
 
+import game.Board;
 import game.Cell;
 import game.Command;
 import game.State;
@@ -52,12 +53,14 @@ public class AccurateSingleStepper implements IStepper {
     
     case Rock:
       if (cmd == Command.Left && st.board.get(nextCol - 1, nextRow) == Cell.Empty) {
-        moveRock(st, nextCol, nextRow, nextCol - 1, nextRow);
+        // push rock to the left
+        moveRock(st.board, nextCol, nextRow, nextCol - 1, nextRow);
         moveRobot(st, nextCol, nextRow);
         break;
       }
       if (cmd == Command.Right && st.board.get(nextCol + 1, nextRow) == Cell.Empty) {
-        moveRock(st, nextCol, nextRow, nextCol + 1, nextRow);
+        // push rock to the right
+        moveRock(st.board, nextCol, nextRow, nextCol + 1, nextRow);
         moveRobot(st, nextCol, nextRow);
         break;
       }
@@ -83,14 +86,47 @@ public class AccurateSingleStepper implements IStepper {
     st.robotRow = nextRow;
   }
 
-  private void moveRock(State st, int oldCol, int oldRow, int newCol, int newRow) {
-    st.board.grid[oldCol][oldRow] = Cell.Empty;
-    st.board.grid[newCol][newRow] = Cell.Rock;
+  private void moveRock(Board board, int oldCol, int oldRow, int newCol, int newRow) {
+    board.grid[oldCol][oldRow] = Cell.Empty;
+    board.grid[newCol][newRow] = Cell.Rock;
   }
 
   @Override
   public void updateBoard(State st) {
-    // TODO Auto-generated method stub
+    // read from st.board
+    // write to b
+    
+    Board b = st.board.clone();
+    
+    for (int row = 0; row < b.height; row++) 
+      for (int col = 0; col < b.width; col++) {
+        if (st.board.grid[col][row] == Cell.Rock) {
+          // fall straight down
+          if (st.board.get(col, row - 1) == Cell.Empty)
+            moveRock(b, col, row, col, row - 1);
+          else if (st.board.get(col, row - 1) == Cell.Rock) {
+            // there is a rock below
+            if (st.board.get(col + 1,  row) == Cell.Empty &&
+                st.board.get(col + 1, row - 1) == Cell.Empty)
+              // rock slides to the right
+              moveRock(b, col, row, col + 1, row - 1);
+            else if (st.board.get(col - 1, row) == Cell.Empty &&
+                     st.board.get(col - 1, row - 1) == Cell.Empty)
+              // rock slides to the left
+              moveRock(b, col, row, col - 1, row - 1);
+          }
+          else if (st.board.get(col, row - 1) == Cell.Lambda &&
+                   st.board.get(col + 1, row) == Cell.Empty &&
+                   st.board.get(col + 1, row - 1) == Cell.Empty)
+            // rock slides to the right off the back of a lambda
+            moveRock(b, col, row, col + 1, row - 1);
+          
+          // skip checking whether we should open lambda lifts
+        }
+      }
+    
+    // replace old board with new one
+    st.board = b;
   }
 
   @Override
