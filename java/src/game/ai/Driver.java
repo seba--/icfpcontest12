@@ -5,6 +5,7 @@ import game.Ending;
 import game.State;
 import game.fitness.ScoreFitness;
 import game.selector.SimpleSelector;
+import game.stepper.MultiStepper;
 import interrupt.ExitHandler;
 
 import java.util.Comparator;
@@ -29,6 +30,7 @@ public class Driver {
   // queue.
 
   // TODO is contains on PriorityQueue fast enough?
+  public MultiStepper stepper = new MultiStepper();
   public Comparator<State> comparator = new FitnessComparator();
   public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
   public Set<State> deadStates = new HashSet<State>();
@@ -102,9 +104,7 @@ public class Driver {
   }
 
   private State computeNextState(State state, List<Command> commands) {
-    // TODO Hook up to sebastian's code
-    State result = null;
-    return result;
+    return stepper.multistep(state, commands);
   }
 
   public static void main(String[] args) {
@@ -115,6 +115,7 @@ public class Driver {
     // from
     // http://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
     String text = new Scanner(System.in).useDelimiter("\\A").next();
+    text = text.replace("\r", "");
     State state = State.parse(text);
 
     ExitHandler.register(driver);

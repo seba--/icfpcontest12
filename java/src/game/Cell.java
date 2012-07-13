@@ -84,7 +84,7 @@ public enum Cell {
     case 'r':
       return RobotAndLift;
     default:
-      throw new IllegalStateException("Unkown cell " + c);
+      throw new IllegalStateException("Unkown cell " + (int)c);
     }
   }
 }

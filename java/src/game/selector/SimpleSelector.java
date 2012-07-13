@@ -6,6 +6,7 @@ import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ConstantStrategy;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Set;
  */
 
 public class SimpleSelector implements Selector {
-  public Set<Strategy> strategies;
+  public final Set<Strategy> strategies = new HashSet<Strategy>();
   
   {
     strategies.add(new ConstantStrategy(Command.Left));

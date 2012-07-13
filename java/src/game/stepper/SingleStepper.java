@@ -166,7 +166,7 @@ public class SingleStepper {
   
   public State step(State st, Command cmd) {
     State newSt = new State(st.staticConfig, st.board.clone(), st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas, st.steps + 1, st.waterLevel, st.stepsUnderwater, st.stepsUntilNextRise);
-
+    
     moveRobot(newSt, cmd);
     if (st.ending != Ending.Abort) {
       updateBoard(st.board, newSt);
