@@ -24,7 +24,7 @@ public class Board {
   public Board(int width, int height) {
     this.width = width;
     this.height = height;
-    grid = new Cell[width][height];
+    this.grid = new Cell[width][height];
   }
   
   /**
@@ -89,5 +89,15 @@ public class Board {
       }
     
     return board;
+  }
+  
+  @Override
+  public Board clone() {
+    Board b = new Board(width, height);
+    
+    for (int i = 0; i < width; i ++)
+      System.arraycopy(grid, 0, b.grid, 0, height);
+    
+    return b;
   }
 }
