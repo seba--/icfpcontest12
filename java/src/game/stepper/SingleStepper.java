@@ -142,9 +142,12 @@ public class SingleStepper {
   
   public State step(State st, Command cmd) {
     State newSt = new State(st.board.clone(), st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas, st.steps + 1);
+    
     moveRobot(newSt, cmd);
-    updateBoard(st.board, newSt);
-    checkEnding(newSt);
+    if (st.ending != Ending.Abort) {
+      updateBoard(st.board, newSt);
+      checkEnding(newSt);
+    }
     newSt.score = Scoring.totalScore(newSt.steps, newSt.collectedLambdas, newSt.ending == Ending.Abort, newSt.ending == Ending.Win);
     
     return newSt.makeFinal();
