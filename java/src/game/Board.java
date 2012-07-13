@@ -30,6 +30,8 @@ public class Board {
   /**
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
+   *
+   * @deprecated use array directly
    */
   public Cell get(int n, int m) {
     return grid[n][m];
@@ -38,6 +40,8 @@ public class Board {
   /**
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
+   * 
+   * @deprecated use array directly
    */
   public void set(int n, int m, Cell c) {
     grid[n][m] = c;

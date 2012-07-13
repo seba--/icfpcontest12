@@ -1,11 +1,11 @@
 package game;
 
 /**
- * Moves as specified in Section 2.2.
+ * Commands as specified in Section 2.2.
  * 
  * @author seba
  */
-public enum Move {
+public enum Command {
   Left, Right, Up, Down, Wait, Abort;
 
   public String toString() {
@@ -27,7 +27,7 @@ public enum Move {
     case Abort:
       return "A";
     default:
-      throw new IllegalStateException("Unknown move " + this);
+      throw new IllegalStateException("Unknown command " + this);
     }
   }
 
@@ -46,11 +46,11 @@ public enum Move {
     case Abort:
       return "Abort";
     default:
-      throw new IllegalStateException("Unknown move " + this);
+      throw new IllegalStateException("Unknown command " + this);
     }
   }
   
-  public static Move parse(char c) {
+  public static Command parse(char c) {
     switch (c) {
     case 'L':
       return Left;
@@ -65,7 +65,7 @@ public enum Move {
     case 'A':
       return Abort;
     default:
-      throw new IllegalArgumentException("Cannot parse move " + c);
+      throw new IllegalArgumentException("Cannot parse command " + c);
     }
   }
   
