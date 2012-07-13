@@ -30,20 +30,20 @@ public class Board {
   /**
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
-   *
-   * @deprecated use array directly
    */
   public Cell get(int n, int m) {
+    if (n < 0 || n >= width || m < 0 || m >= height)
+      return Cell.Wall;
     return grid[n][m];
   }
 
   /**
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
-   * 
-   * @deprecated use array directly
    */
   public void set(int n, int m, Cell c) {
+    if (n < 0 || n >= width || m < 0 || m >= height)
+      return;
     grid[n][m] = c;
   }
   
