@@ -8,12 +8,12 @@ import game.State;
  * @author Tillmann Rendel
  * @author Thomas Horstmeyer
  */
-public interface Scorer {
+public interface Fitness {
   /**
    * Returns the score for a state.
    * 
    * The score is a number between 0 and 1,000,000. 0 means: should be ignored.
    * 1,000,000 means: should be expanded.
    */
-  public int score(State state);
+  public int evaluate(State state);
 }

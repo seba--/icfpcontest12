@@ -23,6 +23,8 @@ public class State {
   public int collectedLambdas;
   public Ending ending;
 
+  // TODO hashCode equals ...?
+  
   /**
    * How much score we got so far.
    */
@@ -31,7 +33,7 @@ public class State {
   /**
    * Whether our scorer thinks we should explore this state.
    */
-  public int scorerScore;
+  public int fitness;
 
   /**
    * steps taken since start of game.

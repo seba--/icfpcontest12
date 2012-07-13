@@ -11,8 +11,8 @@ import java.util.Comparator;
  * @author Thomas Horstmeyer
  */
 
-public class ScorerScoreComparator implements Comparator<State> {
+public class FitnessComparator implements Comparator<State> {
   public int compare(State a, State b) {
-    return Integer.compare(a.scorerScore, b.scorerScore);
+    return Integer.compare(a.fitness, b.fitness);
   }
 }

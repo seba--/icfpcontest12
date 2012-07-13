@@ -3,6 +3,7 @@ package game.ai;
 import game.Command;
 import game.Ending;
 import game.State;
+import game.fitness.ScoreFitness;
 import game.selector.SimpleSelector;
 import interrupt.ExitHandler;
 
@@ -21,35 +22,38 @@ import java.util.Set;
  */
 
 public class Driver {
-  
+
   public static final int PRIORITY_QUEUE_CAPACITY = 5000;
-  
+
   // state choosing: compute one integer score, store in state, use priority
   // queue.
 
   // TODO is contains on PriorityQueue fast enough?
-  public Comparator<State> comparator = new ScorerScoreComparator();
+  public Comparator<State> comparator = new FitnessComparator();
   public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
   public Set<State> deadStates = new HashSet<State>();
-  public Scorer scorer;
+  public Fitness fitness;
   public Selector strategySelector;
 
   public State bestState;
 
-  public Driver(Selector strategySelector, Scorer scorer) {
+  public Driver(Selector strategySelector, Fitness scorer) {
     this.strategySelector = strategySelector;
   }
 
   public void solve(State initial) {
     strategySelector.prepareState(initial);
     liveStates.add(initial);
+    initial.fitness = fitness.evaluate(initial);
 
     bestState = initial;
 
     // TODO when to stop?
 
+    // TODO set scorerScore
+
     while (!liveStates.isEmpty()) {
-      State state = liveStates.poll();
+      State state = liveStates.peek();
       Strategy strategy = strategySelector.selectStrategy(state);
 
       if (strategy == null) {
@@ -61,31 +65,34 @@ public class Driver {
         if (commands != null) {
           assert (!commands.isEmpty());
           State newState = computeNextState(state, commands);
-          if (!deadStates.contains(newState) && !liveStates.contains(newState))
+          if (!deadStates.contains(newState) && !liveStates.contains(newState)) {
             if (newState.score > bestState.score) {
               bestState = newState;
             }
 
-          if (newState.ending == Ending.None) {
-            liveStates.add(newState);
-            strategySelector.prepareState(newState);
+            if (newState.ending == Ending.None) {
+              liveStates.add(newState);
+              newState.fitness = fitness.evaluate(newState);
+              strategySelector.prepareState(newState);
+            }
           }
         }
       }
     }
 
   }
-  
+
   /**
-   * Print known best solution to System.out 
+   * Print known best solution to System.out
    */
   public void printSolution() {
-    //TODO: make threadsafe, might be called from exit handler
-    //      while already outputting... (use StringBuilder perhaps?!)
+    // TODO: make threadsafe, might be called from exit handler
+    // while already outputting... (use StringBuilder perhaps?!)
     List<Command> solution = bestState.fromInitial();
     for (Command command : solution) {
       System.out.append(command.shortName());
     }
+    System.out.println("A");
   }
 
   // kill states that have no strategies left
@@ -100,20 +107,18 @@ public class Driver {
     return result;
   }
 
-
   public static void main(String[] args) {
     Selector selector = new SimpleSelector();
-    Scorer scorer = new ScoreScorer();
+    Fitness scorer = new ScoreFitness();
     Driver driver = new Driver(selector, scorer);
 
-    // from http://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
+    // from
+    // http://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
     String text = new Scanner(System.in).useDelimiter("\\A").next();
     State state = State.parse(text);
 
     ExitHandler.register(driver);
     driver.solve(state);
     driver.printSolution();
-
-    System.out.println("A");
   }
 }
