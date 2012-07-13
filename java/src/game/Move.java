@@ -6,7 +6,7 @@ package game;
  * @author seba
  */
 public enum Move {
-  L, R, U, D, W, A;
+  Left, Right, Up, Down, Wait, Abort;
 
   public String toString() {
     return shortName();
@@ -14,17 +14,17 @@ public enum Move {
   
   public String shortName() {
     switch (this) {
-    case L:
+    case Left:
       return "L";
-    case R:
+    case Right:
       return "R";
-    case U:
+    case Up:
       return "U";
-    case D:
+    case Down:
       return "D";
-    case W:
+    case Wait:
       return "W";
-    case A:
+    case Abort:
       return "A";
     default:
       throw new IllegalStateException("Unknown move " + this);
@@ -33,17 +33,17 @@ public enum Move {
 
   public String longName() {
     switch (this) {
-    case L:
+    case Left:
       return "Left";
-    case R:
+    case Right:
       return "Right";
-    case U:
+    case Up:
       return "Up";
-    case D:
+    case Down:
       return "Down";
-    case W:
+    case Wait:
       return "Wait";
-    case A:
+    case Abort:
       return "Abort";
     default:
       throw new IllegalStateException("Unknown move " + this);
@@ -56,17 +56,17 @@ public enum Move {
     
     switch (s.charAt(0)) {
     case 'L':
-      return L;
+      return Left;
     case 'R':
-      return R;
+      return Right;
     case 'U':
-      return U;
+      return Up;
     case 'D':
-      return D;
+      return Down;
     case 'W':
-      return W;
+      return Wait;
     case 'A':
-      return A;
+      return Abort;
     default:
       throw new IllegalArgumentException("Cannot parse move " + s);
     }
