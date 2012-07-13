@@ -103,8 +103,8 @@ public class SingleStepper {
     // read from b
     // write to st.board
     
-    for (int row = 0; row < st.board.height; row++) 
-      for (int col = 0; col < st.board.width; col++) {
+    for (int row = 0; row < st.board.height; ++row) 
+      for (int col = 0; col < st.board.width; ++col) {
         if (oldBoard.grid[col][row] == Cell.Rock || oldBoard.grid[col][row] == Cell.FallingRock) {
           oldBoard.grid[col][row] = Cell.Rock;
           if (oldBoard.get(col, row - 1) == Cell.Empty)
