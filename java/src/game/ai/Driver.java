@@ -1,13 +1,16 @@
 package game.ai;
 
+import game.Board;
 import game.Command;
 import game.Ending;
 import game.State;
+import game.selector.SimpleSelector;
 
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Scanner;
 import java.util.Set;
 
 /**
@@ -45,7 +48,7 @@ public class Driver {
 
     // TODO when to stop?
 
-    while (true) {
+    while (!liveStates.isEmpty()) {
       State state = liveStates.poll();
       Strategy strategy = strategySelector.selectStrategy(state);
 
@@ -70,6 +73,8 @@ public class Driver {
         }
       }
     }
+
+    return bestState.fromInitial();
   }
 
   // kill states that have no strategies left
@@ -82,5 +87,22 @@ public class Driver {
     // TODO Hook up to sebastian's code
     State result = null;
     return result;
+  }
+
+  public static void main(String[] args) {
+    Selector selector = new SimpleSelector();
+    Scorer scorer = new ScoreScorer();
+    Driver driver = new Driver(selector, scorer);
+
+    // from http://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
+    String text = new Scanner(System.in).useDelimiter("\\A").next();
+    Board board = Board.parse(text);
+
+    List<Command> solution = driver.solve(new State(board));
+    for (Command command : solution) {
+      System.out.append(command.shortName());
+    }
+
+    System.out.println("A");
   }
 }
