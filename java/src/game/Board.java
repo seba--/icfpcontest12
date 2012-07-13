@@ -22,10 +22,18 @@ public class Board {
     grid = new Cell[width][height];
   }
   
+  /**
+   * FIRST coordinate is COLUMN;
+   * SECOND coordinate is ROW.
+   */
   public Cell get(int n, int m) {
     return grid[n][m];
   }
 
+  /**
+   * FIRST coordinate is COLUMN;
+   * SECOND coordinate is ROW.
+   */
   public void set(int n, int m, Cell c) {
     grid[n][m] = c;
   }
