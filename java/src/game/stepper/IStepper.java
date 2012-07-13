@@ -1,10 +1,11 @@
 package game.stepper;
 
-import game.Board;
 import game.Command;
 import game.State;
 
 /**
+ * All stepping is performed by mutating the state.
+ * 
  * @author seba
  */
 public interface IStepper {
@@ -16,7 +17,7 @@ public interface IStepper {
   /**
    * Updates the board. Implementations may deviate from the specifiaction in Section 2.3. 
    */
-  public Board updateBoard(Board board);
+  public void updateBoard(State st);
 
   /**
    * Check ending. Implementations may deviate from the specifiaction in Section 2.4. 
