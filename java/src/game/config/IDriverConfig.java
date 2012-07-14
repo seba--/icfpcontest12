@@ -20,12 +20,6 @@ public interface IDriverConfig {
    * Returns the strategy selector to be used in the driver.
    */
   public Fitness fitnessFunction(StaticConfig sconfig, State initialState);
-
-  /**
-   * Set time in Seconds when SigInt will be send to process
-   */
-  
-  public void timeOutFunction();
   
   /**
    * Return if simulate window should be shown 

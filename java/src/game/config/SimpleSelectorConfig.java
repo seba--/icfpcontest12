@@ -25,11 +25,8 @@ public class SimpleSelectorConfig implements IDriverConfig {
   
   @Override
   public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
-    return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
+    return new ManhattanDirectedFitness(sconfig); //new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
   }
-  
-  @Override
-  public void timeOutFunction() {}
 
   @Override
   public boolean simulateWindow() {

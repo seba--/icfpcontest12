@@ -74,7 +74,7 @@ public abstract class Benchmark {
    * Time per file in seconds.
    */
   public int lifetime() {
-    return 10;
+    return 15;
   }
   
   /**

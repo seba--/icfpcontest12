@@ -220,7 +220,7 @@ public class Driver {
         if(this.simulate) {
           win.addState(st.board);
         }
-        Log.println(st);
+//        Log.println(st);
       }
       if(this.simulate) {
     	win.addState(st.board);
@@ -252,7 +252,6 @@ public class Driver {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
     boolean simulate = dconfig.simulateWindow();
-    dconfig.timeOutFunction();
     return new Driver(sconfig, state, selector, fitness, simulate);
   }
 
@@ -260,7 +259,6 @@ public class Driver {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
     boolean simulate = dconfig.simulateWindow();
-    dconfig.timeOutFunction();
     return new Driver(sconfig, state, selector, fitness, simulate, lifetime);
   }
  
@@ -315,18 +313,15 @@ public class Driver {
       }
 
       @Override
-      public void timeOutFunction() {}
-
-      @Override
       public boolean simulateWindow() {
-		return true;
+        return true;
       }
       
       
       
     };
     
-    Driver.create(stdConfig, sconfig, state, 30).run();
+    Driver.create(stdConfig, sconfig, state, 15).run();
 
   }
 }
