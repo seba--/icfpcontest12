@@ -55,7 +55,7 @@ public class StrategyCountBenchmarkResult implements IBenchmarkResult {
   }
 
   @Override
-  public IBenchmarkResult merge(List<IBenchmarkResult> other) {
+  public GenericBenchmarkResult merge(List<IBenchmarkResult> other) {
     // TODO Auto-generated method stub
     return null;
   }
