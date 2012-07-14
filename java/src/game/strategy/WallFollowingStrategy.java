@@ -8,11 +8,13 @@ import game.ai.Strategy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class WallFollowingStrategy implements Strategy {
 
   @Override
   public List<Command> apply(State state) {
+    
     int robotx = state.robotCol;
     int roboty = state.robotRow;
     if (robotx == 0 || roboty == 0 || robotx == state.board.width-1 || robotx == state.board.height-1) {
@@ -40,7 +42,7 @@ public class WallFollowingStrategy implements Strategy {
     int[] smallestVals = new int[]{255, 255};
     
     for (int i = 0; i < 4; i++) {
-      if ((wallSum[i] != 0) && (wallSum[i] < smallestVals[0])) {
+      if ((wallSum[i] != 0) && (wallSum[i] <= smallestVals[0])) {
         smallestVals[1] = smallestVals[0];
         smallestIdxs[1] = smallestIdxs[0];
         
@@ -49,7 +51,7 @@ public class WallFollowingStrategy implements Strategy {
       }
     }
     
-    // 8-neighborhood:
+    // 8-neighborhood -- internal representation is flipped, so 0 1 2 are DOWN:
     // 0 1 2
     // 3[4]5
     // 6 7 8
@@ -60,15 +62,15 @@ public class WallFollowingStrategy implements Strategy {
     for (int i = 0; i < 2; i++) {
       if (smallestIdxs[i] != -1) { 
         
-        if (smallestIdxs[i] == 0) {// go up
-          if (robot8neigh[1] != Cell.Wall) { // robot can actually move up
-            new8neigh = get8neigh(robotx, roboty+1, state.board);
+        if (smallestIdxs[i] == 0) {// go down
+          if ((robot8neigh[1] != Cell.Wall) && (robot8neigh[7] != Cell.FallingRock)){ // robot can actually move down
+            new8neigh = get8neigh(robotx, roboty-1, state.board);
           } else {
             continue;
           }
-        } else if (smallestIdxs[i] == 1) { // go down
-          if (robot8neigh[7] != Cell.Wall) { // robot can actually move down
-            new8neigh = get8neigh(robotx, roboty-1, state.board);
+        } else if (smallestIdxs[i] == 1) { // go up
+          if (robot8neigh[7] != Cell.Wall) { // robot can actually move up
+            new8neigh = get8neigh(robotx, roboty+1, state.board);
           } else {
             continue;
           }
@@ -101,14 +103,33 @@ public class WallFollowingStrategy implements Strategy {
     
     List<Command> nextStep = new ArrayList<Command>();
     // look at the future wall counts to select the best direction, i.e the direction that leads to a less-walled area
+    // avoid oscillation by also accepting solutions that are 2 walls worse than the other one
     if (futureWallCounts[0] != 255 & (futureWallCounts[0] <= futureWallCounts[1])) {
       nextStep.add(getDirection(smallestIdxs[0]));
-    } else if (futureWallCounts[1] != 255 & (futureWallCounts[1] < futureWallCounts[0])) {
-      nextStep.add(getDirection(smallestIdxs[1]));
+    }
+    if (futureWallCounts[1] != 255) { // always add this one, even if it's worse, as long as it is a solution
+      //if (futureWallCounts[1] < futureWallCounts[0])) {
+        nextStep.add(getDirection(smallestIdxs[1]));
+        if (futureWallCounts[0] != 255 && nextStep.size() < 2) {
+          nextStep.add(getDirection(smallestIdxs[0]));
+        }
+    }
+    
+    
+    if (nextStep.size() > 0) {
+      if (nextStep.size() > 1) {  // both commands are valid
+        // 20% chance to take 'worse' step
+        Random rnd = new Random();
+        if (rnd.nextFloat() < 0.2f) {
+          nextStep.remove(0);
+        } else {
+          nextStep.remove(1);
+        }
+      }
     } else {
-      // don't know what to do here
       return null;
     }
+    
     return nextStep;
 
     
@@ -156,9 +177,9 @@ public class WallFollowingStrategy implements Strategy {
   public Command getDirection(int dir) {
     switch (dir) {
     case 0:
-      return Command.Up;
-    case 1:
       return Command.Down;
+    case 1:
+      return Command.Up;
     case 2:
       return Command.Left;
     case 3:
