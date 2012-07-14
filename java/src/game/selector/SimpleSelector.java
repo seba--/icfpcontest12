@@ -35,7 +35,7 @@ public class SimpleSelector implements Selector {
     strategies.add(new SomeLambdaStrategy());
     strategies.add(new ClosestManhattanLift(sconfig));    
     strategies.add(new ClosestManhattanLambda(sconfig));  
-    strategies.add(new DiggingStrategy());
+//    strategies.add(new DiggingStrategy());
     strategies.add(new LeftStrategy());
     strategies.add(new RightStrategy());
     strategies.add(new UpStrategy());

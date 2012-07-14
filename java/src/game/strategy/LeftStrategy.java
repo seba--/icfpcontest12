@@ -24,6 +24,8 @@ public class LeftStrategy extends Strategy {
   public boolean wantsToApply(State s) {
     int pos1 = (s.robotCol - 1) * s.board.height + s.robotRow;
     int pos2 = pos1 - s.board.height;
+    
     return s.board.isEarth(pos1) || s.board.isEmpty(pos1) || s.board.isLambda(pos1) || ((s.board.isRock(pos1) || s.board.isFallingRock(pos1)) && s.board.isEmpty(pos2));
+
   }
 }
