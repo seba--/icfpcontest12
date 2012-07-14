@@ -78,7 +78,7 @@ public class Driver {
       iterations++;
       
       State state = liveStates.peek();
-
+      
       if (iterations % 5000 == 0) {
         Log.printf("%4dk  |  %5d  |  %4dk  |  %4dk  \n",
             iterations / 1000,
@@ -100,6 +100,9 @@ public class Driver {
           assert (!commands.isEmpty());
           State newState = computeNextState(state, commands, strategy);
           if (!deadStates.contains(newState) && !liveStates.contains(newState)) {
+            
+//            Log.printf("%s => %8d old fitness, %8d new fitness, %12d\n", commands.get(0), state.fitness, fitness.evaluate(newState), state.hashCode());
+
             if (newState.score > bestState.score) {
               bestState = newState;
             }
