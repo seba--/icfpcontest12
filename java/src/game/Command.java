@@ -69,4 +69,5 @@ public enum Command {
     }
   }
   
+  public static Command[] ARRAY = new Command[]{};
 }
