@@ -12,6 +12,7 @@ public interface IBenchmarkResult {
    * Returns string representation of this result.
    */
   public String asString();
+  public String columnHeadings();
   
   /**
    * Returns merged result of this and other.

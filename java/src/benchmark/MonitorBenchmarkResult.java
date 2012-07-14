@@ -45,6 +45,14 @@ public class MonitorBenchmarkResult implements IBenchmarkResult {
   }
 
   @Override
+  public String columnHeadings() {
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("time         ,");
+    sb.append(results.get(0).b.columnHeadings());
+    return sb.toString();
+  }
+  
   public IBenchmarkResult merge(List<IBenchmarkResult> others) {
     if (others.isEmpty())
       return new GenericBenchmarkResult();

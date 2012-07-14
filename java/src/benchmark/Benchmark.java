@@ -114,7 +114,7 @@ public abstract class Benchmark {
   }
   
   public void logResult(String logFile, IBenchmarkResult result) throws IOException {
-    FileCommands.writeToFile(logFile, result.asString() + "\n");
+    FileCommands.writeToFile(logFile, result.columnHeadings() + "\n" + result.asString() + "\n");
   }
   
   public void logResults(String logFile, List<IBenchmarkResult> results) throws IOException {

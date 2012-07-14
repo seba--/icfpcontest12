@@ -32,4 +32,10 @@ public class GenericBenchmarkResult implements IBenchmarkResult {
   public IBenchmarkResult merge(List<IBenchmarkResult> other) {
     throw new UnsupportedOperationException("Cannot merge generic benchmark results.");
   }
+
+  @Override
+  public String columnHeadings() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

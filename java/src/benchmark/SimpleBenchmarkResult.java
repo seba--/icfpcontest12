@@ -14,7 +14,7 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
     public final int bestScore;
     public final int liveStates;
     public final int deadStates;
-
+    
     public SimpleBenchmarkResult(Driver driver) {
       this(driver.iterations, 
            driver.bestState != null ? driver.bestState.score : 0, 
@@ -28,10 +28,17 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
       this.liveStates = liveStates;
       this.deadStates = deadStates;
     }
+    
+
 
     @Override
     public String asString() {
-      return String.format("%8d,%8d,%8d,%8d", iterations, bestScore, liveStates, deadStates);
+      return String.format("%8d,%9d,%8d,%8d", iterations, bestScore, liveStates, deadStates);
+    }
+
+    @Override
+    public String columnHeadings() {
+      return "iter.    ,bestScore,live    ,dead";
     }
   
     @Override
