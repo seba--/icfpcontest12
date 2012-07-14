@@ -4,8 +4,8 @@ import game.Board;
 import game.Cell;
 import game.Command;
 import game.Ending;
-import game.Scoring;
 import game.State;
+import game.fitness.Scoring;
 
 /**
  * @author seba
