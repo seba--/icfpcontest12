@@ -1,7 +1,5 @@
 package game;
 
-import game.strategy.WallFollowingStrategy;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -226,6 +224,12 @@ public class Board {
   
   public boolean isEmpty(int position) {
     return get(position) == Cell.Empty;
+  }
+  
+  public boolean isPosition(int position) {
+    int col = position / height;
+    int row = position % height;
+    return !(col < 0 || col >= width || row < 0 || row >= height);
   }
 
   public String toString() {

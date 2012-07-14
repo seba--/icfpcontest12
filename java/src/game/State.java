@@ -265,7 +265,7 @@ public class State {
   }
 
   public static Pair<StaticConfig, State> parse(String s) {
-    s = s.replace("\r", "");
+    s = s.replace("\r", "").replace("/", "\\");
     
     String[] parts = s.split("\n\n");
     Board board = Board.parse(parts[0]);

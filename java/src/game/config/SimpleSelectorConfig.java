@@ -8,6 +8,7 @@ import game.StaticConfig;
 import game.ai.Fitness;
 import game.ai.Selector;
 import game.fitness.AverageFitness;
+import game.fitness.LambdasLeftFitness;
 import game.fitness.ManhattanDirectedFitness;
 import game.fitness.ScoreFitness;
 import game.fitness.StepCountFitness;
