@@ -41,15 +41,23 @@ public abstract class Benchmark {
    */
   public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, InterruptedException, ExecutionException {
     String mainClassName = System.getProperty("sun.java.command").split(" ")[0];
+    if (mainClassName.equals("benchmark.Benchmark"))
+      throw new IllegalArgumentException("You need to call 'main' on concrete subclasses of benchmark.Benchmark.");
+    
     Class<?> mainClass = Class.forName(mainClassName);
     
     Benchmark benchmark = (Benchmark) mainClass.newInstance();
     
     List<IBenchmarkResult> results = new ArrayList<IBenchmarkResult>();
-    for (String arg : args)
+    for (String arg : args) {
       results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
+      if (new File(arg).isDirectory()) {
+        String logFile =  "../logs/" + new File(arg).getName() + "-" + benchmark.name() + "-" + System.currentTimeMillis() + ".csv";
+        benchmark.logResults(logFile, results);
+      }
+    }
     
-    
+    benchmark.executor.shutdown();
   }
   
   /**
@@ -73,11 +81,11 @@ public abstract class Benchmark {
   private final ExecutorService executor = Executors.newSingleThreadExecutor();
   
   public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state) throws InterruptedException, ExecutionException {
-    Driver driver = Driver.create(config(), sconfig, state);
+    Driver driver = Driver.create(config(), sconfig, state, 3);
     
     Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver));
     driver.run();
-    
+
     return monitoringResult.get();
   }
   
@@ -91,8 +99,8 @@ public abstract class Benchmark {
     if (file.isFile()) {
       Pair<StaticConfig, State> p = State.parse(FileCommands.readFileAsString(file.getAbsolutePath()));
       IBenchmarkResult result = monitorDriver(p.a, p.b);
-      String logFile =  "../logs/" + path + "/" + FileCommands.dropExtension(file.getName()) + "-" + name() + "-" + System.currentTimeMillis();
-      FileCommands.writeToFile(logFile, result.asString() + "\n");
+      String logFile =  "../logs/" + path + "/" + FileCommands.dropExtension(file.getName()) + "-" + name() + "-" + System.currentTimeMillis() + ".csv";
+      logResult(logFile, result);
       return Collections.singletonList(result);
     }
     else if (file.isDirectory()) {
@@ -103,5 +111,17 @@ public abstract class Benchmark {
     }
     else 
       throw new IllegalArgumentException("Unknown file type " + file.getAbsolutePath());
+  }
+  
+  public void logResult(String logFile, IBenchmarkResult result) throws IOException {
+    FileCommands.writeToFile(logFile, result.columnHeadings() + "\n" + result.asString() + "\n");
+  }
+  
+  public void logResults(String logFile, List<IBenchmarkResult> results) throws IOException {
+    if (results.isEmpty())
+      return;
+    
+    IBenchmarkResult aggregate = results.get(0).merge(results);
+    FileCommands.writeToFile(logFile, aggregate.columnHeadings() + "\n" + aggregate.asString() + "\n");
   }
 }

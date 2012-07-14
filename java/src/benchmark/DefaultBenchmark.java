@@ -36,6 +36,10 @@ public class DefaultBenchmark extends Benchmark {
       public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
         return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
       }
+      
+      @Override
+      public void timeOutFunction() {}
+      
     };
   }
 

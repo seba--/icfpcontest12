@@ -19,10 +19,10 @@ import interrupt.ExitHandler;
 import java.io.InputStreamReader;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import util.FileCommands;
 import util.Pair;
@@ -54,6 +54,8 @@ public class Driver {
   
   public boolean finished = false;
   public int iterations;
+  public boolean timed = false;
+  public long endTime = 0;
 
   public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
     this.sconfig = sconfig;
@@ -63,6 +65,16 @@ public class Driver {
     this.stepper = new MultiStepper(sconfig);
   }
 
+  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, int lifetime) {
+    this.sconfig = sconfig;
+    this.initialState = initialState;
+    this.strategySelector = strategySelector;
+    this.fitness = fitness;
+    this.stepper = new MultiStepper(sconfig);
+    this.endTime = System.currentTimeMillis() + (lifetime * 1000);
+    this.timed = true;
+  }
+  
   public void solve(State initial) {
     strategySelector.prepareState(initial);
     liveStates.add(initial);
@@ -82,6 +94,17 @@ public class Driver {
     Log.printf(" ------+---------+---------+---------\n");
 
     while (!liveStates.isEmpty()) {
+      
+      if(timed && System.currentTimeMillis() >= endTime) {
+    	Log.printf("%4dk  |  %5d  |  %4dk  |  %4dk  \n",
+    	  iterations / 1000,
+    	  bestState.score,
+    	  liveStates.size() / 1000,
+    	  (seenStates.size() - liveStates.size()) / 1000);
+    	
+    	break;
+      }
+    	
       iterations++;
       
       State state = liveStates.peek();
@@ -163,9 +186,9 @@ public class Driver {
       Log.println();
       for (Command command : commands) {
         st = stepper.step(st, command);
-        Log.println(st);
-        Log.println();
       }
+      Log.println(st);
+      Log.println();
     }
   }
 
@@ -189,9 +212,17 @@ public class Driver {
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
+    dconfig.timeOutFunction();
     return new Driver(sconfig, state, selector, fitness);
   }
-  
+
+  public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state, int lifetime) {
+    Selector selector = dconfig.strategySelector(sconfig, state);
+    Fitness fitness = dconfig.fitnessFunction(sconfig, state);
+    dconfig.timeOutFunction();
+    return new Driver(sconfig, state, selector, fitness, lifetime);
+  }
+ 
   public void run() {
     ExitHandler.register(this);
     solve(initialState);
@@ -211,7 +242,7 @@ public class Driver {
     //anderes board -> behalten
     if (!s.board.equals(oldState.board)) return true;
     
-    //TODO: theoretisch können noch mehr verworfen werden, wenn wir mehr aufheben... vllt nicht den aufwand wert.
+    //TODO: theoretisch koennen noch mehr verworfen werden, wenn wir mehr aufheben... vllt nicht den aufwand wert.
    
     //gleiches board, weniger steps -> behalten
     if (s.steps < oldState.steps) return true;
@@ -245,6 +276,20 @@ public class Driver {
       public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
         return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
       }
+
+      @Override
+      public void timeOutFunction() {
+    	new Timer().schedule(
+    	  new TimerTask() {
+			@Override
+			public void run() {
+			  System.exit(0);
+			}  		  
+    	  }, 
+    	  10000	//Milliseconds to timeout
+    	);
+      }
+      
     };
     
     Driver.create(stdConfig, sconfig, state).run();
