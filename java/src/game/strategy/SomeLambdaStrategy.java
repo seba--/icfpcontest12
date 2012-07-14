@@ -50,6 +50,6 @@ public class SomeLambdaStrategy extends Strategy {
   }
   
   public String toString() {
-    return "NextLambdaStrategy";
+    return "SomeLambdaStrategy";
   }
 }
