@@ -23,8 +23,6 @@ public class State {
   public int collectedLambdas;
   public Ending ending;
 
-  // TODO hashCode equals ...?
-
   /**
    * How much score we got so far.
    */
