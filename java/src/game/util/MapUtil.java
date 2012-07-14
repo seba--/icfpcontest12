@@ -109,4 +109,44 @@ public class MapUtil {
     return temp;
   }
   
+  
+  
+  /**
+   * get 8-neighborhood
+   * @param x should be > 0
+   * @param y should be > 0
+   * @param b board
+   * @return
+   */
+  public static Cell[] get8neigh(int x, int y, Board b) {
+    Cell[] robot8neigh = new Cell[3*3];
+    for (int j = 0; j < 3; j++) {
+      for (int i = 0; i < 3; i++) {
+        robot8neigh[i+3*j] = b.get(x-1+i, y-1+j);
+      }
+    }
+    
+    return robot8neigh;
+  }
+  
+  /**
+   * get 4-neighborhood (0,0) is top left:
+   *<pre>   0
+   * 1 R 3
+   *   2</pre>
+   * @param x > 0
+   * @param y > 0
+   * @param b board
+   * @return
+   */
+  public static Cell[] get4neigh(int x, int y, Board b) {
+    Cell[] robot4neigh = new Cell[4];
+    robot4neigh[0] = b.get(x-1,y);
+    robot4neigh[1] = b.get(x,y-1);
+    robot4neigh[2] = b.get(x,y+1);
+    robot4neigh[3] = b.get(x+1,y);
+    
+    return robot4neigh;
+  }
+
 }
