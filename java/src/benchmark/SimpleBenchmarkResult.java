@@ -28,9 +28,8 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
     }
 
     @Override
-    public String toFile(String file) {
-      // TODO Auto-generated method stub
-      return null;
+    public String asString() {
+      return String.format("%8d,%8d,%8d,%8d", iterations, bestScore, liveStates, deadStates);
     }
   
   }

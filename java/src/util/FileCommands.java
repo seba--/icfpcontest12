@@ -249,8 +249,9 @@ public class FileCommands {
   
   public static String dropExtension(String file) {
     int i = file.lastIndexOf('.');
+    int sep = file.lastIndexOf('/');
     
-    if (i > 0)
+    if (i > 0 && i > sep)
       return file.substring(0, i);
     
     return file;

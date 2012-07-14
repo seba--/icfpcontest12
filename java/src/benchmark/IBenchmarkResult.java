@@ -6,5 +6,5 @@ package benchmark;
  * @author seba
  */
 public interface IBenchmarkResult {
-  public String toFile(String file);
+  public String asString();
 }

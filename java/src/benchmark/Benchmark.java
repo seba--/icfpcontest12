@@ -47,7 +47,7 @@ public abstract class Benchmark {
     
     List<IBenchmarkResult> results = new ArrayList<IBenchmarkResult>();
     for (String arg : args)
-      results.addAll(benchmark.benchmarkFileTree(new File(arg)));
+      results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
     
     
   }
@@ -87,18 +87,18 @@ public abstract class Benchmark {
    * @throws ExecutionException 
    * @throws InterruptedException 
    */
-  public List<IBenchmarkResult> benchmarkFileTree(File file) throws IOException, InterruptedException, ExecutionException {
+  public List<IBenchmarkResult> benchmarkFileTree(File file, String path) throws IOException, InterruptedException, ExecutionException {
     if (file.isFile()) {
       Pair<StaticConfig, State> p = State.parse(FileCommands.readFileAsString(file.getAbsolutePath()));
       IBenchmarkResult result = monitorDriver(p.a, p.b);
-      String logFile = FileCommands.dropExtension(file.getAbsolutePath()) + "-" + name() + "-" + System.currentTimeMillis();
-      result.toFile(logFile);
+      String logFile =  "../logs/" + path + "/" + FileCommands.dropExtension(file.getName()) + "-" + name() + "-" + System.currentTimeMillis();
+      FileCommands.writeToFile(logFile, result.asString() + "\n");
       return Collections.singletonList(result);
     }
     else if (file.isDirectory()) {
       List<IBenchmarkResult> results = new ArrayList<IBenchmarkResult>();
       for (File subFile : file.listFiles())
-        results.addAll(benchmarkFileTree(subFile));
+        results.addAll(benchmarkFileTree(subFile, path.isEmpty() ? file.getName() : path + "/" + file.getName()));
       return results;
     }
     else 
