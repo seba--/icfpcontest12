@@ -6,6 +6,8 @@ import game.ai.Fitness;
 
 import java.util.Set;
 
+import util.MathUtil;
+
 /**
  * Directed towards next lambda (if any), otherwise next lift.
  * 
@@ -38,7 +40,7 @@ public class ManhattanDirectedFitness implements Fitness {
     for (int pos : positions) {
       int c = pos / 2;
       int r = pos % 2;
-      int distance = Math.abs(col - c) + Math.abs(row - r);
+      int distance = MathUtil.distance(col, row, c, r);
       minDistance = Math.min(minDistance, distance);
     }
 
@@ -52,7 +54,7 @@ public class ManhattanDirectedFitness implements Fitness {
     for (int pos : positions) {
       int c = pos / 2;
       int r = pos % 2;
-      int distance = Math.abs(col - c) + Math.abs(row - r);
+      int distance = MathUtil.distance(col, row, c, r);
       minDistance = Math.min(minDistance, distance);
     }
 
