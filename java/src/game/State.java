@@ -68,6 +68,11 @@ public class State {
   public int stepsUnderwater;
   public int stepsUntilNextRise;
 
+  /*
+   * used by NextLambdaStrategy
+   */
+  public int nextLambdaStrategyIndex;
+
   public State(StaticConfig sconfig, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, Set<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsUntilNextRise) {
     this.staticConfig = sconfig;
     this.board = board.clone();
