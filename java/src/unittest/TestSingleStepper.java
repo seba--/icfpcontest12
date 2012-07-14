@@ -5,6 +5,7 @@ import game.Command;
 import game.Ending;
 import game.State;
 import game.StaticConfig;
+import game.log.Log;
 import game.stepper.SingleStepper;
 import junit.framework.Assert;
 
@@ -73,12 +74,12 @@ public class TestSingleStepper {
   protected State runStepper(StaticConfig sconfig, State st, Command[] cmds) {
     SingleStepper stepper = new SingleStepper(sconfig);
     
-    System.out.println(st.board);
-    System.out.println();
+    Log.println(st.board);
+    Log.println();
     for (Command cmd : cmds) {
       st = stepper.step(st, cmd);
-      System.out.println(st);
-      System.out.println();
+      Log.println(st);
+      Log.println();
       if (st.ending != Ending.None)
         break;
     }
@@ -88,8 +89,8 @@ public class TestSingleStepper {
   
   @Test
   public void testMap1() {
-    System.out.println("--------------------------------------------------------------------------");
-    System.out.println("testMap1");
+    Log.println("--------------------------------------------------------------------------");
+    Log.println("testMap1");
     
     String map1 = TestBoard.map1();
     Pair<StaticConfig, State> p = State.parse(map1);
@@ -106,8 +107,8 @@ public class TestSingleStepper {
 
   @Test
   public void testMap1variant() {
-    System.out.println("--------------------------------------------------------------------------");
-    System.out.println("testMap1variant");
+    Log.println("--------------------------------------------------------------------------");
+    Log.println("testMap1variant");
     
     String map1 = TestBoard.map1();
     Pair<StaticConfig, State> p = State.parse(map1);
@@ -122,8 +123,8 @@ public class TestSingleStepper {
 
   @Test
   public void testFloodMap1() {
-    System.out.println("--------------------------------------------------------------------------");
-    System.out.println("testFloodMap1");
+    Log.println("--------------------------------------------------------------------------");
+    Log.println("testFloodMap1");
     
     String map1 = TestBoard.floodMap1();
     Pair<StaticConfig, State> p = State.parse(map1);
