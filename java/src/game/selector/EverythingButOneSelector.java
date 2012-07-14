@@ -7,9 +7,13 @@ import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ConstantStrategy;
 import game.strategy.DiggingStrategy;
+import game.strategy.DownStrategy;
+import game.strategy.LeftStrategy;
+import game.strategy.RightStrategy;
 import game.strategy.SomeLambdaStrategy;
 import game.strategy.ClosestManhattanLambda;
 import game.strategy.ClosestManhattanLift;
+import game.strategy.UpStrategy;
 import game.strategy.WallFollowingStrategy;
 
 import java.util.ArrayList;
@@ -38,10 +42,10 @@ public class EverythingButOneSelector implements Selector {
     strategyList.add(new ClosestManhattanLambda(sconfig));  
     strategyList.add(new DiggingStrategy());
     strategyList.add(new WallFollowingStrategy());
-    strategyList.add(new ConstantStrategy(Command.Left));
-    strategyList.add(new ConstantStrategy(Command.Right));
-    strategyList.add(new ConstantStrategy(Command.Up));
-    strategyList.add(new ConstantStrategy(Command.Down));
+    strategyList.add(new LeftStrategy());
+    strategyList.add(new RightStrategy());
+    strategyList.add(new UpStrategy());
+    strategyList.add(new DownStrategy());
     strategyList.add(new ConstantStrategy(Command.Wait));
 
     return strategyList;

@@ -7,9 +7,13 @@ import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ConstantStrategy;
 import game.strategy.DiggingStrategy;
+import game.strategy.DownStrategy;
+import game.strategy.LeftStrategy;
+import game.strategy.RightStrategy;
 import game.strategy.SomeLambdaStrategy;
 import game.strategy.ClosestManhattanLambda;
 import game.strategy.ClosestManhattanLift;
+import game.strategy.UpStrategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,10 +35,10 @@ public class BigStepSelector implements Selector {
     strategies.add(new ClosestManhattanLift(sconfig));    
     strategies.add(new ClosestManhattanLambda(sconfig));  
     strategies.add(new DiggingStrategy());
-    strategies.add(new ConstantStrategy(Command.Left));
-    strategies.add(new ConstantStrategy(Command.Right));
-    strategies.add(new ConstantStrategy(Command.Up));
-    strategies.add(new ConstantStrategy(Command.Down));
+    strategies.add(new LeftStrategy());
+    strategies.add(new RightStrategy());
+    strategies.add(new UpStrategy());
+    strategies.add(new DownStrategy());
     strategies.add(new ConstantStrategy(Command.Wait));
 
     strategies.add(new ConstantStrategy(Command.Left, Command.Left, Command.Left, Command.Left, Command.Left));
