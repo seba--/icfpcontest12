@@ -1,5 +1,6 @@
 package unittest;
 
+import game.Board;
 import game.Cell;
 import game.Command;
 import game.Ending;
@@ -71,7 +72,7 @@ public class TestSingleStepper {
     return cmds;
   }
   
-  protected State runStepper(StaticConfig sconfig, State st, Command[] cmds) {
+  protected State runStepper(StaticConfig sconfig, State st, Command... cmds) {
     SingleStepper stepper = new SingleStepper(sconfig);
     
     Log.println(st.board);
@@ -132,5 +133,15 @@ public class TestSingleStepper {
     st = runStepper(p.a, st, drowning1FloodMap1());
     
     Assert.assertEquals(Ending.LoseWater, st.ending);
+  }
+
+  @Test
+  public void pushLiftAround() {
+    Pair<StaticConfig, State> p = State.parse("######\n# LR\\#\n######");
+    State st = p.b;
+    Board before = st.board;
+    st = runStepper(p.a, st, L);
+    Board after = st.board;
+    Assert.assertEquals(before, after);
   }
 }
