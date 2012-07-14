@@ -1,13 +1,12 @@
 package game.ui;
 
-import game.Board;
+import game.State;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -24,7 +23,7 @@ public class SimulateWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private LinkedList<Board> states;
+	private LinkedList<State> states;
 	private JTextArea textArea;
 	private int current = 0;
 
@@ -45,7 +44,7 @@ public class SimulateWindow extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			textArea.setText(states.get(--current).toString());
+			updateText(states.get(--current));
 			if(current == 0) {
 				buttonBack.setEnabled(false);		
 			}
@@ -58,7 +57,7 @@ public class SimulateWindow extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			textArea.setText(states.get(++current).toString());
+			updateText(states.get(++current));
 			if(current == (states.size()-1)) {
 				buttonNext.setEnabled(false);		
 			}
@@ -79,14 +78,17 @@ public class SimulateWindow extends JFrame {
 	  jplContentPane.add(textArea, BorderLayout.CENTER);
   	  setContentPane(jplContentPane);  
 
-  	  states = new LinkedList<Board>();
+  	  states = new LinkedList<State>();
 	}
 	
-	public void addState(Board state) {
+	public void addState(State state) {
 		states.add(state);
 		if(states.size() == 1) {
-			textArea.setText(state.toString());
+			updateText(state);
 		}
 	}
 	
+	private void updateText(State state) {
+	  textArea.setText("fitness: " + state.fitness + "\n" + state.toString());
+	}
 }

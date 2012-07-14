@@ -63,6 +63,11 @@ public class State {
    */
   public Solution solution;
 
+  /**
+   * The previous state.
+   */
+  public State previousState;
+  
   /*
    * for flooding
    */
