@@ -15,7 +15,7 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
 
     public SimpleBenchmarkResult(Driver driver) {
       this(driver.iterations, 
-           driver.bestState.score, 
+           driver.bestState != null ? driver.bestState.score : 0, 
            driver.liveStates.size(), 
            driver.seenStates.size() - driver.liveStates.size());
     }

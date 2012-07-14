@@ -1,11 +1,10 @@
-/**
- * 
- */
 package benchmark;
 
 import game.ai.Driver;
 
 /**
+ * Simple monitor that reports SimpleBenchmarkResult's.
+ * 
  * @author seba
  *
  */
@@ -27,7 +26,9 @@ public class SimpleBenchmarkMonitor implements IBenchmarkMonitor {
       if (driver.finished)
         return result;
 
-      Thread.currentThread().wait(500);
+      synchronized (this) {
+        this.wait(200);
+      }
     }
   }
 }
