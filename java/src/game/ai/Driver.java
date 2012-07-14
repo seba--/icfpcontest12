@@ -4,8 +4,10 @@ import game.Command;
 import game.Ending;
 import game.State;
 import game.StaticConfig;
+import game.config.IDriverConfig;
 import game.fitness.AverageFitness;
 import game.fitness.ManhattanDirectedFitness;
+import game.fitness.ScoreFitness;
 import game.fitness.Scoring;
 import game.fitness.StepCountFitness;
 import game.log.Log;
@@ -78,7 +80,7 @@ public class Driver {
       iterations++;
       
       State state = liveStates.peek();
-
+      
       if (iterations % 5000 == 0) {
         Log.printf("%4dk  |  %5d  |  %4dk  |  %4dk  \n",
             iterations / 1000,
@@ -100,6 +102,9 @@ public class Driver {
           assert (!commands.isEmpty());
           State newState = computeNextState(state, commands, strategy);
           if (!deadStates.contains(newState) && !liveStates.contains(newState)) {
+            
+//            Log.printf("%s => %8d old fitness, %8d new fitness, %12d\n", commands.get(0), state.fitness, fitness.evaluate(newState), state.hashCode());
+
             if (newState.score > bestState.score) {
               bestState = newState;
             }
@@ -176,6 +181,20 @@ public class Driver {
     simulateSolution();
   }
 
+  public static Driver run(IDriverConfig dconfig, StaticConfig sconfig, State state) {
+    Selector selector = dconfig.strategySelector(sconfig, state);
+    Fitness fitness = dconfig.fitnessFunction(sconfig, state);
+    
+    Driver driver = new Driver(sconfig, state, selector, fitness);
+    
+    ExitHandler.register(driver);
+    driver.solve(state);
+    ExitHandler.unregister(driver);
+    
+    driver.finished();
+    return driver;
+  }
+  
   // TODO add exception handling?
   public static void main(String[] args) throws Exception {
     String text;
@@ -189,13 +208,18 @@ public class Driver {
     StaticConfig sconfig = p.a;
     State state = p.b;
 
-    Selector selector = new SimpleSelector(sconfig);
-    Fitness scorer = new AverageFitness(new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
-    Driver driver = new Driver(sconfig, state, selector, scorer);
+    IDriverConfig stdConfig = new IDriverConfig() {
+      @Override
+      public Selector strategySelector(StaticConfig sconfig, State initialState) {
+        return new SimpleSelector(sconfig);
+      }
+      
+      @Override
+      public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
+        return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
+      }
+    };
     
-    ExitHandler.register(driver);
-    driver.solve(state);
-    ExitHandler.unregister(driver);
-    driver.finished();
+    Driver.run(stdConfig, sconfig, state);
   }
 }

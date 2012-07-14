@@ -2,7 +2,6 @@ package mapgen;
 
 import game.Board;
 import game.Cell;
-import game.log.Log;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,7 +18,7 @@ public class Mapgen {
 
   
   public static void main(String[] args) throws IOException {
-    Log.println(cellTypes.length);
+    System.out.println(cellTypes.length);
                                 // Earth, Empty, Lambda, Lift, Rock, Wall.
     int[] defaultProbabilites = {500,     130,   70,     10,   139,  150};    // just made these up
     
@@ -29,7 +28,7 @@ public class Mapgen {
     int mapCtr = 0;
     for (int mapSize : mapSizes) {
       for (int i = 0; i < 100; i++) {
-        Log.println("generating map " + (mapCtr*100 + i) + " of " + (mapSizes.length*100) + " -- " + mapSize);
+        System.out.println("generating map " + (mapCtr*100 + i) + " of " + (mapSizes.length*100) + " -- " + mapSize);
         Board theMap = getMap(mapSize, mapSize, 1, defaultProbabilites);
         writeMap(theMap, (mapSize + "x" + mapSize), zeropad(3,i));
       }
@@ -46,7 +45,7 @@ public class Mapgen {
   }
     
   public static void writeMap(Board map, String sizePath, String name) throws IOException {
-    Log.println("\twrite map");
+    System.out.println("\twrite map");
     File f = new File("../maps/created/" + sizePath + "/map" + sizePath + "-" + name + ".map");
     f.createNewFile();
     FileWriter fw = new FileWriter(f);
@@ -56,10 +55,10 @@ public class Mapgen {
   
   
   public static Board getMap(int sizex, int sizey, int lifts, int[] probabilities) {
-    Log.println("\tcreate walls");
+    System.out.println("\tcreate walls");
     Board tempBoard = createWalls(sizex, sizey, lifts);
     
-    Log.println("\tfill map");
+    System.out.println("\tfill map");
     Cell[] grid = tempBoard.grid;
     
     for (int i = 1; i < sizex-1; i++) {
@@ -68,7 +67,7 @@ public class Mapgen {
       }
     }
     
-    Log.println("\tplace robot");
+    System.out.println("\tplace robot");
     // place robot
     int robotXPos = rnd.nextInt(sizex-2)+1;
     int robotYPos = rnd.nextInt(sizey-2)+1;

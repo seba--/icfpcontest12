@@ -65,7 +65,7 @@ public class SimpleSelector implements Selector {
    */
   @Override
   public void prepareState(State state) {
-    state.pendingStrategies.addAll(strategies);
+    state.pendingStrategies = new ArrayList<Strategy>(strategies);
   }
 
   @Override
