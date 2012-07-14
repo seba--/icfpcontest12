@@ -1,8 +1,13 @@
-Team MZ11010101
+Team:
+MZ11010101
 
-Members
+Members:
 Tillmann Rendel
 Thomas Horstmeyer
 Felix Rieger
 Yi Dai
 Sebastian Erdweg
+
+
+Installation:
+Our implementation requires a Java 7 JRE.
