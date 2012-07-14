@@ -55,6 +55,11 @@ public class Driver {
     // TODO when to stop?
 
     int iterations = 0;
+    
+    // choose k, M, G more cleverly
+    // choose 5000k more cleverly
+    // statistics: how often was each strategy used
+    // explain final solution (what strategies)
 
     System.out.printf(" iter  |  score  |  live   |  dead   \n");
     System.out.printf(" ------+---------+---------+---------\n");

@@ -5,6 +5,8 @@ import game.State;
 import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ConstantStrategy;
+import game.strategy.NextManhattanLambda;
+import game.strategy.NextManhattanLift;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +22,8 @@ public class SimpleSelector implements Selector {
   public final Set<Strategy> strategies = new HashSet<Strategy>();
   
   {
+    // strategies.add(new NextManhattanLift());    
+    // strategies.add(new NextManhattanLambda());    
     strategies.add(new ConstantStrategy(Command.Left));
     strategies.add(new ConstantStrategy(Command.Right));
     strategies.add(new ConstantStrategy(Command.Up));

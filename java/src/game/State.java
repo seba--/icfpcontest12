@@ -19,8 +19,7 @@ public class State {
   public int robotCol;
   public int robotRow;
   public int collectedLambdas;
-  
-  
+
   /**
    * Positions of lambdas in board.
    */
@@ -30,9 +29,10 @@ public class State {
    * Ending configuration.
    */
   public Ending ending;
-  
+
   /**
-   * Set of active positions, that is, positions that might require board update.
+   * Set of active positions, that is, positions that might require board
+   * update.
    */
   public Set<Integer> activePositions;
 
@@ -119,7 +119,7 @@ public class State {
           rrow = row;
           break;
         case Lambda:
-          lambdaPositions.add(col * board.height + row);          
+          lambdaPositions.add(col * board.height + row);
           break;
         default:
           ;
@@ -135,6 +135,14 @@ public class State {
      * object. We don't enforce that, though.
      */
     return this;
+  }
+
+  /**
+   * Return an upper bound on the total score we can achieve starting from this
+   * state.
+   */
+  public int achievableScore() {
+    return 75 * (collectedLambdas + lambdaPositions.size()) - steps;
   }
 
   public static State parse(String s) {
@@ -169,9 +177,9 @@ public class State {
       liftPositionsArray[i] = pos;
       i++;
     }
-    
+
     StaticConfig sconfig = new StaticConfig(liftPositionsArray, floodingRate, waterResistance);
-    
+
     return new State(sconfig, board, waterLevel);
   }
 
@@ -237,5 +245,5 @@ public class State {
 
   public State clone() {
     return new State(staticConfig, board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsUntilNextRise);
-  }  
+  }
 }
