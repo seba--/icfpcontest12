@@ -29,13 +29,18 @@ public class GenericBenchmarkResult implements IBenchmarkResult {
   }
   
   @Override
-  public IBenchmarkResult merge(List<IBenchmarkResult> other) {
+  public GenericBenchmarkResult merge(List<IBenchmarkResult> other) {
     throw new UnsupportedOperationException("Cannot merge generic benchmark results.");
   }
 
   @Override
   public String columnHeadings() {
-    // TODO Auto-generated method stub
-    return null;
+    StringBuilder sb = new StringBuilder();
+    for (Iterator<String> it = headers.iterator(); it.hasNext(); ) {
+      sb.append(it.next());
+      if (it.hasNext())
+        sb.append(",");
+    }
+    return sb.toString();
   }
 }

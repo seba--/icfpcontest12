@@ -53,7 +53,7 @@ public class MonitorBenchmarkResult implements IBenchmarkResult {
     return sb.toString();
   }
   
-  public IBenchmarkResult merge(List<IBenchmarkResult> others) {
+  public GenericBenchmarkResult merge(List<IBenchmarkResult> others) {
     if (others.isEmpty())
       return new GenericBenchmarkResult();
     
@@ -67,14 +67,19 @@ public class MonitorBenchmarkResult implements IBenchmarkResult {
         finals.add(mbr.finalResult());
       }
 
-    IBenchmarkResult initialAggregate = initials.get(0).merge(initials);
-    IBenchmarkResult finalAggregate = finals.get(0).merge(finals);
+    GenericBenchmarkResult initialAggregate = initials.get(0).merge(initials);
+    GenericBenchmarkResult finalAggregate = finals.get(0).merge(finals);
     
     GenericBenchmarkResult result = new GenericBenchmarkResult();
-    result.headers.add("initial");
-    result.data.add(initialAggregate);
-    result.headers.add("final");
-    result.data.add(finalAggregate);
+    for (int i = 0; i < initialAggregate.headers.size(); i++) {
+      result.headers.add("initial" + "-" + initialAggregate.headers.get(i));
+      result.data.add(initialAggregate.data.get(i));
+    }
+    for (int i = 0; i < finalAggregate.headers.size(); i++) {
+      result.headers.add("final" + "-" + finalAggregate.headers.get(i));
+      result.data.add(finalAggregate.data.get(i));
+      
+    }
     return result;
   }
 }

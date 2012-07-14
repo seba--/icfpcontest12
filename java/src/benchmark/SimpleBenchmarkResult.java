@@ -42,7 +42,7 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
     }
   
     @Override
-    public IBenchmarkResult merge(List<IBenchmarkResult> results) {
+    public GenericBenchmarkResult merge(List<IBenchmarkResult> results) {
       int iterationsSum = 0;
       int bestScoreSum = 0;
       int liveStatesSum = 0;

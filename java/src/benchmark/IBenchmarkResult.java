@@ -18,5 +18,5 @@ public interface IBenchmarkResult {
    * Returns merged result of this and other.
    * May fail if this and other are instances of different subclasses of IBenchmarkResult.
    */
-  public IBenchmarkResult merge(List<IBenchmarkResult> other);
+  public GenericBenchmarkResult merge(List<IBenchmarkResult> other);
 }

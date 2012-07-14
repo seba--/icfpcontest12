@@ -52,7 +52,7 @@ public abstract class Benchmark {
     for (String arg : args) {
       results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
       if (new File(arg).isDirectory()) {
-        String logFile =  "../logs/" + new File(arg).getName() + "-" + benchmark.name() + "-" + System.currentTimeMillis();
+        String logFile =  "../logs/" + new File(arg).getName() + "-" + benchmark.name() + "-" + System.currentTimeMillis() + ".csv";
         benchmark.logResults(logFile, results);
       }
     }
@@ -81,7 +81,7 @@ public abstract class Benchmark {
   private final ExecutorService executor = Executors.newSingleThreadExecutor();
   
   public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state) throws InterruptedException, ExecutionException {
-    Driver driver = Driver.create(config(), sconfig, state, 10);
+    Driver driver = Driver.create(config(), sconfig, state, 3);
     
     Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver));
     driver.run();
@@ -99,7 +99,7 @@ public abstract class Benchmark {
     if (file.isFile()) {
       Pair<StaticConfig, State> p = State.parse(FileCommands.readFileAsString(file.getAbsolutePath()));
       IBenchmarkResult result = monitorDriver(p.a, p.b);
-      String logFile =  "../logs/" + path + "/" + FileCommands.dropExtension(file.getName()) + "-" + name() + "-" + System.currentTimeMillis();
+      String logFile =  "../logs/" + path + "/" + FileCommands.dropExtension(file.getName()) + "-" + name() + "-" + System.currentTimeMillis() + ".csv";
       logResult(logFile, result);
       return Collections.singletonList(result);
     }
@@ -122,6 +122,6 @@ public abstract class Benchmark {
       return;
     
     IBenchmarkResult aggregate = results.get(0).merge(results);
-    FileCommands.writeToFile(logFile, aggregate.asString() + "\n");
+    FileCommands.writeToFile(logFile, aggregate.columnHeadings() + "\n" + aggregate.asString() + "\n");
   }
 }
