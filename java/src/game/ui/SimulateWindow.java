@@ -3,6 +3,7 @@ package game.ui;
 import game.Command;
 import game.State;
 import game.ai.Fitness;
+import game.log.Log;
 import game.stepper.SingleStepper;
 
 import java.awt.BorderLayout;
@@ -29,6 +30,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;
 	
 	public LinkedList<State> states;
+	public LinkedList<State> customStates;
 	public JTextArea textArea;
 	public int current = 0;
 	public boolean playing = false;
@@ -65,6 +67,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	  super("Simulation");
 	  player = this.new Player(200);
 	  custom = null;
+	  customStates = new LinkedList<State>();
 	  this.fitness = fitness;
 	  this.stepper = stepper;
 	  
@@ -177,11 +180,18 @@ public class SimulateWindow extends JFrame implements KeyListener {
 				custom = stepper.step(parent, Command.Wait);
 				break;
 			case KeyEvent.VK_U:
-				custom = states.get(current);
+				custom = customStates.removeLast();
+				if(customStates.size() != 0) {
+					parent = customStates.removeLast();
+				} else {
+					parent = states.get(current);
+				}
 				break;
 		}
+		customStates.add(parent);
 		custom.fitness = fitness.evaluate(custom);
 		updateText(custom);
+		Log.println(customStates.size());	
 	}
 
 	@Override
