@@ -1,5 +1,6 @@
 package game;
 
+import game.ai.Solution;
 import game.ai.Strategy;
 
 import java.util.ArrayList;
@@ -44,42 +45,9 @@ public class State {
   public Set<Strategy> pendingStrategies = new HashSet<Strategy>();
 
   /**
-   * The parent state. The parent state can be transformed into this state by
-   * {@link #fromParent}. This field is {@code null} if this is the initial
-   * state.
-   * 
-   * <p>
-   * Needed for building the final command list.
+   * The sequence of commands that leads to this state.
    */
-  public State parent;
-
-  /**
-   * The commands to reach this state from its parent state.
-   */
-  public List<Command> fromParent;
-
-  /**
-   * Return the commands to reach this state from the initial state.
-   */
-  public List<Command> fromInitial() {
-    // collect all states from here to the initial state
-    List<State> states = new ArrayList<State>();
-    State state = this;
-    while (state.parent != null) {
-      states.add(state);
-      state = state.parent;
-    }
-
-    // collect the commands to move from each state to the next
-    List<Command> result = new ArrayList<Command>();
-    ListIterator<State> iterator = states.listIterator(states.size());
-    while (iterator.hasPrevious()) {
-      State prev = iterator.previous();
-      result.addAll(prev.fromParent);
-    }
-
-    return result;
-  }
+  public Solution solution;
 
   /*
    * for flooding
