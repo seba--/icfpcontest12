@@ -126,6 +126,9 @@ public class State {
         case Lambda:
           lambdaPositions.add(col * board.height + row);
           break;
+        case Rock:
+          activePositions.add(col * board.height + row);
+          break;
         default:
           ;
         }
