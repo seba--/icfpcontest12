@@ -63,12 +63,14 @@ public class SingleStepper {
       if (cmd == Command.Left && st.board.get(nextCol - 1, nextRow) == Cell.Empty) {
         // push rock to the left
         st.board.set(nextCol - 1, nextRow, Cell.FallingRock);
+        fallingPosition(st, nextCol - 1, nextRow);
         moveRobot(st, nextCol, nextRow);
         break;
       }
       if (cmd == Command.Right && st.board.get(nextCol + 1, nextRow) == Cell.Empty) {
         // push rock to the right
         st.board.set(nextCol + 1, nextRow, Cell.FallingRock);
+        fallingPosition(st, nextCol + 1, nextRow);
         moveRobot(st, nextCol, nextRow);
         break;
       }
@@ -79,6 +81,10 @@ public class SingleStepper {
     }
   }
 
+  protected void fallingPosition(State st, int col, int row) {
+    st.activePositions.add(col * st.board.height + row);
+  }
+  
   protected void freePosition(State st, int col, int row) {
     st.activePositions.add(col * st.board.height + row);
     st.activePositions.add(col * st.board.height + row + 1);
@@ -107,39 +113,47 @@ public class SingleStepper {
     st.board.set(oldCol, oldRow, Cell.Empty);
     freePosition(st, oldCol, oldRow);
     st.board.set(newCol, newRow, Cell.FallingRock);
+    fallingPosition(st, newCol, newRow);
   }
 
   protected void updateBoard(State st) {
     Board oldBoard = st.board.clone();
+
+    Integer[] positions = st.activePositions.toArray(new Integer[st.activePositions.size()]);
+
+    // all further activations are only due in the next iteration
+    st.activePositions.clear();
     
-    for (int row = 0; row < st.board.height; ++row) 
-      for (int col = 0; col < st.board.width; ++col) {
-        if (oldBoard.get(col, row) == Cell.Rock || oldBoard.get(col, row) == Cell.FallingRock) {
-          st.board.set(col, row, Cell.Rock);
-          
-          if (oldBoard.get(col, row - 1) == Cell.Empty)
-            // fall straight down
-            moveRock(st, col, row, col, row - 1);
-          else if (oldBoard.get(col, row - 1) == Cell.Rock || oldBoard.get(col, row - 1) == Cell.FallingRock) {
-            // there is a rock below
-            if (oldBoard.get(col + 1,  row) == Cell.Empty &&
-                oldBoard.get(col + 1, row - 1) == Cell.Empty)
-              // rock slides to the right
-              moveRock(st, col, row, col + 1, row - 1);
-            else if (oldBoard.get(col - 1, row) == Cell.Empty &&
-                     oldBoard.get(col - 1, row - 1) == Cell.Empty)
-              // rock slides to the left
-              moveRock(st, col, row, col - 1, row - 1);
-          }
-          else if (oldBoard.get(col, row - 1) == Cell.Lambda &&
-                   oldBoard.get(col + 1, row) == Cell.Empty &&
-                   oldBoard.get(col + 1, row - 1) == Cell.Empty)
-            // rock slides to the right off the back of a lambda
+    for (int pos : positions) {
+      int col = pos / st.board.height;
+      int row = pos % st.board.height;
+      
+      if (oldBoard.get(col, row) == Cell.Rock || oldBoard.get(col, row) == Cell.FallingRock) {
+        st.board.set(col, row, Cell.Rock);
+        
+        if (oldBoard.get(col, row - 1) == Cell.Empty)
+          // fall straight down
+          moveRock(st, col, row, col, row - 1);
+        else if (oldBoard.get(col, row - 1) == Cell.Rock || oldBoard.get(col, row - 1) == Cell.FallingRock) {
+          // there is a rock below
+          if (oldBoard.get(col + 1,  row) == Cell.Empty &&
+              oldBoard.get(col + 1, row - 1) == Cell.Empty)
+            // rock slides to the right
             moveRock(st, col, row, col + 1, row - 1);
-          
-          // skip checking whether we should open lambda lifts
+          else if (oldBoard.get(col - 1, row) == Cell.Empty &&
+                   oldBoard.get(col - 1, row - 1) == Cell.Empty)
+            // rock slides to the left
+            moveRock(st, col, row, col - 1, row - 1);
         }
+        else if (oldBoard.get(col, row - 1) == Cell.Lambda &&
+                 oldBoard.get(col + 1, row) == Cell.Empty &&
+                 oldBoard.get(col + 1, row - 1) == Cell.Empty)
+          // rock slides to the right off the back of a lambda
+          moveRock(st, col, row, col + 1, row - 1);
+        
+        // skip checking whether we should open lambda lifts
       }
+    }
     
     /*
      * update water level

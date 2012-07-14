@@ -93,12 +93,12 @@ public class State {
   public int stepsUnderwater;
   public int stepsUntilNextRise;
 
-  public State(StaticConfig sconfig, Board board, int score, int robotCol, int robotRow, int lambdasLeft, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsUntilNextRise) {
+  public State(StaticConfig sconfig, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, int lambdasLeft, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsUntilNextRise) {
     this.staticConfig = sconfig;
     this.board = board;
     this.score = score;
     this.ending = Ending.None;
-    this.activePositions = new TreeSet<Integer>();
+    this.activePositions = activePositions;
 
     this.robotCol = robotCol;
     this.robotRow = robotRow;
@@ -123,6 +123,7 @@ public class State {
   public State(StaticConfig sconfig, Board board, int waterLevel) {
     this.staticConfig = sconfig;
     this.board = board;
+    this.activePositions = new TreeSet<Integer>();
     this.score = 0;
     this.collectedLambdas = 0;
     this.ending = Ending.None;
@@ -187,7 +188,10 @@ public class State {
   
   @Override
   public String toString() {
-    return board.toString();
+    String s = board.toString();
+    if (waterLevel > 0)
+      s += " water=" + waterLevel;
+    return s;
   }
 
   @Override
@@ -246,7 +250,7 @@ public class State {
   }
   
   public State clone() {
-    return new State(staticConfig, board, score, robotCol, robotRow, lambdasLeft, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsUntilNextRise);
+    return new State(staticConfig, board, activePositions, score, robotCol, robotRow, lambdasLeft, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsUntilNextRise);
   }
   
 }
