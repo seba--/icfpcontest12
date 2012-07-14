@@ -5,6 +5,7 @@ import game.StaticConfig;
 import game.ai.Driver;
 import game.config.EverythingButOneSelectorConfig;
 import game.config.IDriverConfig;
+import game.selector.EverythingButOneSelector;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,10 +23,11 @@ import java.util.concurrent.Future;
 public class SimpleStrategyComparisonBenchmark extends Benchmark {
 
   public int removeStrategy;
+  public String removeStrategyName = "";
   
   @Override
   public String name() {
-    return "simpleStrategyComparison.strategyConfig"+removeStrategy;
+    return "simpleStrategyComparison.strategyConfig_" + removeStrategy + "_" + removeStrategyName;
   }
 
   @Override
@@ -33,16 +35,17 @@ public class SimpleStrategyComparisonBenchmark extends Benchmark {
     return new EverythingButOneSelectorConfig(removeStrategy);
   }
   
-  public SimpleStrategyComparisonBenchmark(int removeStrategy) {
+  public SimpleStrategyComparisonBenchmark(int removeStrategy, String removeStrategyName) {
     super();
     this.removeStrategy = removeStrategy;
+    this.removeStrategyName = removeStrategyName;
   }
   
   public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, InterruptedException, ExecutionException {
     
     List<SimpleStrategyComparisonBenchmark> benchmarkList = new ArrayList<SimpleStrategyComparisonBenchmark>();
     for (int i = 0; i < 10; i++) {
-      benchmarkList.add(new SimpleStrategyComparisonBenchmark(i));
+      benchmarkList.add(new SimpleStrategyComparisonBenchmark(i, EverythingButOneSelector.getStrategyName(i)));
     }
    
     //List<List<IBenchmarkResult>> resultList = new ArrayList<List<IBenchmarkResult>>();  // list of benchmark results

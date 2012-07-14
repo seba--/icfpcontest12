@@ -10,6 +10,11 @@ import game.fitness.ScoreFitness;
 import game.fitness.StepCountFitness;
 import game.selector.EverythingButOneSelector;
 
+/**
+ * Config for everythingbutoneselector
+ * @author Felix Rieger
+ *
+ */
 public class EverythingButOneSelectorConfig implements IDriverConfig {
 
   int removeStrategy;
