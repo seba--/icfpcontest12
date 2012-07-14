@@ -25,7 +25,10 @@ public class State {
    * Positions of lambdas in board.
    */
   public Set<Integer> lambdaPositions;
-  
+
+  /**
+   * Ending configuration.
+   */
   public Ending ending;
   
   /**
@@ -154,7 +157,22 @@ public class State {
       }
     }
 
-    return new State(new StaticConfig(floodingRate, waterResistance), board, waterLevel);
+    Set<Integer> liftPositions = new TreeSet<Integer>();
+    for (int col = 0; col < board.width; ++col)
+      for (int row = 0; row < board.height; ++row)
+        if (board.get(col, row) == Cell.Lift || board.get(col, row) == Cell.RobotAndLift)
+          liftPositions.add(col * board.height + row);
+
+    int[] liftPositionsArray = new int[liftPositions.size()];
+    int i = 0;
+    for (Integer pos : liftPositions) {
+      liftPositionsArray[i] = pos;
+      i++;
+    }
+    
+    StaticConfig sconfig = new StaticConfig(liftPositionsArray, floodingRate, waterResistance);
+    
+    return new State(sconfig, board, waterLevel);
   }
 
   @Override

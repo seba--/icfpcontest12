@@ -1,11 +1,9 @@
 package unittest;
 
-import game.Board;
 import game.Cell;
 import game.Command;
 import game.Ending;
 import game.State;
-import game.StaticConfig;
 import game.stepper.SingleStepper;
 import junit.framework.Assert;
 
@@ -91,8 +89,7 @@ public class TestSingleStepper {
     System.out.println("testMap1");
     
     String map1 = TestBoard.map1();
-    Board board = Board.parse(map1);
-    State st = new State(new StaticConfig(0, 0), board, 0);
+    State st = State.parse(map1);
     st = runStepper(st, solution1Map1());
     
     Assert.assertEquals(Ending.Win, st.ending);
@@ -109,8 +106,7 @@ public class TestSingleStepper {
     System.out.println("testMap1variant");
     
     String map1 = TestBoard.map1();
-    Board board = Board.parse(map1);
-    State st = new State(new StaticConfig(0, 0), board, 0);
+    State st = State.parse(map1);
     st = runStepper(st, solution2Map1());
     
     Assert.assertEquals(3, st.robotCol);
