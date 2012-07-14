@@ -16,6 +16,8 @@ public class Board {
   /**
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
+   * 
+   * (col, row) --> (col*height + row)
    */
   public final Cell[] grid;
   
@@ -120,6 +122,4 @@ public class Board {
       return false;
     return true;
   }
-  
-  
 }
