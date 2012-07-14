@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.net.URI;
 
 /**
@@ -102,18 +103,22 @@ public class FileCommands {
     fos.write(content.getBytes());
     fos.close();
   }
+  
+  public static String readFileAsString(String fileString) throws IOException {
+    return readAsString(new FileReader(fileString));
+  }
 
   // from http://snippets.dzone.com/posts/show/1335
   // Author: http://snippets.dzone.com/user/daph2001
-  public static String readFileAsString(String fileString) throws IOException {
+  public static String readAsString(Reader reader) throws IOException {
     StringBuilder fileData = new StringBuilder(1000);
-    BufferedReader reader = new BufferedReader(new FileReader(fileString));
+    BufferedReader bufferedreader = new BufferedReader(reader);
     char[] buf = new char[1024];
     int numRead = 0;
-    while ((numRead = reader.read(buf)) != -1)
+    while ((numRead = bufferedreader.read(buf)) != -1)
       fileData.append(buf, 0, numRead);
 
-    reader.close();
+    bufferedreader.close();
     return fileData.toString();
   }
 

@@ -12,14 +12,14 @@ import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
 import interrupt.ExitHandler;
 
-import java.io.File;
+import java.io.InputStreamReader;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Scanner;
 import java.util.Set;
 
+import util.FileCommands;
 import util.Pair;
 
 /**
@@ -153,13 +153,11 @@ public class Driver {
 
   // TODO add exception handling?
   public static void main(String[] args) throws Exception {
-    // from
-    // http://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
     String text;
     if (args.length > 0) {
-      text = new Scanner(new File(args[0])).useDelimiter("\\A").next();
+      text = FileCommands.readFileAsString(args[0]);
     } else {
-      text = new Scanner(System.in).useDelimiter("\\A").next();
+      text = FileCommands.readAsString(new InputStreamReader(System.in));
     }
     text = text.replace("\r", "");
     Pair<StaticConfig, State> p = State.parse(text);
