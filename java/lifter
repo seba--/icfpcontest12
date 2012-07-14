@@ -1,2 +1,2 @@
 #!/bin/sh
-java -cp bin game.ai.Driver $@
+java -Xmx900M -cp bin game.ai.Driver $@
