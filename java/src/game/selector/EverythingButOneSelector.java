@@ -13,7 +13,6 @@ import game.strategy.ClosestManhattanLift;
 import game.strategy.WallFollowingStrategy;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,24 +22,38 @@ import java.util.List;
  *
  */
 public class EverythingButOneSelector implements Selector {
+  // XXX Everything here is rather hacky
   public final List<Strategy> strategies = new ArrayList<Strategy>();
   
   public EverythingButOneSelector(StaticConfig sconfig, int removeStrategy) {
     // TODO: Make this better; probably store the available strategies in a central location, so we can just fetch them from there instead of hard-coding them here
-    strategies.add(new SomeLambdaStrategy());
-    strategies.add(new ClosestManhattanLift(sconfig));    
-    strategies.add(new ClosestManhattanLambda(sconfig));  
-    strategies.add(new DiggingStrategy());
-    strategies.add(new WallFollowingStrategy());
-    strategies.add(new ConstantStrategy(Command.Left));
-    strategies.add(new ConstantStrategy(Command.Right));
-    strategies.add(new ConstantStrategy(Command.Up));
-    strategies.add(new ConstantStrategy(Command.Down));
-    strategies.add(new ConstantStrategy(Command.Wait));
-    
+    strategies.addAll(buildStrategyList(sconfig));
     strategies.remove(removeStrategy);
   }
     
+  public static List<Strategy> buildStrategyList(StaticConfig sconfig) {
+    List<Strategy> strategyList = new ArrayList<Strategy>();
+    strategyList.add(new SomeLambdaStrategy());
+    strategyList.add(new ClosestManhattanLift(sconfig));    
+    strategyList.add(new ClosestManhattanLambda(sconfig));  
+    strategyList.add(new DiggingStrategy());
+    strategyList.add(new WallFollowingStrategy());
+    strategyList.add(new ConstantStrategy(Command.Left));
+    strategyList.add(new ConstantStrategy(Command.Right));
+    strategyList.add(new ConstantStrategy(Command.Up));
+    strategyList.add(new ConstantStrategy(Command.Down));
+    strategyList.add(new ConstantStrategy(Command.Wait));
+
+    return strategyList;
+  }
+  
+  public static String getStrategyName(int i) {
+    // XXX when adding strategies, change this
+    String[] strategyNames = {"SomeLambda", "ClosestManhattanLift", "ClosestManhattanLambda", "DiggingStrategy", "WallFollowingStrategy",
+                              "ConstantStrategy_L", "ConstantStrategy_R", "ConstantStrategy_U", "ConstantStrategy_D", "ConstantStrategy_W"};
+    return strategyNames[i];
+  }
+  
   /* (non-Javadoc)
    * @see game.ai.Selector#selectStrategy(game.State)
    */
