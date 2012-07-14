@@ -95,9 +95,11 @@ public class Driver {
   public void printSolution() {
     // TODO: make threadsafe, might be called from exit handler
     // while already outputting... (use StringBuilder perhaps?!)
-    Command[] commands = bestState.solution.allCommands();
-    for (Command command : commands) {
-      System.out.append(command.shortName());
+    if (bestState.solution != null) {
+      Command[] commands = bestState.solution.allCommands();
+      for (Command command : commands) {
+        System.out.append(command.shortName());
+      }
     }
     System.out.println("A");
     System.out.flush();

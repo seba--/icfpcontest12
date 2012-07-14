@@ -19,7 +19,16 @@ public class State {
   public int robotCol;
   public int robotRow;
   public int collectedLambdas;
+  
+  
+  /**
+   * Positions of lambdas in board.
+   */
   public Set<Integer> lambdaPositions;
+
+  /**
+   * Ending configuration.
+   */
   public Ending ending;
   
   /**
@@ -61,16 +70,16 @@ public class State {
 
   public State(StaticConfig sconfig, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, Set<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsUntilNextRise) {
     this.staticConfig = sconfig;
-    this.board = board;
+    this.board = board.clone();
     this.score = score;
     this.ending = Ending.None;
-    this.activePositions = activePositions;
+    this.activePositions = new TreeSet<Integer>(activePositions);
 
     this.robotCol = robotCol;
     this.robotRow = robotRow;
 
     this.collectedLambdas = collectedLambdas;
-    this.lambdaPositions = lambdaPositions;
+    this.lambdaPositions = new TreeSet<Integer>(lambdaPositions);
 
     this.steps = steps;
 
@@ -148,7 +157,22 @@ public class State {
       }
     }
 
-    return new State(new StaticConfig(floodingRate, waterResistance), board, waterLevel);
+    Set<Integer> liftPositions = new TreeSet<Integer>();
+    for (int col = 0; col < board.width; ++col)
+      for (int row = 0; row < board.height; ++row)
+        if (board.get(col, row) == Cell.Lift || board.get(col, row) == Cell.RobotAndLift)
+          liftPositions.add(col * board.height + row);
+
+    int[] liftPositionsArray = new int[liftPositions.size()];
+    int i = 0;
+    for (Integer pos : liftPositions) {
+      liftPositionsArray[i] = pos;
+      i++;
+    }
+    
+    StaticConfig sconfig = new StaticConfig(liftPositionsArray, floodingRate, waterResistance);
+    
+    return new State(sconfig, board, waterLevel);
   }
 
   @Override
