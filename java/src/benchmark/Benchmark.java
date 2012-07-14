@@ -1,7 +1,6 @@
 package benchmark;
 
-import game.ai.Fitness;
-import game.ai.Selector;
+import game.config.IDriverConfig;
 
 /**
  * A superclass for benchmarks.
@@ -10,14 +9,9 @@ import game.ai.Selector;
  */
 public abstract class Benchmark {
   /**
-   * Returns the fitness function to be used in this benchmark.
+   * Returns the driver configuration to be used in this benchmark.
    */
-  public abstract Fitness fitness();
-
-  /**
-   * Returns the strategy selector to be used in this benchmark.
-   */
-  public abstract Selector selector();
+  public abstract IDriverConfig config();
 
   /**
    * A default main method.

@@ -4,8 +4,10 @@ import game.Command;
 import game.Ending;
 import game.State;
 import game.StaticConfig;
+import game.config.IDriverConfig;
 import game.fitness.AverageFitness;
 import game.fitness.ManhattanDirectedFitness;
+import game.fitness.ScoreFitness;
 import game.fitness.Scoring;
 import game.fitness.StepCountFitness;
 import game.log.Log;
@@ -179,6 +181,20 @@ public class Driver {
     simulateSolution();
   }
 
+  public static Driver run(IDriverConfig dconfig, StaticConfig sconfig, State state) {
+    Selector selector = dconfig.strategySelector(sconfig, state);
+    Fitness fitness = dconfig.fitnessFunction(sconfig, state);
+    
+    Driver driver = new Driver(sconfig, state, selector, fitness);
+    
+    ExitHandler.register(driver);
+    driver.solve(state);
+    ExitHandler.unregister(driver);
+    
+    driver.finished();
+    return driver;
+  }
+  
   // TODO add exception handling?
   public static void main(String[] args) throws Exception {
     String text;
@@ -192,13 +208,18 @@ public class Driver {
     StaticConfig sconfig = p.a;
     State state = p.b;
 
-    Selector selector = new SimpleSelector(sconfig);
-    Fitness scorer = new AverageFitness(new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
-    Driver driver = new Driver(sconfig, state, selector, scorer);
+    IDriverConfig stdConfig = new IDriverConfig() {
+      @Override
+      public Selector strategySelector(StaticConfig sconfig, State initialState) {
+        return new SimpleSelector(sconfig);
+      }
+      
+      @Override
+      public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
+        return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
+      }
+    };
     
-    ExitHandler.register(driver);
-    driver.solve(state);
-    ExitHandler.unregister(driver);
-    driver.finished();
+    Driver.run(stdConfig, sconfig, state);
   }
 }
