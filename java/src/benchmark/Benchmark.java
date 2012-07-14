@@ -57,8 +57,6 @@ public abstract class Benchmark {
       }
     }
     
-    
-    
     benchmark.executor.shutdown();
   }
   

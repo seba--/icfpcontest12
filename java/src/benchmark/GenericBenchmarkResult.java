@@ -17,9 +17,12 @@ public class GenericBenchmarkResult implements IBenchmarkResult {
     
     for (Iterator<Object> it = data.iterator(); it.hasNext(); ) {
       Object o = it.next();
-      sb.append(o);
+      if (o instanceof IBenchmarkResult)
+        sb.append(((IBenchmarkResult) o).asString());
+      else
+        sb.append(o);
       if (it.hasNext())
-        sb.append("\n");
+        sb.append(",");
     }
     
     return sb.toString();
