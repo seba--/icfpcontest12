@@ -19,7 +19,7 @@ import java.util.Set;
  */
 
 public class SimpleSelector implements Selector {
-  public final Set<Strategy> strategies = new HashSet<Strategy>();
+  public final List<Strategy> strategies = new ArrayList<Strategy>();
   
   {
     // strategies.add(new NextManhattanLift());    
@@ -55,6 +55,6 @@ public class SimpleSelector implements Selector {
 
   @Override
   public List<Strategy> getUsedStrategies() {
-    return new ArrayList<Strategy>(strategies);
+    return strategies;
   }
 }
