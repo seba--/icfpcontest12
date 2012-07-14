@@ -2,8 +2,8 @@ package game.stepper;
 
 import game.Command;
 import game.Ending;
-import game.Scoring;
 import game.State;
+import game.fitness.Scoring;
 
 import java.util.List;
 

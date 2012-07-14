@@ -55,11 +55,16 @@ public class Driver {
     // TODO when to stop?
 
     // TODO set scorerScore
+    
+    int iterations = 0;
 
     while (!liveStates.isEmpty()) {
+      iterations++;
+      
       State state = liveStates.peek();
 
-      System.out.printf("%s\n\n", state);
+      if (iterations % 5000 == 0)
+        System.out.println(iterations + "\t: " + bestState.score);
 
       Strategy strategy = strategySelector.selectStrategy(state);
 
