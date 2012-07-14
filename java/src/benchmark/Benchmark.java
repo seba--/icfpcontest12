@@ -85,7 +85,7 @@ public abstract class Benchmark {
   }
   
   
-  private final ExecutorService executor = Executors.newSingleThreadExecutor();
+  protected final ExecutorService executor = Executors.newSingleThreadExecutor();
   
   public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state) throws InterruptedException, ExecutionException {
     Driver driver = Driver.create(config(), sconfig, state, lifetime());
