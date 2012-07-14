@@ -29,11 +29,13 @@ public class ExitHandler extends Thread {
 
   public static void unregister(Driver d) {
     Runtime.getRuntime().removeShutdownHook(ExitHandler.create(d));
+    instances.remove(d);
   }
 
   public void run() {
     Log.println("interrupted");
     //TODO: print out result
     driver.finished();
+    instances.remove(driver);
   }
 }
