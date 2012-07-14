@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
  * @author seba
  */
 public class Board {
-  
+
   /**
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
@@ -20,7 +20,56 @@ public class Board {
    * (col, row) --> (col*height + row)
    */
   public final Cell[] grid;
+
+  /**
+   * Packs a two-dimensional coordinate in a single integer.
+   */
+  public final int position(int col, int row) {
+    return col * height + row;
+  }
+
+  /**
+   * Unpacks the column (= x) dimension from a single integer.
+   */
+  public final int col(int position) {
+    return position / height;
+  }
+
+  /**
+   * Unpacks the row (= y) dimension from a single integer.
+   */
+  public final int row(int position) {
+    return position % height;
+  }
+
+  /**
+   * Returns the left neighbor of a position.
+   */
+  public final int left(int position) {
+    return position - height;
+  }
   
+  /**
+   * Returns the right neighbor of a position.
+   */
+  public final int right(int position) {
+    return position + height;
+  }
+
+  /**
+   * Returns the upper neighbor of a position.
+   */
+  public final int up(int position) {
+    return position + 1;
+  }
+
+  /**
+   * Returns the lower neighbor of a position.
+   */
+  public final int down(int position) {
+    return position - 1;
+  }
+
   public final int width;
   public final int height;
   
