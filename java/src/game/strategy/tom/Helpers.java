@@ -12,7 +12,6 @@ import game.State;
 public class Helpers {
   
   
-  //TODO: test this
   /**
    * Moves to the given target destination in the shortest way.
    * But does not consider rock movement. 

@@ -5,6 +5,7 @@ import game.State;
 import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ConstantStrategy;
+import game.strategy.NextLambdaStrategy;
 import game.strategy.NextManhattanLambda;
 import game.strategy.NextManhattanLift;
 
@@ -22,13 +23,14 @@ public class SimpleSelector implements Selector {
   public final Set<Strategy> strategies = new HashSet<Strategy>();
   
   {
+    strategies.add(new NextLambdaStrategy());
     // strategies.add(new NextManhattanLift());    
     // strategies.add(new NextManhattanLambda());    
-    strategies.add(new ConstantStrategy(Command.Left));
-    strategies.add(new ConstantStrategy(Command.Right));
-    strategies.add(new ConstantStrategy(Command.Up));
-    strategies.add(new ConstantStrategy(Command.Down));
-    strategies.add(new ConstantStrategy(Command.Wait));
+    // strategies.add(new ConstantStrategy(Command.Left));
+    // strategies.add(new ConstantStrategy(Command.Right));
+    // strategies.add(new ConstantStrategy(Command.Up));
+    // strategies.add(new ConstantStrategy(Command.Down));
+    // strategies.add(new ConstantStrategy(Command.Wait));
   }
   
   /* (non-Javadoc)
@@ -40,7 +42,10 @@ public class SimpleSelector implements Selector {
       return null;
     } else {
       Strategy result = state.pendingStrategies.iterator().next();
-      state.pendingStrategies.remove(result);
+      if (result.isUseOnce || !result.wantsToApply(state)) {
+        state.pendingStrategies.remove(result);
+      }
+      
       return result;
     }
   }
