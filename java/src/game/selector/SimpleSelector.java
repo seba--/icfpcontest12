@@ -11,6 +11,7 @@ import game.strategy.NextManhattanLift;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -42,14 +43,22 @@ public class SimpleSelector implements Selector {
   public Strategy selectStrategy(State state) {
     if (state.pendingStrategies.isEmpty()) {
       return null;
-    } else {
-      Strategy result = state.pendingStrategies.iterator().next();
-      if (result.isUseOnce || !result.wantsToApply(state)) {
-        state.pendingStrategies.remove(result);
-      }
+    } 
+    
+    for (Strategy strat : state.pendingStrategies) {
       
-      return result;
+      if (strat.wantsToApply(state)) {
+        if (strat.isUseOnce()) { //single use strategy, remove immediately
+          state.pendingStrategies.remove(strat);
+        } 
+        return strat;
+      }
+        
+      //here: strat does not want to be applied (anymore)
+      state.pendingStrategies.remove(strat);
     }
+
+    return null;
   }
 
   /* (non-Javadoc)

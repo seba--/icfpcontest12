@@ -16,13 +16,14 @@ import game.strategy.tom.Helpers;
  *
  */
 public class NextLambdaStrategy extends Strategy {
-  {
-    isUseOnce = false;
-  }
-  
+    
   @Override
   public boolean wantsToApply(State s) {
-    return s.nextLambdaStrategyIndex >= s.lambdaPositions.size();
+    return s.nextLambdaStrategyIndex < s.lambdaPositions.size();
+  }
+  
+  public boolean isUseOnce() {
+    return false;
   }
   
   @Override
