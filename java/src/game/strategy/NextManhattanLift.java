@@ -37,6 +37,11 @@ public class NextManhattanLift extends Strategy {
   }
   
   @Override
+  public boolean wantsToApply(State s) {
+    return s.lambdaPositions.isEmpty();
+  }
+  
+  @Override
   public String toString() {
     return "NextManhattanLift";
   }

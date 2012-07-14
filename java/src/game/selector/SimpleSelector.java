@@ -27,13 +27,13 @@ public class SimpleSelector implements Selector {
   
   {
     strategies.add(new NextLambdaStrategy());
-    // strategies.add(new NextManhattanLift());    
+    strategies.add(new NextManhattanLift());    
     // strategies.add(new NextManhattanLambda());    
-    // strategies.add(new ConstantStrategy(Command.Left));
-    // strategies.add(new ConstantStrategy(Command.Right));
-    // strategies.add(new ConstantStrategy(Command.Up));
-    // strategies.add(new ConstantStrategy(Command.Down));
-    // strategies.add(new ConstantStrategy(Command.Wait));
+    strategies.add(new ConstantStrategy(Command.Left));
+    strategies.add(new ConstantStrategy(Command.Right));
+    strategies.add(new ConstantStrategy(Command.Up));
+    strategies.add(new ConstantStrategy(Command.Down));
+    strategies.add(new ConstantStrategy(Command.Wait));
   }
   
   /* (non-Javadoc)
@@ -45,17 +45,17 @@ public class SimpleSelector implements Selector {
       return null;
     } 
     
-    for (Strategy strat : state.pendingStrategies) {
-      
+    for (Iterator<Strategy> it = state.pendingStrategies.iterator(); it.hasNext();) {
+      Strategy strat = it.next();
       if (strat.wantsToApply(state)) {
         if (strat.isUseOnce()) { //single use strategy, remove immediately
-          state.pendingStrategies.remove(strat);
+          it.remove();
         } 
         return strat;
       }
         
       //here: strat does not want to be applied (anymore)
-      state.pendingStrategies.remove(strat);
+      it.remove();
     }
 
     return null;
