@@ -13,25 +13,20 @@ import org.junit.Test;
 
 public class TestSingleStepper {
 
-  public static Command[] solution1Map1() {
-    Command L = Command.Left;
-    Command R = Command.Right;
-    Command U = Command.Up;
-    Command D = Command.Down;
+  static Command L = Command.Left;
+  static Command R = Command.Right;
+  static Command U = Command.Up;
+  static Command D = Command.Down;
 
+  public static Command[] solution1Map1() {
     Command[] cmds = new Command[] {
-      D,L,R,D,D,U,U,L,L,L,D,D,L
+      L,R,D,D,D,U,U,L,L,L,D,D,L
     };
     
     return cmds;
   }
   
   public static Command[] solution2Map1() {
-    Command L = Command.Left;
-    Command R = Command.Right;
-    Command U = Command.Up;
-    Command D = Command.Down;
-
     Command[] cmds = new Command[] {
       L
     };
@@ -40,18 +35,13 @@ public class TestSingleStepper {
   }
   
   
-  public static Command[] solution1FloodMap1() {
-    Command L = Command.Left;
-    Command R = Command.Right;
-    Command U = Command.Up;
-    Command D = Command.Down;
-
+  public static Command[] drowning1FloodMap1() {
     Command[] cmds = new Command[] {
       L,L,L,L,
       D,D,D,
       R,R,R,
       D,D,R,R,
-      U,L,U,
+      U,U,
       L,L,L,U,
       R,R,R,R,R,R,R,
       D,D,D,D
@@ -86,8 +76,10 @@ public class TestSingleStepper {
     System.out.println();
     for (Command cmd : cmds) {
       st = stepper.step(st, cmd);
-      System.out.println(st.board);
+      System.out.println(st);
       System.out.println();
+      if (st.ending != Ending.None)
+        break;
     }
     
     return st;
@@ -105,7 +97,7 @@ public class TestSingleStepper {
     
     Assert.assertEquals(Ending.Win, st.ending);
     Assert.assertEquals(3, st.collectedLambdas);
-    Assert.assertEquals(0, st.lambdasLeft);
+    Assert.assertEquals(0, st.lambdaPositions.size());
     Assert.assertEquals(212, st.score);
     Assert.assertEquals(0, st.robotCol);
     Assert.assertEquals(1, st.robotRow);
@@ -134,6 +126,8 @@ public class TestSingleStepper {
     
     String map1 = TestBoard.floodMap1();
     State st = State.parse(map1);
-    runStepper(st, solution1FloodMap1());
+    st = runStepper(st, drowning1FloodMap1());
+    
+    Assert.assertEquals(Ending.LoseWater, st.ending);
   }
 }
