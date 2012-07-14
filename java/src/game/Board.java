@@ -310,7 +310,6 @@ public class Board {
     final int prime = 31;
     int result = 1;
     result = prime * result + Arrays.deepHashCode(bitsets);
-    result = prime * result + Arrays.deepHashCode(cells);
     result = prime * result + height;
     result = prime * result + lift;
     result = prime * result + robot;
@@ -328,8 +327,6 @@ public class Board {
       return false;
     Board other = (Board) obj;
     if (!Arrays.deepEquals(bitsets, other.bitsets))
-      return false;
-    if (!Arrays.deepEquals(cells, other.cells))
       return false;
     if (height != other.height)
       return false;
