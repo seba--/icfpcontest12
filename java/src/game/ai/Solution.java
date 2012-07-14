@@ -1,12 +1,6 @@
 package game.ai;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ListIterator;
-
 import game.Command;
-import game.State;
 
 /**
  * A sequence of commands to solve a board. Common prefixes (due to shared
@@ -19,7 +13,8 @@ public class Solution {
   /**
    * The (possibly shared) prefix of this solution.
    * 
-   * <p>This field is {@code null} if there is no prefix.
+   * <p>
+   * This field is {@code null} if there is no prefix.
    */
   public final Solution prefix;
 
@@ -60,7 +55,7 @@ public class Solution {
       index -= sublength;
       System.arraycopy(solution.commands, 0, result, index, sublength);
     }
-    
+
     return result;
   }
 

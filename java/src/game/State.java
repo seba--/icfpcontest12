@@ -3,10 +3,7 @@ package game;
 import game.ai.Solution;
 import game.ai.Strategy;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
