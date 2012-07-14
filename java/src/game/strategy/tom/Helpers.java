@@ -11,7 +11,17 @@ import game.State;
 
 public class Helpers {
   
+  
   //TODO: test this
+  /**
+   * Moves to the given target destination in the shortest way.
+   * But does not consider rock movement. 
+   * 
+   * @param s starting state
+   * @param destCol destination column
+   * @param destRow destination row
+   * @return commands leading to destination or null if no wa yfound
+   */
   public static List<Command> moveToSimple(State s, int destCol, int destRow) {
     
     WayCoordinate[][] m = new WayCoordinate[s.board.width][s.board.height];

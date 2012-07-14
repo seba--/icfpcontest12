@@ -1,4 +1,4 @@
-package game.strategy.tom;
+package game;
 
 public class Coordinate {
   public int col;

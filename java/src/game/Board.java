@@ -48,6 +48,7 @@ public class Board {
     grid[col * height + row] = c;
   }
   
+  
   public String toString() {
     StringBuilder sb = new StringBuilder();
     for (int rrow = height - 1; rrow >= 0; --rrow) {

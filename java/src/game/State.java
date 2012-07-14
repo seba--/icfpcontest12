@@ -178,6 +178,26 @@ public class State {
     return new State(new StaticConfig(floodingRate, waterResistance), board, waterLevel);
   }
   
+  
+  private Coordinate[] lambdaPositions = null;
+  /**
+   * NOTE: The returned array is shared and should not be mutated!
+   * 
+   * @return an array of lambda positions
+   */
+  public Coordinate[] getLambdaPositions() {
+    if (lambdaPositions == null) {
+      lambdaPositions = new Coordinate[lambdasLeft];
+      for (int i = lambdasLeft - 1, j = 0; i >= 0; i--) {
+        while (board.grid[j] != Cell.Lambda) j++;
+        int c = j % board.height;
+        lambdaPositions[i] = new Coordinate(c, j - c);
+      }
+    }
+    return lambdaPositions;
+  }
+  
+  
   @Override
   public String toString() {
     return board.toString();
