@@ -2,6 +2,7 @@ package game.strategy;
 
 import game.Command;
 import game.State;
+import game.StaticConfig;
 import game.ai.Strategy;
 import game.strategy.tom.Helpers;
 
@@ -14,28 +15,21 @@ import java.util.List;
  */
 public class NextManhattanLambda extends Strategy {
 
+  public final StaticConfig sconfig;
+  
+  public NextManhattanLambda(StaticConfig sconfig) {
+    this.sconfig = sconfig;
+  }
   
   @Override
   public List<Command> apply(State s) {
     if (s.lambdaPositions.isEmpty()) return null;
     
-    //todo find targets
-    int bestCol = -1;
-    int bestRow = -1;
-    int bestDist = Integer.MAX_VALUE;
+    int lambda = sconfig.nextLambda[s.robotCol * s.board.height + s.robotRow];
+    if (lambda < 0)
+      return null;
     
-    for(int p : s.lambdaPositions) {
-      int col = p / s.board.height;
-      int row = p % s.board.height;
-      int d = Helpers.manhattan(s.robotCol, s.robotRow, col, row); 
-      if (d < bestDist) {
-        bestCol = col;
-        bestRow = row;
-        bestDist = d;
-      }
-    }
-    
-    return Helpers.moveToSimple(s, bestCol, bestRow);
+    return Helpers.moveToSimple(s, lambda / s.board.height, lambda % s.board.height);
   }
   
   @Override

@@ -69,7 +69,8 @@ public class Helpers {
         wc = m[wc.col][wc.row+1];
       }
     }
-    cmds[0] = wc.steppedHereWith;
+    if (cmds.length > 0)
+      cmds[0] = wc.steppedHereWith;
     
     
     return Arrays.asList(cmds);    
