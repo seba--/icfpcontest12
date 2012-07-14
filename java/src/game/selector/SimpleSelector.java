@@ -6,6 +6,7 @@ import game.StaticConfig;
 import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ConstantStrategy;
+import game.strategy.DiggingStrategy;
 import game.strategy.SomeLambdaStrategy;
 import game.strategy.ClosestManhattanLambda;
 import game.strategy.ClosestManhattanLift;
@@ -28,7 +29,8 @@ public class SimpleSelector implements Selector {
   public SimpleSelector(StaticConfig sconfig) {
     strategies.add(new SomeLambdaStrategy());
     strategies.add(new ClosestManhattanLift(sconfig));    
-    strategies.add(new ClosestManhattanLambda(sconfig));    
+    strategies.add(new ClosestManhattanLambda(sconfig));  
+    strategies.add(new DiggingStrategy());
     strategies.add(new ConstantStrategy(Command.Left));
     strategies.add(new ConstantStrategy(Command.Right));
     strategies.add(new ConstantStrategy(Command.Up));
