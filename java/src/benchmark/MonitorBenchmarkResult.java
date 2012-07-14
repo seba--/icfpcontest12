@@ -21,7 +21,7 @@ public class MonitorBenchmarkResult implements IBenchmarkResult {
   public void add(Long time, IBenchmarkResult result) {
     results.add(Pair.create(time, result));
   }
-
+  
   @Override
   public String asString() {
     StringBuilder sb = new StringBuilder();
@@ -33,6 +33,15 @@ public class MonitorBenchmarkResult implements IBenchmarkResult {
         sb.append("\n");
     }
     
+    return sb.toString();
+  }
+
+  @Override
+  public String columnHeadings() {
+    StringBuilder sb = new StringBuilder();
+
+    sb.append("time         ,");
+    sb.append(results.get(0).b.columnHeadings());
     return sb.toString();
   }
 }

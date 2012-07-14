@@ -92,7 +92,7 @@ public abstract class Benchmark {
       Pair<StaticConfig, State> p = State.parse(FileCommands.readFileAsString(file.getAbsolutePath()));
       IBenchmarkResult result = monitorDriver(p.a, p.b);
       String logFile =  "../logs/" + path + "/" + FileCommands.dropExtension(file.getName()) + "-" + name() + "-" + System.currentTimeMillis();
-      FileCommands.writeToFile(logFile, result.asString() + "\n");
+      FileCommands.writeToFile(logFile, result.columnHeadings() + "\n" + result.asString() + "\n");
       return Collections.singletonList(result);
     }
     else if (file.isDirectory()) {

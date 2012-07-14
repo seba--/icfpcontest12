@@ -7,4 +7,5 @@ package benchmark;
  */
 public interface IBenchmarkResult {
   public String asString();
+  public String columnHeadings();
 }
