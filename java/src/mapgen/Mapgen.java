@@ -19,11 +19,12 @@ public class Mapgen {
   
   public static void main(String[] args) throws IOException {
     System.out.println(cellTypes.length);
-                                // Earth, Empty, Lambda, Lift, Rock, Wall.
-    int[] defaultProbabilites = {500,     130,   70,     10,   139,  150};    // just made these up
+                                // Earth, Empty, Lambda, Rock, Wall.
+    //int[] defaultProbabilites = {500,     130,   70,     139,  150};    // just made these up
+    int[] defaultProbabilites = {560,     189,   50,     100,  100};    // just made these up
     
     
-    int[] mapSizes = {3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 200};
+    int[] mapSizes = {5, 6, 7, 8, 9, 10, 20, 50, 100, 200};
     
     int mapCtr = 0;
     for (int mapSize : mapSizes) {
@@ -149,7 +150,7 @@ public class Mapgen {
     return tempBoard;
   }
   
-  private static Cell[] cellTypes = {Cell.Earth, Cell.Empty, Cell.Lambda, Cell.Lift, Cell.Rock, Cell.Wall};
+  private static Cell[] cellTypes = {Cell.Earth, Cell.Empty, Cell.Lambda, Cell.Rock, Cell.Wall};
 
   
   
