@@ -19,7 +19,7 @@ public class SomeLambdaStrategy extends Strategy {
     
   @Override
   public boolean wantsToApply(State s) {
-    return s.nextLambdaStrategyIndex < s.lambdaPositions.size();
+    return !s.lambdaPositions.isEmpty() && s.nextLambdaStrategyIndex < s.lambdaPositions.size();
   }
   
   public boolean isUseOnce() {
@@ -28,21 +28,14 @@ public class SomeLambdaStrategy extends Strategy {
   
   @Override
   public List<Command> apply(State s) {
-    if (s.lambdaPositions.isEmpty()) return null;
-    int idx = s.nextLambdaStrategyIndex;
-    if (idx > s.lambdaPositions.size()) return null; 
-    
-    
-    int i = 0;
+    int i = -1;
     List<Command> cmds = null;
-    for(int p : s.lambdaPositions) {
-      if (i >= idx) {
-         int col = p / s.board.height;
-         int row = p % s.board.height;
-         cmds = Helpers.moveToSimple(s, col, row);
-         if (cmds != null) break;
-      }
-      i++;
+    for (i = s.nextLambdaStrategyIndex; i < s.lambdaPositions.size(); i++) {
+      int p = s.lambdaPositions.get(i);
+      int col = p / s.board.height;
+      int row = p % s.board.height;
+      cmds = Helpers.moveToSimple(s, col, row);
+      if (cmds != null) break;
     }
     
     s.nextLambdaStrategyIndex = i + 1;
