@@ -5,6 +5,7 @@ import game.Ending;
 import game.State;
 import game.fitness.AverageFitness;
 import game.fitness.ManhattanDirectedFitness;
+import game.fitness.Scoring;
 import game.fitness.StepCountFitness;
 import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
@@ -92,7 +93,9 @@ public class Driver {
               bestState = newState;
             }
 
-            if (newState.ending == Ending.None && newState.steps < newState.board.width * newState.board.height) {
+            if (newState.ending == Ending.None &&
+                newState.steps < newState.board.width * newState.board.height &&
+                Scoring.maximalReachableScore(newState) > bestState.score ) {
               liveStates.add(newState);
               newState.fitness = fitness.evaluate(newState);
               strategySelector.prepareState(newState);
