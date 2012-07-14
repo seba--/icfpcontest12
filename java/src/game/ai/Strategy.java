@@ -19,6 +19,12 @@ public abstract class Strategy {
   public static boolean isUseOnce = true;
   
   /**
+   * How often this strategy was applied.
+   */
+  public int applicationCount = 0;
+
+
+  /**
    * Returns a list of commands to be applied to this state.
    * 
    * <p>

@@ -9,7 +9,9 @@ import game.strategy.NextLambdaStrategy;
 import game.strategy.NextManhattanLambda;
 import game.strategy.NextManhattanLift;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,7 +22,7 @@ import java.util.Set;
  */
 
 public class SimpleSelector implements Selector {
-  public final Set<Strategy> strategies = new HashSet<Strategy>();
+  public final List<Strategy> strategies = new ArrayList<Strategy>();
   
   {
     strategies.add(new NextLambdaStrategy());
@@ -56,5 +58,10 @@ public class SimpleSelector implements Selector {
   @Override
   public void prepareState(State state) {
     state.pendingStrategies.addAll(strategies);
+  }
+
+  @Override
+  public List<Strategy> getUsedStrategies() {
+    return strategies;
   }
 }

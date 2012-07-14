@@ -2,6 +2,8 @@ package game.ai;
 
 import game.State;
 
+import java.util.List;
+
 /**
  * A strategy for selecting which strategy to use.
  * 
@@ -19,10 +21,15 @@ public interface Selector {
   public abstract Strategy selectStrategy(State state);
 
   /**
-   * Prepare a newly created state for strategy selection.
+   * Prepares a newly created state for strategy selection.
    * 
    * @param state
    */
   public abstract void prepareState(State state);
 
+  /**
+   * Returns a list that contains (at least) all strategies this selector ever
+   * selected.
+   */
+  public List<Strategy> getUsedStrategies();
 }
