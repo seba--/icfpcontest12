@@ -110,7 +110,10 @@ public class Driver {
   }
 
   private State computeNextState(State state, List<Command> commands) {
-    return stepper.multistep(state, commands);
+    State result = stepper.multistep(state, commands);
+    result.parent = state;
+    result.fromParent = commands;
+    return result;
   }
 
   // TODO add exception handling?
