@@ -49,6 +49,9 @@ public class Driver {
   public Selector strategySelector;
 
   public State bestState;
+  
+  public boolean finished = false;
+  public int iterations;
 
   public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
     this.sconfig = sconfig;
@@ -67,7 +70,7 @@ public class Driver {
 
     // TODO when to stop?
 
-    int iterations = 0;
+    iterations = 0;
     
     // choose k, M, G more cleverly
     // choose 5000k more cleverly
@@ -176,22 +179,23 @@ public class Driver {
   }
   
   public void finished() {
+    this.finished = true;
     printSolution();
     simulateSolution();
   }
-
-  public static Driver run(IDriverConfig dconfig, StaticConfig sconfig, State state) {
+  
+  public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
+    return new Driver(sconfig, state, selector, fitness);
+  }
+  
+  public void run() {
+    ExitHandler.register(this);
+    solve(initialState);
+    ExitHandler.unregister(this);
     
-    Driver driver = new Driver(sconfig, state, selector, fitness);
-    
-    ExitHandler.register(driver);
-    driver.solve(state);
-    ExitHandler.unregister(driver);
-    
-    driver.finished();
-    return driver;
+    finished();
   }
   
   // TODO add exception handling?
@@ -219,6 +223,6 @@ public class Driver {
       }
     };
     
-    Driver.run(stdConfig, sconfig, state);
+    Driver.create(stdConfig, sconfig, state).run();
   }
 }
