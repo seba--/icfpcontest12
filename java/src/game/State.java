@@ -239,5 +239,8 @@ public class State {
     return true;
   }
   
+  public State clone() {
+    return new State(staticConfig, board, score, robotCol, robotRow, lambdasLeft, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsUntilNextRise);
+  }
   
 }
