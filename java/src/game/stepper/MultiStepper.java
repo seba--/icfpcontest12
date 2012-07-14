@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MultiStepper extends SingleStepper {
   public State multistep(State st, List<Command> cmds) {
-    State newSt = new State(st.staticConfig, st.board.clone(), st.score, st.robotCol, st.robotRow, st.lambdasLeft, st.collectedLambdas, st.steps, st.waterLevel, st.stepsUnderwater, st.stepsUntilNextRise);
+    State newSt = st.clone();
 
     for (Command cmd : cmds) {
       newSt.steps++;
