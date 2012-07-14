@@ -22,7 +22,7 @@ public class DownStrategy extends Strategy {
   
   @Override
   public boolean wantsToApply(State s) {
-    int pos = (s.robotCol - 1)* s.board.height + s.robotRow;
+    int pos = s.robotCol * s.board.height + s.robotRow - 1;
     return s.board.isEarth(pos) || s.board.isEmpty(pos) || s.board.isLambda(pos);
   }
 }
