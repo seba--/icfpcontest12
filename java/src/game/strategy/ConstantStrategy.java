@@ -14,7 +14,7 @@ import java.util.List;
  * @author Thomas Horstmeyer
  */
 
-public class ConstantStrategy implements Strategy {
+public class ConstantStrategy extends Strategy {
   public final List<Command> commands;
   
   public ConstantStrategy(Command... commands) {

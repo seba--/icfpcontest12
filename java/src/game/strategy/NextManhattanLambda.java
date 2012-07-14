@@ -13,7 +13,7 @@ import game.strategy.tom.Helpers;
  * @author horstmey
  *
  */
-public class NextManhattanLambda implements Strategy {
+public class NextManhattanLambda extends Strategy {
 
   
   @Override

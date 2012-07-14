@@ -7,7 +7,7 @@ import game.State;
 import game.ai.Strategy;
 import game.strategy.tom.Helpers;
 
-public class NextManhattanLift implements Strategy {
+public class NextManhattanLift extends Strategy {
 
   @Override
   public List<Command> apply(State s) {

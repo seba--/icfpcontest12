@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class WallFollowingStrategy implements Strategy {
+public class WallFollowingStrategy extends Strategy {
 
   @Override
   public List<Command> apply(State state) {

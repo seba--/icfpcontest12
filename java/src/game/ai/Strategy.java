@@ -11,7 +11,7 @@ import java.util.List;
  * @author Tillmann Rendel
  * @author Thomas Horstmeyer
  */
-public interface Strategy {
+public abstract class Strategy {
   /**
    * Returns a list of commands to be applied to this state.
    * 
@@ -21,5 +21,5 @@ public interface Strategy {
    * @param state
    * @return
    */
-  public List<Command> apply(State state);
+  public abstract List<Command> apply(State state);
 }
