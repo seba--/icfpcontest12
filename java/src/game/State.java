@@ -3,7 +3,7 @@ package game;
 import game.ai.Solution;
 import game.ai.Strategy;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -54,7 +54,7 @@ public class State {
   /**
    * not yet applied strategies. gets set when state is created in driver.
    */
-  public Set<Strategy> pendingStrategies = new HashSet<Strategy>();
+  public List<Strategy> pendingStrategies;
 
   /**
    * The sequence of commands that leads to this state.
