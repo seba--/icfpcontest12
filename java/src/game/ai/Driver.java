@@ -3,6 +3,7 @@ package game.ai;
 import game.Command;
 import game.Ending;
 import game.State;
+import game.fitness.ManhattanDirectedFitness;
 import game.fitness.ScoreFitness;
 import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
@@ -128,7 +129,7 @@ public class Driver {
   // TODO add exception handling?
   public static void main(String[] args) throws Exception {
     Selector selector = new SimpleSelector();
-    Fitness scorer = new ScoreFitness();
+    Fitness scorer = new ManhattanDirectedFitness();
     Driver driver = new Driver(selector, scorer);
 
     // from
