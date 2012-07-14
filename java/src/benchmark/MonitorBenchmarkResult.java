@@ -67,19 +67,7 @@ public class MonitorBenchmarkResult implements IBenchmarkResult {
         finals.add(mbr.finalResult());
       }
 
-    GenericBenchmarkResult initialAggregate = initials.get(0).merge(initials);
     GenericBenchmarkResult finalAggregate = finals.get(0).merge(finals);
-    
-    GenericBenchmarkResult result = new GenericBenchmarkResult();
-    for (int i = 0; i < initialAggregate.headers.size(); i++) {
-      result.headers.add("initial" + "-" + initialAggregate.headers.get(i));
-      result.data.add(initialAggregate.data.get(i));
-    }
-    for (int i = 0; i < finalAggregate.headers.size(); i++) {
-      result.headers.add("final" + "-" + finalAggregate.headers.get(i));
-      result.data.add(finalAggregate.data.get(i));
-      
-    }
-    return result;
+    return finalAggregate;
   }
 }

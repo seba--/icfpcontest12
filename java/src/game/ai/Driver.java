@@ -299,7 +299,6 @@ public class Driver {
     } else {
       text = FileCommands.readAsString(new InputStreamReader(System.in));
     }
-    text = text.replace("\r", "");
     Pair<StaticConfig, State> p = State.parse(text);
     StaticConfig sconfig = p.a;
     State state = p.b;
