@@ -14,6 +14,7 @@ import game.strategy.SomeLambdaStrategy;
 import game.strategy.ClosestManhattanLambda;
 import game.strategy.ClosestManhattanLift;
 import game.strategy.UpStrategy;
+import game.strategy.WaitStrategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class SimpleSelector implements Selector {
   public final List<Strategy> strategies = new ArrayList<Strategy>();
   
   public SimpleSelector(StaticConfig sconfig) {
-//    strategies.add(new SomeLambdaStrategy());
+    strategies.add(new SomeLambdaStrategy());
     strategies.add(new ClosestManhattanLift(sconfig));    
     strategies.add(new ClosestManhattanLambda(sconfig));  
 //    strategies.add(new DiggingStrategy());
@@ -39,7 +40,7 @@ public class SimpleSelector implements Selector {
     strategies.add(new RightStrategy());
     strategies.add(new UpStrategy());
     strategies.add(new DownStrategy());
-    strategies.add(new ConstantStrategy(Command.Wait));
+    strategies.add(new WaitStrategy());
     
   }
   

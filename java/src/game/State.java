@@ -84,8 +84,20 @@ public class State {
    * Position of next lambda at index position: nextLambda[robot] == position of
    * next lambda.
    */
-  public int[] nextLambda;
+  private int[] nextLambda;
 
+  public int nextLambda(int position) {
+    return nextLambda[position];
+  }
+
+  public int nextLambda(int col, int row) {
+    return nextLambda[board.position(col, row)];
+  }
+
+  public int[] getNextLambda() {
+    nextLambdaShared = true;
+    return nextLambda;
+  }
 
   /**
    * Whether the {@code nextLambda} and {@code distanceToNextLambda} fields are
@@ -353,6 +365,7 @@ public class State {
   }
 
   public State clone() {
+    nextLambdaShared = true;
     return new State(this, board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsSinceLastRise, nextLambda);
   }
 }
