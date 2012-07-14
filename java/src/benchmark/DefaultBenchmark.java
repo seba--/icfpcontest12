@@ -1,15 +1,7 @@
 package benchmark;
 
-import game.State;
-import game.StaticConfig;
-import game.ai.Fitness;
-import game.ai.Selector;
 import game.config.IDriverConfig;
-import game.fitness.AverageFitness;
-import game.fitness.ManhattanDirectedFitness;
-import game.fitness.ScoreFitness;
-import game.fitness.StepCountFitness;
-import game.selector.SimpleSelector;
+import game.config.SimpleSelectorConfig;
 
 /**
  * The default benchmark.
@@ -25,30 +17,9 @@ public class DefaultBenchmark extends Benchmark {
 
   @Override
   public IDriverConfig config() {
-    return new IDriverConfig() {
-      
-      @Override
-      public Selector strategySelector(StaticConfig sconfig, State initialState) {
-        return new SimpleSelector(sconfig);
-      }
-      
-      @Override
-      public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
-        return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
-      }
-      
-      @Override
-      public void timeOutFunction() {}
 
-      @Override
-      public boolean simulateWindow() {
-		// TODO Auto-generated method stub
-		return false;
-      }
-      
-      
-      
-    };
+    return new SimpleSelectorConfig();
+
   }
 
 }

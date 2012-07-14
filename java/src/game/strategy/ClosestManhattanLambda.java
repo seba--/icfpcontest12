@@ -39,7 +39,7 @@ public class ClosestManhattanLambda extends Strategy {
   
   @Override
   public String toString() {
-    return "NextManhattanLambda";
+    return "ClosestManhattanLambda";
   }
 
 }

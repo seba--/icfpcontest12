@@ -17,12 +17,13 @@ public class MapUtil {
    * @return
    */
   public static int[] computeIntegralBoard(Board board, Cell cellType) { 
-   int[] integralBoard = new int[board.grid.length];
+   int[] integralBoard = new int[board.length];
    
    int currVal = 0;
    for (int i = 0; i < board.width; i++) {
      for (int j = 0; j < board.height; j++) {
-       currVal = (board.grid[i+j*board.width] == cellType ? 1 : 0);
+       // TODO shouldn't this use board.height somehow instead of board.width?
+       currVal = (board.get(i + j * board.width) == cellType ? 1 : 0);
 
        if (i==0 && j==0) {
          integralBoard[0] = currVal;

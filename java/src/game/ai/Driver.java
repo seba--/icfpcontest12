@@ -277,9 +277,6 @@ public class Driver {
     
     if (oldState == null) return true;
     
-    //TODO: check improvement
-    boolean consider = true;
-    
     //anderes board -> behalten
     if (!s.board.equals(oldState.board)) return true;
     
@@ -321,15 +318,16 @@ public class Driver {
       @Override
       public void timeOutFunction() {}
 
-	@Override
-	public boolean simulateWindow() {
+      @Override
+      public boolean simulateWindow() {
 		return true;
-	}
+      }
       
       
       
     };
     
     Driver.create(stdConfig, sconfig, state, 30).run();
+
   }
 }

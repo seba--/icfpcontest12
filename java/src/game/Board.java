@@ -1,7 +1,10 @@
 package game;
 
+import game.strategy.WallFollowingStrategy;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -19,7 +22,20 @@ public class Board {
    * 
    * (col, row) --> (col*height + row)
    */
-  public final Cell[] grid;
+  // public final Cell[] grid;
+  
+  public static final int N = 5;
+  private static final Cell[] cells = Cell.values();
+
+  public final int width;
+  public final int height;
+
+  public final BitSet[] bitsets = new BitSet[N];
+
+  public final int length;
+  
+  public int robot;
+  public int lift;
 
   /**
    * Packs a two-dimensional coordinate in a single integer.
@@ -69,15 +85,52 @@ public class Board {
   public final int down(int position) {
     return position - 1;
   }
-
-  public final int width;
-  public final int height;
-  
+    
+  /**
+   * Create empty board.
+   */
   public Board(int width, int height) {
     this.width = width;
     this.height = height;
-    this.grid = new Cell[width * height];
+    this.length = width * height;
+    for (int i = 0; i < N; i++) {
+      this.bitsets[i] = new BitSet(length);
+    }
   }
+
+  /**
+   * Create a board as a clone of another board.
+   */
+  public Board(Board that) {
+    this.width = that.width;
+    this.height = that.height;
+    this.length = that.length;
+    System.arraycopy(that.bitsets, 0, this.bitsets, 0, N);
+    this.robot = that.robot;
+    this.lift = that.lift;
+  }
+  
+  /**
+   * Be careful. no range checking!
+   */
+  public Cell get(int position) {
+    for (int  i = 0; i < N; i++) {
+      if (bitsets[i].get(position)) {
+        return cells[i];
+      }
+    }
+
+    if (position == lift && position == robot)
+      return Cell.RobotAndLift;
+
+    if (position == robot)
+      return Cell.Robot;
+    
+    if (position == lift)
+      return Cell.Lift;
+    
+    return Cell.Empty;
+}
   
   /**
    * FIRST coordinate is COLUMN;
@@ -86,9 +139,49 @@ public class Board {
   public Cell get(int col, int row) {
     if (col < 0 || col >= width || row < 0 || row >= height)
       return Cell.Wall;
-    return grid[col * height + row];
+    return get(position(col, row));
   }
+  
+  /**
+   * Be careful. No range checking.
+   */
+  public void set(int position, Cell cell) {
+    int newI = cell.ordinal();
+    int oldI = get(position).ordinal();
 
+    if (oldI != newI) {
+      // set new info
+      if (newI < N) {
+        bitsets[newI] = (BitSet) bitsets[newI].clone();
+        bitsets[newI].set(position);
+      } else {
+        switch (cell) {
+        case Robot:
+          robot = position;
+          break;
+        case Lift:
+          lift = position;
+          break;
+        case RobotAndLift:
+          robot = position;
+          lift = position;
+          break;
+        case FallingRock:
+          assert (false);
+          break;
+        case Empty:
+          break;
+        }
+      }
+      
+      // clear old info
+      if (oldI < N) {
+        bitsets[oldI] = (BitSet) bitsets[oldI].clone();
+        bitsets[oldI].clear(position);
+      }
+    }
+  }
+  
   /**
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
@@ -96,15 +189,50 @@ public class Board {
   public void set(int col, int row, Cell c) {
     if (col < 0 || col >= width || row < 0 || row >= height)
       return;
-    grid[col * height + row] = c;
+    set(position(col, row), c);
   }
   
+  public boolean isWall(int position) {
+    return bitsets[Cell.Wall.ordinal()].get(position);
+  }
+
+  public boolean isRock(int position) {
+    return bitsets[Cell.Rock.ordinal()].get(position);
+  }
+
+  public boolean isFallingRock(int position) {
+    return bitsets[Cell.FallingRock.ordinal()].get(position);
+  }
+
+  public boolean isEarth(int position) {
+    return bitsets[Cell.Earth.ordinal()].get(position);
+  }
+
+  public boolean isLambda(int position) {
+    return bitsets[Cell.Lambda.ordinal()].get(position);
+  }
+
+  public boolean isRobot(int position) {
+    return position == robot;
+  }
+
+  public boolean isLift(int position) {
+    return position == lift;
+  }
+
+  public boolean isRobotAndLift(int position) {
+    return isRobot(position) && isLift(position);
+  }
   
+  public boolean isEmpty(int position) {
+    return get(position) == Cell.Empty;
+  }
+
   public String toString() {
     StringBuilder sb = new StringBuilder();
     for (int rrow = height - 1; rrow >= 0; --rrow) {
       for (int col = 0; col < width; ++col)
-        sb.append(grid[col * height + rrow].shortName());
+        sb.append(get(col * height + rrow).shortName());
       if (rrow > 0)
         sb.append('\n');
     }
@@ -136,28 +264,57 @@ public class Board {
       for (int col = 0; col < colCount; ++col) {
         int rrow = rowCount - row - 1;
         List<Cell> rowList = flippedBoard.get(rrow);
-        if (col < rowList.size())
-          board.grid[col * rowCount + row] = rowList.get(col);
-        else 
+        if (col < rowList.size()) {
+          // board.grid[col * rowCount + row] = rowList.get(col);
+          int position = board.position(col, row);
+          Cell cell = rowList.get(col);
+          board.unsafeSet(position, cell);
+                
+        } else { 
           // Section 2.5: "Shorter lines are assumed to be padded out with spaces"
-          board.grid[col * rowCount + row] = Cell.Empty;
+          // we don't store Empty cells explicitly
+        }
       }
     
     return board;
   }
   
-  @Override
+  /**
+   * Don't call this one.
+   */
+  public void unsafeSet(int position, Cell cell) {
+    int i = cell.ordinal();
+    if (i < N) {
+      bitsets[i].set(position);
+    } else {
+      switch (cell) {
+      case Robot:
+        robot = position;
+        break;
+      case Lift:
+        lift = position;
+        break;
+      case Empty:
+        // we don't store Empty cells explicitly
+        break;
+      }
+    }    
+  }
+
   public Board clone() {
-    Board b = new Board(width, height);
-    System.arraycopy(grid, 0, b.grid, 0, grid.length);
-    return b;
+    return new Board(this);
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + Arrays.deepHashCode(grid);
+    result = prime * result + Arrays.deepHashCode(bitsets);
+    result = prime * result + Arrays.deepHashCode(cells);
+    result = prime * result + height;
+    result = prime * result + lift;
+    result = prime * result + robot;
+    result = prime * result + width;
     return result;
   }
 
@@ -170,8 +327,20 @@ public class Board {
     if (getClass() != obj.getClass())
       return false;
     Board other = (Board) obj;
-    if (!Arrays.deepEquals(grid, other.grid))
+    if (!Arrays.deepEquals(bitsets, other.bitsets))
+      return false;
+    if (!Arrays.deepEquals(cells, other.cells))
+      return false;
+    if (height != other.height)
+      return false;
+    if (lift != other.lift)
+      return false;
+    if (robot != other.robot)
+      return false;
+    if (width != other.width)
       return false;
     return true;
   }
+
+
 }

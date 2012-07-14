@@ -3,8 +3,9 @@ package game;
 import game.ai.Solution;
 import game.ai.Strategy;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -24,7 +25,7 @@ public class State {
   /**
    * Positions of lambdas in board.
    */
-  public Set<Integer> lambdaPositions;
+  public List<Integer> lambdaPositions;
 
   /**
    * Ending configuration.
@@ -72,7 +73,7 @@ public class State {
   /*
    * used by NextLambdaStrategy
    */
-  public int nextLambdaStrategyIndex;
+  public int nextLambdaStrategyIndex = 0;
 
   /**
    * Position of next lambda at index position: nextLambda[robot] == position of
@@ -87,7 +88,7 @@ public class State {
    */
   public boolean nextLambdaShared;
 
-  public State(Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, Set<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise, int[] nextLambda) {
+  public State(Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, List<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise, int[] nextLambda) {
     this.board = board.clone();
     this.score = score;
     this.ending = Ending.None;
@@ -97,7 +98,7 @@ public class State {
     this.robotRow = robotRow;
 
     this.collectedLambdas = collectedLambdas;
-    this.lambdaPositions = new TreeSet<Integer>(lambdaPositions);
+    this.lambdaPositions = new ArrayList<Integer>(lambdaPositions);
 
     this.steps = steps;
 
@@ -126,7 +127,7 @@ public class State {
     this.waterLevel = waterLevel;
     this.stepsUnderwater = 0;
     this.stepsSinceLastRise = 0;
-    this.lambdaPositions = new TreeSet<Integer>();
+    this.lambdaPositions = new ArrayList<Integer>();
 
     int rcol = -1;
     int rrow = -1;
@@ -151,7 +152,7 @@ public class State {
     this.robotCol = rcol;
     this.robotRow = rrow;
 
-    this.nextLambda = new int[board.grid.length];
+    this.nextLambda = new int[board.length];
     Arrays.fill(nextLambda, -1);
     this.nextLambdaShared = false;
     fillNextLambda(lambdaPositions);
@@ -161,14 +162,14 @@ public class State {
    * Fills the {@link #nextLambda} array
    * given the positions of all lambdas.
    */
-  private void fillNextLambda(Set<Integer> positions) {
+  private void fillNextLambda(List<Integer> positions) {
     // copy on write
     if (nextLambdaShared) {
       nextLambdaShared = false;
       nextLambda = nextLambda.clone();
     }
 
-    int[] queue = new int[2 * board.grid.length];
+    int[] queue = new int[2 * board.length];
     int head = 0;
     int tail = 0;
 
@@ -187,28 +188,28 @@ public class State {
         nextLambda[current] = lambda;
 
         int neighbor = board.left(current);
-        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+        if (nextLambda[neighbor] == -1 && board.get(neighbor) != Cell.Wall && board.get(neighbor) != Cell.Lift) {
           queue[tail++] = neighbor;
           queue[tail++] = lambda;
           nextLambda[neighbor] = -2;
         }
 
         neighbor = board.up(current);
-        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+        if (nextLambda[neighbor] == -1 && board.get(neighbor) != Cell.Wall && board.get(neighbor) != Cell.Lift) {
           queue[tail++] = neighbor;
           queue[tail++] = lambda;
           nextLambda[neighbor] = -2;
         }
 
         neighbor = board.right(current);
-        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+        if (nextLambda[neighbor] == -1 && board.get(neighbor) != Cell.Wall && board.get(neighbor) != Cell.Lift) {
           queue[tail++] = neighbor;
           queue[tail++] = lambda;
           nextLambda[neighbor] = -2;
         }
 
         neighbor = board.down(current);
-        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+        if (nextLambda[neighbor] == -1 && board.get(neighbor) != Cell.Wall && board.get(neighbor) != Cell.Lift) {
           queue[tail++] = neighbor;
           queue[tail++] = lambda;
           nextLambda[neighbor] = -2;
@@ -236,7 +237,7 @@ public class State {
    */
   public void removeLambda(int col, int row) {
     // TODO make incremental
-    lambdaPositions.remove(col * board.height + row);
+    lambdaPositions.remove((Object) (col * board.height + row));
     clearNextLambda();
     fillNextLambda(lambdaPositions);
   }

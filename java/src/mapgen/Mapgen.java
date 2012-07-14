@@ -19,11 +19,12 @@ public class Mapgen {
   
   public static void main(String[] args) throws IOException {
     System.out.println(cellTypes.length);
-                                // Earth, Empty, Lambda, Lift, Rock, Wall.
-    int[] defaultProbabilites = {500,     130,   70,     10,   139,  150};    // just made these up
+                                // Earth, Empty, Lambda, Rock, Wall.
+    //int[] defaultProbabilites = {500,     130,   70,     139,  150};    // just made these up
+    int[] defaultProbabilites = {560,     189,   50,     100,  100};    // just made these up
     
     
-    int[] mapSizes = {3, 4, 5, 6, 7, 8, 9, 10, 20, 50, 100, 200};
+    int[] mapSizes = {5, 6, 7, 8, 9, 10, 15, 20, 30, 50, 100, 150, 200, 250, 300};
     
     int mapCtr = 0;
     for (int mapSize : mapSizes) {
@@ -59,11 +60,11 @@ public class Mapgen {
     Board tempBoard = createWalls(sizex, sizey, lifts);
     
     System.out.println("\tfill map");
-    Cell[] grid = tempBoard.grid;
+    //Cell[] grid = tempBoard.grid;
     
     for (int i = 1; i < sizex-1; i++) {
       for (int j = 1; j < sizey-1; j++) {
-        grid[i * sizey + j] = getNextRandomCell(probabilities);
+        tempBoard.unsafeSet(i * sizey + j, getNextRandomCell(probabilities));
       }
     }
     
@@ -71,7 +72,7 @@ public class Mapgen {
     // place robot
     int robotXPos = rnd.nextInt(sizex-2)+1;
     int robotYPos = rnd.nextInt(sizey-2)+1;
-    grid[robotXPos * sizey + robotYPos] = Cell.Robot;
+    tempBoard.unsafeSet(robotXPos * sizey + robotYPos, Cell.Robot);
     
     return tempBoard;
   }
@@ -109,17 +110,17 @@ public class Mapgen {
   public static Board createWalls(int sizex, int sizey, int lifts) {
     Board tempBoard = new Board(sizex, sizey);
 
-    Cell[] grid = tempBoard.grid;
+    // Cell[] grid = tempBoard.grid;
     
     // build walls
     
     for (int i = 0; i < sizex; i++) {
-      grid[i * sizey + 0] = Cell.Wall;
-      grid[i * sizey + (sizey-1)] = Cell.Wall;      
+      tempBoard.unsafeSet(i * sizey + 0, Cell.Wall);
+      tempBoard.unsafeSet(i * sizey + (sizey-1), Cell.Wall);    
     }
     for (int i = 1; i < sizey-1; i++) {
-      grid[0 * sizey + i] = Cell.Wall;
-      grid[(sizex-1) * sizey + i] = Cell.Wall;
+      tempBoard.unsafeSet(0 * sizey + i, Cell.Wall);
+      tempBoard.unsafeSet((sizex-1) * sizey + i, Cell.Wall);
     }
     
     for (int i = 0; i < lifts; i++) {
@@ -136,20 +137,20 @@ public class Mapgen {
       
       // build lift
       if (liftWall == 0) {
-        grid[liftPos * sizey + 0] = Cell.Lift;
+        tempBoard.unsafeSet(liftPos * sizey + 0, Cell.Lift);
       } else if (liftWall == 1) {
-        grid[0 * sizey + liftPos] = Cell.Lift;
+        tempBoard.unsafeSet(0 * sizey + liftPos, Cell.Lift);
       } else if (liftWall == 2) {
-        grid[liftPos * sizey + (sizey-1)] = Cell.Lift;
+        tempBoard.unsafeSet(liftPos * sizey + (sizey-1), Cell.Lift);
       } else if (liftWall == 3) {
-        grid[(sizex-1) * sizey + liftPos] = Cell.Lift;
+        tempBoard.unsafeSet((sizex-1) * sizey + liftPos, Cell.Lift);
       }
     }
     
     return tempBoard;
   }
   
-  private static Cell[] cellTypes = {Cell.Earth, Cell.Empty, Cell.Lambda, Cell.Lift, Cell.Rock, Cell.Wall};
+  private static Cell[] cellTypes = {Cell.Earth, Cell.Empty, Cell.Lambda, Cell.Rock, Cell.Wall};
 
   
   

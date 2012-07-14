@@ -32,6 +32,5 @@ public interface IDriverConfig {
    */
   
   public boolean simulateWindow();
-  
-  
+
 }
