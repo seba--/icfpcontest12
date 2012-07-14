@@ -56,41 +56,8 @@ public class DiggingStrategy extends Strategy {
     } else { // if we can not dig more than 2 consecutive steps, don't bother
       return null;
     }
-    
+        
     return cl;
-    
-    /*
-    if (surroundings[1] == Cell.Earth) {
-      Cell[] s2 = MapUtil.get4neigh(state.robotCol-1, state.robotRow, state.board);
-      if (s2[1] == Cell.Earth) {
-        // select this state
-        return Arrays.asList(new Command[]{Command.Left, Command.Left});
-      }
-    }
-    
-    if (surroundings[3] == Cell.Earth) {
-      Cell[] s2 = MapUtil.get4neigh(state.robotCol+1, state.robotRow, state.board);
-      if (s2[3] == Cell.Earth) {
-        // select this state
-        return Arrays.asList(new Command[]{Command.Right, Command.Right});
-      }
-    } 
-    
-    if (surroundings[0] == Cell.Earth) { // earth DOWN
-      Cell[] s2 = MapUtil.get4neigh(state.robotCol, state.robotRow-1, state.board);
-      if (s2[0] == Cell.Earth) {
-        // select this state
-        return Arrays.asList(new Command[]{Command.Down, Command.Down});
-      }
-    } 
-    
-    if (surroundings[2] == Cell.Earth) {
-      Cell[] s2 = MapUtil.get4neigh(state.robotCol, state.robotRow+1, state.board);
-      if (s2[2] == Cell.Earth) {
-        // select this state
-        return Arrays.asList(new Command[]{Command.Up, Command.Up});
-      }
-    } */    
   }
   
   public static int getMaxDiggingDistance(int direction, Board b, int x, int y) {

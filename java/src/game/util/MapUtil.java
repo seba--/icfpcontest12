@@ -141,8 +141,8 @@ public class MapUtil {
    */
   public static Cell[] get4neigh(int x, int y, Board b) {
     Cell[] robot4neigh = new Cell[4];
-    robot4neigh[0] = b.get(x-1,y);
-    robot4neigh[1] = b.get(x,y-1);
+    robot4neigh[0] = b.get(x,y-1);
+    robot4neigh[1] = b.get(x-1,y);
     robot4neigh[2] = b.get(x,y+1);
     robot4neigh[3] = b.get(x+1,y);
     
