@@ -20,8 +20,8 @@ public class State {
   public Board board;
   public int robotCol;
   public int robotRow;
-  public int lambdasLeft;
   public int collectedLambdas;
+  public Set<Integer> lambdaPositions;
   public Ending ending;
   
   /**
@@ -94,7 +94,7 @@ public class State {
   public int stepsUnderwater;
   public int stepsUntilNextRise;
 
-  public State(StaticConfig sconfig, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, int lambdasLeft, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsUntilNextRise) {
+  public State(StaticConfig sconfig, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, Set<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsUntilNextRise) {
     this.staticConfig = sconfig;
     this.board = board;
     this.score = score;
@@ -105,7 +105,7 @@ public class State {
     this.robotRow = robotRow;
 
     this.collectedLambdas = collectedLambdas;
-    this.lambdasLeft = lambdasLeft;
+    this.lambdaPositions = lambdaPositions;
 
     this.steps = steps;
 
@@ -132,10 +132,10 @@ public class State {
     this.waterLevel = waterLevel;
     this.stepsUnderwater = 0;
     this.stepsUntilNextRise = sconfig.floodingRate;
+    this.lambdaPositions = new TreeSet<Integer>();
 
     int rcol = -1;
     int rrow = -1;
-    int lambdas = 0;
 
     for (int col = 0; col < board.width; ++col)
       for (int row = 0; row < board.height; ++row)
@@ -145,7 +145,7 @@ public class State {
           rrow = row;
           break;
         case Lambda:
-          ++lambdas;
+          lambdaPositions.add(col * board.height + row);          
           break;
         default:
           ;
@@ -153,7 +153,6 @@ public class State {
 
     this.robotCol = rcol;
     this.robotRow = rrow;
-    this.lambdasLeft = lambdas;
   }
 
   public State makeFinal() {
@@ -187,26 +186,6 @@ public class State {
     return new State(new StaticConfig(floodingRate, waterResistance), board, waterLevel);
   }
 
-  
-  private Coordinate[] lambdaPositions = null;
-  /**
-   * NOTE: The returned array is shared and should not be mutated!
-   * 
-   * @return an array of lambda positions
-   */
-  public Coordinate[] getLambdaPositions() {
-    if (lambdaPositions == null) {
-      lambdaPositions = new Coordinate[lambdasLeft];
-      for (int i = lambdasLeft - 1, j = 0; i >= 0; i--) {
-        while (board.grid[j] != Cell.Lambda) j++;
-        int c = j % board.height;
-        lambdaPositions[i] = new Coordinate(c, j - c);
-      }
-    }
-    return lambdaPositions;
-  }
-  
-  
   @Override
   public String toString() {
     String s = board.toString();
@@ -222,7 +201,6 @@ public class State {
     result = prime * result + ((board == null) ? 0 : board.hashCode());
     result = prime * result + collectedLambdas;
     result = prime * result + ((ending == null) ? 0 : ending.hashCode());
-    result = prime * result + lambdasLeft;
     result = prime * result + robotCol;
     result = prime * result + robotRow;
     result = prime * result + score;
@@ -251,8 +229,6 @@ public class State {
       return false;
     if (ending != other.ending)
       return false;
-    if (lambdasLeft != other.lambdasLeft)
-      return false;
     if (robotCol != other.robotCol)
       return false;
     if (robotRow != other.robotRow)
@@ -271,6 +247,6 @@ public class State {
   }
 
   public State clone() {
-    return new State(staticConfig, board, activePositions, score, robotCol, robotRow, lambdasLeft, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsUntilNextRise);
+    return new State(staticConfig, board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsUntilNextRise);
   }  
 }

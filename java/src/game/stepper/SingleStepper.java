@@ -46,14 +46,14 @@ public class SingleStepper {
     switch (next) {
     case Lambda:
       ++st.collectedLambdas;
-      --st.lambdasLeft;
+      st.lambdaPositions.remove(nextCol * st.board.height + nextRow);
     case Empty:
     case Earth:
       moveRobot(st, nextCol, nextRow);
       break;
 
     case Lift:
-      if (st.lambdasLeft == 0) {
+      if (st.lambdaPositions.isEmpty()) {
         moveRobot(st, nextCol, nextRow);
         break;
       }
@@ -169,7 +169,7 @@ public class SingleStepper {
   }
 
   protected void checkEnding(State st) {
-    if (st.lambdasLeft == 0 && st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
+    if (st.lambdaPositions.isEmpty() && st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
       st.ending = Ending.Win;
     else if (st.board.get(st.robotCol, st.robotRow + 1) == Cell.FallingRock)
       st.ending = Ending.LoseRock;

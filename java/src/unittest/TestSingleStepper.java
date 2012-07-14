@@ -97,7 +97,7 @@ public class TestSingleStepper {
     
     Assert.assertEquals(Ending.Win, st.ending);
     Assert.assertEquals(3, st.collectedLambdas);
-    Assert.assertEquals(0, st.lambdasLeft);
+    Assert.assertEquals(0, st.lambdaPositions.size());
     Assert.assertEquals(212, st.score);
     Assert.assertEquals(0, st.robotCol);
     Assert.assertEquals(1, st.robotRow);
