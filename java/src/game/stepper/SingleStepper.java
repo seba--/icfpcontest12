@@ -62,13 +62,13 @@ public class SingleStepper {
     case FallingRock:
       if (cmd == Command.Left && st.board.get(nextCol - 1, nextRow) == Cell.Empty) {
         // push rock to the left
-        moveRock(st.board, nextCol, nextRow, nextCol - 1, nextRow);
+        st.board.set(nextCol - 1, nextRow, Cell.FallingRock);
         moveRobot(st, nextCol, nextRow);
         break;
       }
       if (cmd == Command.Right && st.board.get(nextCol + 1, nextRow) == Cell.Empty) {
         // push rock to the right
-        moveRock(st.board, nextCol, nextRow, nextCol + 1, nextRow);
+        st.board.set(nextCol + 1, nextRow, Cell.FallingRock);
         moveRobot(st, nextCol, nextRow);
         break;
       }
@@ -79,6 +79,13 @@ public class SingleStepper {
     }
   }
 
+  protected void freePosition(State st, int col, int row) {
+    st.activePositions.add(col * st.board.height + row);
+    st.activePositions.add(col * st.board.height + row + 1);
+    st.activePositions.add((col + 1) * st.board.height + row + 1);
+    st.activePositions.add((col - 1)* st.board.height + row + 1);
+  }
+  
   protected void moveRobot(State st, int nextCol, int nextRow) {
     if (st.board.get(nextCol,nextRow) == Cell.Lift)
       st.board.set(nextCol, nextRow, Cell.RobotAndLift);
@@ -87,16 +94,19 @@ public class SingleStepper {
     
     if (st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
       st.board.set(st.robotCol, st.robotRow, Cell.Lift);
-    else
+    else {
       st.board.set(st.robotCol, st.robotRow, Cell.Empty);
+      freePosition(st, st.robotCol, st.robotRow);
+    }
     
     st.robotCol = nextCol;
     st.robotRow = nextRow;
   }
 
-  protected void moveRock(Board board, int oldCol, int oldRow, int newCol, int newRow) {
-    board.set(oldCol, oldRow, Cell.Empty);
-    board.set(newCol, newRow, Cell.FallingRock);
+  protected void moveRock(State st, int oldCol, int oldRow, int newCol, int newRow) {
+    st.board.set(oldCol, oldRow, Cell.Empty);
+    freePosition(st, oldCol, oldRow);
+    st.board.set(newCol, newRow, Cell.FallingRock);
   }
 
   protected void updateBoard(State st) {
@@ -109,23 +119,23 @@ public class SingleStepper {
           
           if (oldBoard.get(col, row - 1) == Cell.Empty)
             // fall straight down
-            moveRock(st.board, col, row, col, row - 1);
+            moveRock(st, col, row, col, row - 1);
           else if (oldBoard.get(col, row - 1) == Cell.Rock || oldBoard.get(col, row - 1) == Cell.FallingRock) {
             // there is a rock below
             if (oldBoard.get(col + 1,  row) == Cell.Empty &&
                 oldBoard.get(col + 1, row - 1) == Cell.Empty)
               // rock slides to the right
-              moveRock(st.board, col, row, col + 1, row - 1);
+              moveRock(st, col, row, col + 1, row - 1);
             else if (oldBoard.get(col - 1, row) == Cell.Empty &&
                      oldBoard.get(col - 1, row - 1) == Cell.Empty)
               // rock slides to the left
-              moveRock(st.board, col, row, col - 1, row - 1);
+              moveRock(st, col, row, col - 1, row - 1);
           }
           else if (oldBoard.get(col, row - 1) == Cell.Lambda &&
                    oldBoard.get(col + 1, row) == Cell.Empty &&
                    oldBoard.get(col + 1, row - 1) == Cell.Empty)
             // rock slides to the right off the back of a lambda
-            moveRock(st.board, col, row, col + 1, row - 1);
+            moveRock(st, col, row, col + 1, row - 1);
           
           // skip checking whether we should open lambda lifts
         }

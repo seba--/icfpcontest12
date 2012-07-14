@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 /**
  * @author seba
@@ -22,6 +23,11 @@ public class State {
   public int lambdasLeft;
   public int collectedLambdas;
   public Ending ending;
+  
+  /**
+   * Set of active positions, that is, positions that might require board update.
+   */
+  public Set<Integer> activePositions;
 
   /**
    * How much score we got so far.
@@ -91,7 +97,8 @@ public class State {
     this.staticConfig = sconfig;
     this.board = board;
     this.score = score;
-    ending = Ending.None;
+    this.ending = Ending.None;
+    this.activePositions = new TreeSet<Integer>();
 
     this.robotCol = robotCol;
     this.robotRow = robotRow;
