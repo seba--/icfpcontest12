@@ -28,12 +28,17 @@ public class ManhattanDirectedFitness implements Fitness {
     int minDistance;
     if (state.lambdaPositions.isEmpty())
       minDistance = MathUtil.distance(state.robotCol, state.robotRow, sconfig.liftx, sconfig.lifty);
+//    else if (state.previousState != null && state.previousState.board.get(state.robotCol, state.robotRow) == Cell.Lambda) {
+//      // if we just ate a lambda, that's great!
+//      return 1000000;
+//    }
     else {
       int lambda = state.nextLambda[state.robotCol * state.board.height + state.robotRow];
       minDistance = MathUtil.distanceToPos(state.robotCol, state.robotRow, lambda, state.board.height);
     }
     
-    return (int) ((1 - (double) minDistance / maxDistance) * 1000000);
+    int r = (int) ((1 - (double) minDistance / maxDistance) * 1000000);
+    return r;
   }
 
   public static int minDistance(int col, int row, int[] positions) {

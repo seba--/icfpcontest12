@@ -93,7 +93,8 @@ public class State {
    */
   public boolean nextLambdaShared;
 
-  public State(Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, List<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise, int[] nextLambda) {
+  public State(State previousState, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, List<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise, int[] nextLambda) {
+    this.previousState = previousState;
     this.board = board.clone();
     this.score = score;
     this.ending = Ending.None;
@@ -352,6 +353,6 @@ public class State {
   }
 
   public State clone() {
-    return new State(board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsSinceLastRise, nextLambda);
+    return new State(this, board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsSinceLastRise, nextLambda);
   }
 }
