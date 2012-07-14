@@ -46,14 +46,14 @@ public class SingleStepper {
     switch (next) {
     case Lambda:
       ++st.collectedLambdas;
-      --st.lambdasLeft;
+      st.lambdaPositions.remove(nextCol * st.board.height + nextRow);
     case Empty:
     case Earth:
       moveRobot(st, nextCol, nextRow);
       break;
 
     case Lift:
-      if (st.lambdasLeft == 0) {
+      if (st.lambdaPositions.isEmpty()) {
         moveRobot(st, nextCol, nextRow);
         break;
       }
@@ -62,13 +62,15 @@ public class SingleStepper {
     case FallingRock:
       if (cmd == Command.Left && st.board.get(nextCol - 1, nextRow) == Cell.Empty) {
         // push rock to the left
-        moveRock(st.board, nextCol, nextRow, nextCol - 1, nextRow);
+        st.board.set(nextCol - 1, nextRow, Cell.FallingRock);
+        fallingPosition(st, nextCol - 1, nextRow);
         moveRobot(st, nextCol, nextRow);
         break;
       }
       if (cmd == Command.Right && st.board.get(nextCol + 1, nextRow) == Cell.Empty) {
         // push rock to the right
-        moveRock(st.board, nextCol, nextRow, nextCol + 1, nextRow);
+        st.board.set(nextCol + 1, nextRow, Cell.FallingRock);
+        fallingPosition(st, nextCol + 1, nextRow);
         moveRobot(st, nextCol, nextRow);
         break;
       }
@@ -79,6 +81,17 @@ public class SingleStepper {
     }
   }
 
+  protected void fallingPosition(State st, int col, int row) {
+    st.activePositions.add(col * st.board.height + row);
+  }
+  
+  protected void freePosition(State st, int col, int row) {
+    st.activePositions.add(col * st.board.height + row);
+    st.activePositions.add(col * st.board.height + row + 1);
+    st.activePositions.add((col + 1) * st.board.height + row + 1);
+    st.activePositions.add((col - 1)* st.board.height + row + 1);
+  }
+  
   protected void moveRobot(State st, int nextCol, int nextRow) {
     if (st.board.get(nextCol,nextRow) == Cell.Lift)
       st.board.set(nextCol, nextRow, Cell.RobotAndLift);
@@ -87,49 +100,60 @@ public class SingleStepper {
     
     if (st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
       st.board.set(st.robotCol, st.robotRow, Cell.Lift);
-    else
+    else {
       st.board.set(st.robotCol, st.robotRow, Cell.Empty);
+      freePosition(st, st.robotCol, st.robotRow);
+    }
     
     st.robotCol = nextCol;
     st.robotRow = nextRow;
   }
 
-  protected void moveRock(Board board, int oldCol, int oldRow, int newCol, int newRow) {
-    board.set(oldCol, oldRow, Cell.Empty);
-    board.set(newCol, newRow, Cell.FallingRock);
+  protected void moveRock(State st, int oldCol, int oldRow, int newCol, int newRow) {
+    st.board.set(oldCol, oldRow, Cell.Empty);
+    freePosition(st, oldCol, oldRow);
+    st.board.set(newCol, newRow, Cell.FallingRock);
+    fallingPosition(st, newCol, newRow);
   }
 
   protected void updateBoard(State st) {
     Board oldBoard = st.board.clone();
+
+    Integer[] positions = st.activePositions.toArray(new Integer[st.activePositions.size()]);
+
+    // all further activations are only due in the next iteration
+    st.activePositions.clear();
     
-    for (int row = 0; row < st.board.height; ++row) 
-      for (int col = 0; col < st.board.width; ++col) {
-        if (oldBoard.get(col, row) == Cell.Rock || oldBoard.get(col, row) == Cell.FallingRock) {
-          st.board.set(col, row, Cell.Rock);
-          
-          if (oldBoard.get(col, row - 1) == Cell.Empty)
-            // fall straight down
-            moveRock(st.board, col, row, col, row - 1);
-          else if (oldBoard.get(col, row - 1) == Cell.Rock || oldBoard.get(col, row - 1) == Cell.FallingRock) {
-            // there is a rock below
-            if (oldBoard.get(col + 1,  row) == Cell.Empty &&
-                oldBoard.get(col + 1, row - 1) == Cell.Empty)
-              // rock slides to the right
-              moveRock(st.board, col, row, col + 1, row - 1);
-            else if (oldBoard.get(col - 1, row) == Cell.Empty &&
-                     oldBoard.get(col - 1, row - 1) == Cell.Empty)
-              // rock slides to the left
-              moveRock(st.board, col, row, col - 1, row - 1);
-          }
-          else if (oldBoard.get(col, row - 1) == Cell.Lambda &&
-                   oldBoard.get(col + 1, row) == Cell.Empty &&
-                   oldBoard.get(col + 1, row - 1) == Cell.Empty)
-            // rock slides to the right off the back of a lambda
-            moveRock(st.board, col, row, col + 1, row - 1);
-          
-          // skip checking whether we should open lambda lifts
+    for (int pos : positions) {
+      int col = pos / st.board.height;
+      int row = pos % st.board.height;
+      
+      if (oldBoard.get(col, row) == Cell.Rock || oldBoard.get(col, row) == Cell.FallingRock) {
+        st.board.set(col, row, Cell.Rock);
+        
+        if (oldBoard.get(col, row - 1) == Cell.Empty)
+          // fall straight down
+          moveRock(st, col, row, col, row - 1);
+        else if (oldBoard.get(col, row - 1) == Cell.Rock || oldBoard.get(col, row - 1) == Cell.FallingRock) {
+          // there is a rock below
+          if (oldBoard.get(col + 1,  row) == Cell.Empty &&
+              oldBoard.get(col + 1, row - 1) == Cell.Empty)
+            // rock slides to the right
+            moveRock(st, col, row, col + 1, row - 1);
+          else if (oldBoard.get(col - 1, row) == Cell.Empty &&
+                   oldBoard.get(col - 1, row - 1) == Cell.Empty)
+            // rock slides to the left
+            moveRock(st, col, row, col - 1, row - 1);
         }
+        else if (oldBoard.get(col, row - 1) == Cell.Lambda &&
+                 oldBoard.get(col + 1, row) == Cell.Empty &&
+                 oldBoard.get(col + 1, row - 1) == Cell.Empty)
+          // rock slides to the right off the back of a lambda
+          moveRock(st, col, row, col + 1, row - 1);
+        
+        // skip checking whether we should open lambda lifts
       }
+    }
     
     /*
      * update water level
@@ -145,7 +169,7 @@ public class SingleStepper {
   }
 
   protected void checkEnding(State st) {
-    if (st.lambdasLeft == 0 && st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
+    if (st.lambdaPositions.isEmpty() && st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
       st.ending = Ending.Win;
     else if (st.board.get(st.robotCol, st.robotRow + 1) == Cell.FallingRock)
       st.ending = Ending.LoseRock;

@@ -13,7 +13,7 @@ import game.ai.Fitness;
 public class ScoreFitness implements Fitness {
   @Override
   public int evaluate(State state) {
-    int maximalScore = Scoring.totalScore(0, state.lambdasLeft + state.collectedLambdas, false, true);
+    int maximalScore = Scoring.totalScore(0, state.lambdaPositions.size() + state.collectedLambdas, false, true);
 
     // TODO think about this
     // this happens when there are no lambdas.

@@ -16,6 +16,8 @@ public class Board {
   /**
    * FIRST coordinate is COLUMN;
    * SECOND coordinate is ROW.
+   * 
+   * (col, row) --> (col*height + row)
    */
   public final Cell[] grid;
   
@@ -47,6 +49,7 @@ public class Board {
       return;
     grid[col * height + row] = c;
   }
+  
   
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -120,6 +123,4 @@ public class Board {
       return false;
     return true;
   }
-  
-  
 }

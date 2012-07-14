@@ -71,7 +71,7 @@ public class Driver {
 
         if (commands != null) {
           assert (!commands.isEmpty());
-          State newState = computeNextState(state, commands);
+          State newState = computeNextState(state, commands, strategy);
           if (!deadStates.contains(newState) && !liveStates.contains(newState)) {
             if (newState.score > bestState.score) {
               bestState = newState;
@@ -95,8 +95,8 @@ public class Driver {
   public void printSolution() {
     // TODO: make threadsafe, might be called from exit handler
     // while already outputting... (use StringBuilder perhaps?!)
-    List<Command> solution = bestState.fromInitial();
-    for (Command command : solution) {
+    Command[] commands = bestState.solution.allCommands();
+    for (Command command : commands) {
       System.out.append(command.shortName());
     }
     System.out.println("A");
@@ -109,10 +109,9 @@ public class Driver {
     deadStates.add(state);
   }
 
-  private State computeNextState(State state, List<Command> commands) {
+  private State computeNextState(State state, List<Command> commands, Strategy strategy) {
     State result = stepper.multistep(state, commands);
-    result.parent = state;
-    result.fromParent = commands;
+    result.solution = new Solution(state.solution, commands.toArray(new Command[commands.size()]), strategy);
     return result;
   }
 
