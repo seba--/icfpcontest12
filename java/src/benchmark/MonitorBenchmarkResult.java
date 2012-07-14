@@ -1,8 +1,6 @@
 package benchmark;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,6 +22,14 @@ public class MonitorBenchmarkResult implements IBenchmarkResult {
     results.add(Pair.create(time, result));
   }
   
+  public IBenchmarkResult initialResult() {
+    return results.isEmpty() ? null : results.get(0).b;
+  }
+  
+  public IBenchmarkResult finalResult() {
+    return results.isEmpty() ? null : results.get(results.size() - 1).b;
+  }
+
   @Override
   public String asString() {
     StringBuilder sb = new StringBuilder();
@@ -48,18 +54,27 @@ public class MonitorBenchmarkResult implements IBenchmarkResult {
   }
   
   public IBenchmarkResult merge(List<IBenchmarkResult> others) {
-    MonitorBenchmarkResult result = new MonitorBenchmarkResult();
+    if (others.isEmpty())
+      return new GenericBenchmarkResult();
+    
+    List<IBenchmarkResult> initials = new ArrayList<IBenchmarkResult>();
+    List<IBenchmarkResult> finals = new ArrayList<IBenchmarkResult>();
+    
     for (IBenchmarkResult other : others)
-      if (other instanceof MonitorBenchmarkResult)
-        result.results.addAll(((MonitorBenchmarkResult) other).results);
-    
-    Collections.sort(results, new Comparator<Pair<Long, IBenchmarkResult>>() {
-      @Override
-      public int compare(Pair<Long, IBenchmarkResult> o1, Pair<Long, IBenchmarkResult> o2) {
-        return Long.compare(o1.a, o2.a);
+      if (other instanceof MonitorBenchmarkResult) {
+        MonitorBenchmarkResult mbr = (MonitorBenchmarkResult) other;
+        initials.add(mbr.initialResult());
+        finals.add(mbr.finalResult());
       }
-    });
+
+    IBenchmarkResult initialAggregate = initials.get(0).merge(initials);
+    IBenchmarkResult finalAggregate = finals.get(0).merge(finals);
     
+    GenericBenchmarkResult result = new GenericBenchmarkResult();
+    result.headers.add("initial");
+    result.data.add(initialAggregate);
+    result.headers.add("final");
+    result.data.add(finalAggregate);
     return result;
   }
 }
