@@ -13,6 +13,11 @@ import java.util.List;
  */
 public abstract class Strategy {
   /**
+   * How often this strategy was applied.
+   */
+  public int applicationCount = 0;
+
+  /**
    * Returns a list of commands to be applied to this state.
    * 
    * <p>

@@ -5,6 +5,7 @@ import game.State;
 import game.ai.Strategy;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,6 +34,12 @@ public class ConstantStrategy extends Strategy {
   
   @Override
   public String toString() {
-    return "ConstantStrategy(" + commands.toString() + ")";
+    StringBuilder builder = new StringBuilder();
+    builder.append("ConstantStrategy(");
+    for (Command command : commands) {
+      builder.append(command.shortName());
+    }
+    builder.append(")");
+    return builder.toString();
   }
 }

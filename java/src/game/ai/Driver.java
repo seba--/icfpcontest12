@@ -5,7 +5,6 @@ import game.Ending;
 import game.State;
 import game.fitness.AverageFitness;
 import game.fitness.ManhattanDirectedFitness;
-import game.fitness.ScoreFitness;
 import game.fitness.StepCountFitness;
 import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
@@ -58,7 +57,6 @@ public class Driver {
     
     // choose k, M, G more cleverly
     // choose 5000k more cleverly
-    // statistics: how often was each strategy used
     // explain final solution (what strategies)
 
     System.out.printf(" iter  |  score  |  live   |  dead   \n");
@@ -84,6 +82,7 @@ public class Driver {
       } else {
         // apply strategy to create new state
         List<Command> commands = strategy.apply(state);
+        strategy.applicationCount++;
 
         if (commands != null) {
           assert (!commands.isEmpty());
@@ -111,6 +110,15 @@ public class Driver {
   public void printSolution() {
     // TODO: make threadsafe, might be called from exit handler
     // while already outputting... (use StringBuilder perhaps?!)
+
+    // print statistics
+    System.out.printf("\nStrategy applications:\n");
+    for (Strategy strategy : strategySelector.getUsedStrategies()) {
+      System.out.printf("  %3dk %s\n", strategy.applicationCount / 1000, strategy);
+    }
+    System.out.println();
+
+    // print solution
     if (bestState.solution != null) {
       Command[] commands = bestState.solution.allCommands();
       for (Command command : commands) {

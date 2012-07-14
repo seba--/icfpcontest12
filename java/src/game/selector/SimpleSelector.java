@@ -5,10 +5,10 @@ import game.State;
 import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ConstantStrategy;
-import game.strategy.NextManhattanLambda;
-import game.strategy.NextManhattanLift;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,5 +51,10 @@ public class SimpleSelector implements Selector {
   @Override
   public void prepareState(State state) {
     state.pendingStrategies.addAll(strategies);
+  }
+
+  @Override
+  public List<Strategy> getUsedStrategies() {
+    return new ArrayList<Strategy>(strategies);
   }
 }
