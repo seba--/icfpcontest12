@@ -17,13 +17,10 @@ import game.stepper.SingleStepper;
 import interrupt.ExitHandler;
 
 import java.io.InputStreamReader;
-import java.lang.management.*;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -189,9 +186,9 @@ public class Driver {
       Log.println();
       for (Command command : commands) {
         st = stepper.step(st, command);
-        Log.println(st);
-        Log.println();
       }
+      Log.println(st);
+      Log.println();
     }
   }
 
