@@ -54,49 +54,49 @@ public class TestBoard {
     
     Assert.assertEquals(map1, board.toString());
     
-    Cell[] grid = board.grid;
+    // Cell[] grid = board.grid;
     
-    Assert.assertEquals(Cell.Wall,   grid[0 * board.height + 0]);
-    Assert.assertEquals(Cell.Lift,   grid[0 * board.height + 1]);
-    Assert.assertEquals(Cell.Wall,   grid[0 * board.height + 2]);
-    Assert.assertEquals(Cell.Wall,   grid[0 * board.height + 3]);
-    Assert.assertEquals(Cell.Wall,   grid[0 * board.height + 4]);
-    Assert.assertEquals(Cell.Wall,   grid[0 * board.height + 5]);
+    Assert.assertTrue(board.isWall(0 * board.height + 0));
+    Assert.assertTrue(board.isLift(0 * board.height + 1));
+    Assert.assertTrue(board.isWall(0 * board.height + 2));
+    Assert.assertTrue(board.isWall(0 * board.height + 3));
+    Assert.assertTrue(board.isWall(0 * board.height + 4));
+    Assert.assertTrue(board.isWall(0 * board.height + 5));
                                                
-    Assert.assertEquals(Cell.Wall,   grid[1 * board.height + 0]);
-    Assert.assertEquals(Cell.Empty,  grid[1 * board.height + 1]);
-    Assert.assertEquals(Cell.Lambda, grid[1 * board.height + 2]);
-    Assert.assertEquals(Cell.Empty,  grid[1 * board.height + 3]);
-    Assert.assertEquals(Cell.Earth,  grid[1 * board.height + 4]);
-    Assert.assertEquals(Cell.Wall,   grid[1 * board.height + 5]);
+    Assert.assertTrue(board.isWall(1 * board.height + 0));
+    Assert.assertTrue(board.isEmpty(1 * board.height + 1));
+    Assert.assertTrue(board.isLambda(1 * board.height + 2));
+    Assert.assertTrue(board.isEmpty(1 * board.height + 3));
+    Assert.assertTrue(board.isEarth(1 * board.height + 4));
+    Assert.assertTrue(board.isWall(1 * board.height + 5));
                                                
-    Assert.assertEquals(Cell.Wall,   grid[2 * board.height + 0]);
-    Assert.assertEquals(Cell.Empty,  grid[2 * board.height + 1]);
-    Assert.assertEquals(Cell.Empty,  grid[2 * board.height + 2]);
-    Assert.assertEquals(Cell.Empty,  grid[2 * board.height + 3]);
-    Assert.assertEquals(Cell.Empty,  grid[2 * board.height + 4]);
-    Assert.assertEquals(Cell.Wall,   grid[2 * board.height + 5]);
+    Assert.assertTrue(board.isWall(2 * board.height + 0));
+    Assert.assertTrue(board.isEmpty(2 * board.height + 1));
+    Assert.assertTrue(board.isEmpty(2 * board.height + 2));
+    Assert.assertTrue(board.isEmpty(2 * board.height + 3));
+    Assert.assertTrue(board.isEmpty(2 * board.height + 4));
+    Assert.assertTrue(board.isWall(2 * board.height + 5));
                                                
-    Assert.assertEquals(Cell.Wall,   grid[3 * board.height + 0]);
-    Assert.assertEquals(Cell.Earth,  grid[3 * board.height + 1]);
-    Assert.assertEquals(Cell.Rock,   grid[3 * board.height + 2]);
-    Assert.assertEquals(Cell.Lambda, grid[3 * board.height + 3]);
-    Assert.assertEquals(Cell.Rock,   grid[3 * board.height + 4]);
-    Assert.assertEquals(Cell.Wall,   grid[3 * board.height + 5]);
+    Assert.assertTrue(board.isWall(3 * board.height + 0));
+    Assert.assertTrue(board.isEarth(3 * board.height + 1));
+    Assert.assertTrue(board.isRock(3 * board.height + 2));
+    Assert.assertTrue(board.isLambda(3 * board.height + 3));
+    Assert.assertTrue(board.isRock(3 * board.height + 4));
+    Assert.assertTrue(board.isWall(3 * board.height + 5));
                                                
-    Assert.assertEquals(Cell.Wall,   grid[4 * board.height + 0]);
-    Assert.assertEquals(Cell.Lambda, grid[4 * board.height + 1]);
-    Assert.assertEquals(Cell.Empty,  grid[4 * board.height + 2]);
-    Assert.assertEquals(Cell.Earth,  grid[4 * board.height + 3]);
-    Assert.assertEquals(Cell.Robot,  grid[4 * board.height + 4]);
-    Assert.assertEquals(Cell.Wall,   grid[4 * board.height + 5]);
+    Assert.assertTrue(board.isWall(4 * board.height + 0));
+    Assert.assertTrue(board.isLambda(4 * board.height + 1));
+    Assert.assertTrue(board.isEmpty(4 * board.height + 2));
+    Assert.assertTrue(board.isEarth(4 * board.height + 3));
+    Assert.assertTrue(board.isRobot(4 * board.height + 4));
+    Assert.assertTrue(board.isWall(4 * board.height + 5));
                                                
-    Assert.assertEquals(Cell.Wall,   grid[5 * board.height + 0]);
-    Assert.assertEquals(Cell.Wall,   grid[5 * board.height + 1]);
-    Assert.assertEquals(Cell.Wall,   grid[5 * board.height + 2]);
-    Assert.assertEquals(Cell.Wall,   grid[5 * board.height + 3]);
-    Assert.assertEquals(Cell.Wall,   grid[5 * board.height + 4]);
-    Assert.assertEquals(Cell.Wall,   grid[5 * board.height + 5]);
+    Assert.assertTrue(board.isWall(5 * board.height + 0));
+    Assert.assertTrue(board.isWall(5 * board.height + 1));
+    Assert.assertTrue(board.isWall(5 * board.height + 2));
+    Assert.assertTrue(board.isWall(5 * board.height + 3));
+    Assert.assertTrue(board.isWall(5 * board.height + 4));
+    Assert.assertTrue(board.isWall(5 * board.height + 5));
   }
   
   @Test
