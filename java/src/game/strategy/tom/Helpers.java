@@ -73,4 +73,17 @@ public class Helpers {
     
     return Arrays.asList(cmds);    
   }
+
+  /**
+   * Comutes the manhattan distance between two coordinates.
+   * 
+   * @param robotCol
+   * @param robotRow
+   * @param col
+   * @param row
+   * @return
+   */
+  public static int manhattan(int col1, int row1, int col2, int row2) {
+    return Math.abs(col1 - col2) + Math.abs(row1 - row2);
+  }
 }
