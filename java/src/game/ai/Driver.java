@@ -186,11 +186,9 @@ public class Driver {
       Log.println();
       for (Command command : commands) {
         st = stepper.step(st, command);
-        Log.println(st);
-        Log.println();
       }
-//      Log.println(st);
-//      Log.println();
+      Log.println(st);
+      Log.println();
     }
   }
 
