@@ -5,6 +5,12 @@ import game.ai.Fitness;
 
 import java.util.Set;
 
+/**
+ * Directed towards next lambda (if any), otherwise next lift.
+ * 
+ * @author seba
+ *
+ */
 public class ManhattanDirectedFitness implements Fitness {
 
   @Override
