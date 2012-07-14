@@ -17,12 +17,15 @@ import game.stepper.SingleStepper;
 import interrupt.ExitHandler;
 
 import java.io.InputStreamReader;
+import java.lang.management.*;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import util.FileCommands;
 import util.Pair;
@@ -189,6 +192,7 @@ public class Driver {
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
+    dconfig.timeOutFunction();
     return new Driver(sconfig, state, selector, fitness);
   }
   
@@ -245,6 +249,20 @@ public class Driver {
       public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
         return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
       }
+
+      @Override
+      public void timeOutFunction() {
+    	new Timer().schedule(
+    	  new TimerTask() {
+			@Override
+			public void run() {
+			  System.exit(0);
+			}  		  
+    	  }, 
+    	  10000	//Milliseconds to timeout
+    	);
+      }
+      
     };
     
     Driver.create(stdConfig, sconfig, state).run();
