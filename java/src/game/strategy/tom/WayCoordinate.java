@@ -12,8 +12,8 @@ public class WayCoordinate implements Comparable<WayCoordinate>{
   private int cmp;
 
   public WayCoordinate(int col, int row, int destRow, int destCol, int steps, Command lastStep) {
-    this.col = destCol;
-    this.row = destRow;
+    this.col = col;
+    this.row = row;
     this.steps = steps;
     this.steppedHereWith = lastStep;
     
