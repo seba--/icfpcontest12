@@ -24,7 +24,7 @@ public class Mapgen {
     int[] defaultProbabilites = {560,     189,   50,     100,  100};    // just made these up
     
     
-    int[] mapSizes = {5, 6, 7, 8, 9, 10, 20, 50, 100, 200};
+    int[] mapSizes = {5, 6, 7, 8, 9, 10, 15, 20, 30, 50, 100, 150, 200, 250, 300};
     
     int mapCtr = 0;
     for (int mapSize : mapSizes) {
