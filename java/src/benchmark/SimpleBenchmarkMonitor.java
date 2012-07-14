@@ -21,7 +21,7 @@ public class SimpleBenchmarkMonitor implements IBenchmarkMonitor {
     
     while (true) {
       IBenchmarkResult r = new SimpleBenchmarkResult(driver);
-      result.results.add(r);
+      result.add(System.currentTimeMillis(), r);
       
       if (driver.finished)
         return result;
