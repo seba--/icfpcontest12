@@ -200,13 +200,13 @@ public class Driver {
   
   public void simulateSolution() {
     if (bestState.solution != null) {
+      SingleStepper stepper = new SingleStepper(sconfig);
       SimulateWindow win = null;
       if(this.simulate) {
-    	win = new SimulateWindow();
+    	win = new SimulateWindow(fitness, stepper);
       }
       State st = initialState;
       st.fitness = fitness.evaluate(st);
-      SingleStepper stepper = new SingleStepper(sconfig);
       Command[] commands = bestState.solution.allCommands();
 
       Log.println(st);
