@@ -17,7 +17,9 @@ public class DefaultBenchmark extends Benchmark {
 
   @Override
   public IDriverConfig config() {
+
     return new SimpleSelectorConfig();
+
   }
 
 }
