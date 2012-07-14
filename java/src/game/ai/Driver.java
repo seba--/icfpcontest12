@@ -44,7 +44,7 @@ public class Driver {
   public final MultiStepper stepper;
   public Comparator<State> comparator = new FitnessComparator();
   public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
-  public Set<State> deadStates = new HashSet<State>();
+  public Set<State> seenStates = new HashSet<State>();
   public Fitness fitness;
   public Selector strategySelector;
 
@@ -86,7 +86,7 @@ public class Driver {
             iterations / 1000,
             bestState.score,
             liveStates.size() / 1000,
-            deadStates.size() / 1000);
+            (seenStates.size() - liveStates.size()) / 1000);
       }
 
       Strategy strategy = strategySelector.selectStrategy(state);
@@ -101,8 +101,8 @@ public class Driver {
         if (commands != null) {
           assert (!commands.isEmpty());
           State newState = computeNextState(state, commands, strategy);
-          if (!deadStates.contains(newState) && !liveStates.contains(newState)) {
-            
+          if (!seenStates.contains(newState)) {
+            seenStates.add(newState);
 //            Log.printf("%s => %8d old fitness, %8d new fitness, %12d\n", commands.get(0), state.fitness, fitness.evaluate(newState), state.hashCode());
 
             if (newState.score > bestState.score) {
@@ -167,7 +167,6 @@ public class Driver {
   // kill states that have no strategies left
   private void killState(State state) {
     liveStates.remove(state);
-    deadStates.add(state);
   }
 
   private State computeNextState(State state, List<Command> commands, Strategy strategy) {
