@@ -167,10 +167,11 @@ public class Driver {
     Selector selector = new SimpleSelector(sconfig);
     Fitness scorer = new AverageFitness(new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
     Driver driver = new Driver(sconfig, selector, scorer);
-    ExitHandler.register(driver);
-
     
+    ExitHandler.register(driver);
     driver.solve(state);
+    ExitHandler.unregister(driver);
+    
     driver.printSolution();
   }
 }
