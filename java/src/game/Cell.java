@@ -7,8 +7,8 @@ package game;
  *
  */
 public enum Cell {
-  Robot, Wall, Rock, FallingRock, Lambda, Lift, Earth, Empty, RobotAndLift;
-  
+  Wall, Rock, Lambda, Earth, FallingRock, Robot, Lift, Empty, RobotAndLift;
+    
   public String toString() {
     return shortName();
   }

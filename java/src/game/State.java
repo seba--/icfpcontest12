@@ -151,7 +151,7 @@ public class State {
     this.robotCol = rcol;
     this.robotRow = rrow;
 
-    this.nextLambda = new int[board.grid.length];
+    this.nextLambda = new int[board.length];
     Arrays.fill(nextLambda, -1);
     this.nextLambdaShared = false;
     fillNextLambda(lambdaPositions);
@@ -168,7 +168,7 @@ public class State {
       nextLambda = nextLambda.clone();
     }
 
-    int[] queue = new int[2 * board.grid.length];
+    int[] queue = new int[2 * board.length];
     int head = 0;
     int tail = 0;
 
@@ -187,28 +187,28 @@ public class State {
         nextLambda[current] = lambda;
 
         int neighbor = board.left(current);
-        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+        if (nextLambda[neighbor] == -1 && board.get(neighbor) != Cell.Wall && board.get(neighbor) != Cell.Lift) {
           queue[tail++] = neighbor;
           queue[tail++] = lambda;
           nextLambda[neighbor] = -2;
         }
 
         neighbor = board.up(current);
-        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+        if (nextLambda[neighbor] == -1 && board.get(neighbor) != Cell.Wall && board.get(neighbor) != Cell.Lift) {
           queue[tail++] = neighbor;
           queue[tail++] = lambda;
           nextLambda[neighbor] = -2;
         }
 
         neighbor = board.right(current);
-        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+        if (nextLambda[neighbor] == -1 && board.get(neighbor) != Cell.Wall && board.get(neighbor) != Cell.Lift) {
           queue[tail++] = neighbor;
           queue[tail++] = lambda;
           nextLambda[neighbor] = -2;
         }
 
         neighbor = board.down(current);
-        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+        if (nextLambda[neighbor] == -1 && board.get(neighbor) != Cell.Wall && board.get(neighbor) != Cell.Lift) {
           queue[tail++] = neighbor;
           queue[tail++] = lambda;
           nextLambda[neighbor] = -2;
