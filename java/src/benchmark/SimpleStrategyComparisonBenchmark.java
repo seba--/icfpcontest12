@@ -1,0 +1,87 @@
+package benchmark;
+
+import game.State;
+import game.StaticConfig;
+import game.ai.Driver;
+import game.config.EverythingButOneSelectorConfig;
+import game.config.IDriverConfig;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+/**
+ * This benchmark will test strategies:
+ * Use all strategies and remove one for each configuration
+ * @author Felix Rieger
+ *
+ */
+public class SimpleStrategyComparisonBenchmark extends Benchmark {
+
+  public int removeStrategy;
+  
+  @Override
+  public String name() {
+    return "simpleStrategyComparison.strategyConfig"+removeStrategy;
+  }
+
+  @Override
+  public IDriverConfig config() {
+    return new EverythingButOneSelectorConfig(removeStrategy);
+  }
+  
+  public SimpleStrategyComparisonBenchmark(int removeStrategy) {
+    super();
+    this.removeStrategy = removeStrategy;
+  }
+  
+  public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, InterruptedException, ExecutionException {
+    
+    List<SimpleStrategyComparisonBenchmark> benchmarkList = new ArrayList<SimpleStrategyComparisonBenchmark>();
+    for (int i = 0; i < 10; i++) {
+      benchmarkList.add(new SimpleStrategyComparisonBenchmark(i));
+    }
+   
+    //List<List<IBenchmarkResult>> resultList = new ArrayList<List<IBenchmarkResult>>();  // list of benchmark results
+    
+    for (SimpleStrategyComparisonBenchmark benchmark : benchmarkList) {
+      List<IBenchmarkResult> results = new ArrayList<IBenchmarkResult>();
+      for (String arg : args) {
+        results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
+        if (new File(arg).isDirectory()) {
+          String logFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + "." + System.currentTimeMillis() + ".csv";
+          benchmark.logResults(logFile, results);
+        }
+       // resultList.add(results);
+      }
+      
+      benchmark.executor.shutdown();
+    }
+  }
+  
+  
+  public int lifetime() {
+    return 1;
+  }
+  
+  /**
+   * Selects and returns a monitor for driver.
+   */
+  public IBenchmarkMonitor makeMonitor(final Driver driver) {
+    return new SimpleBenchmarkMonitor(driver);
+  }
+
+  public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state) throws InterruptedException, ExecutionException {
+    Driver driver = Driver.create(config(), sconfig, state, lifetime());
+    
+    Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver));
+    driver.run();
+
+    return monitoringResult.get();
+  }
+
+
+}
