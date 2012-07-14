@@ -34,6 +34,6 @@ public class ExitHandler extends Thread {
   public void run() {
     Log.println("interrupted");
     //TODO: print out result
-    driver.printSolution();
+    driver.finished();
   }
 }

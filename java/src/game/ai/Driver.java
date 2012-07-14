@@ -11,6 +11,7 @@ import game.fitness.StepCountFitness;
 import game.log.Log;
 import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
+import game.stepper.SingleStepper;
 import interrupt.ExitHandler;
 
 import java.io.InputStreamReader;
@@ -37,6 +38,7 @@ public class Driver {
   // TODO is contains on PriorityQueue fast enough?
   
   public final StaticConfig sconfig;
+  public final State initialState;
   public final MultiStepper stepper;
   public Comparator<State> comparator = new FitnessComparator();
   public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
@@ -46,8 +48,9 @@ public class Driver {
 
   public State bestState;
 
-  public Driver(StaticConfig sconfig, Selector strategySelector, Fitness fitness) {
+  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
     this.sconfig = sconfig;
+    this.initialState = initialState;
     this.strategySelector = strategySelector;
     this.fitness = fitness;
     this.stepper = new MultiStepper(sconfig);
@@ -139,6 +142,22 @@ public class Driver {
     System.out.println("A");
     System.out.flush();
   }
+  
+  public void simulateSolution() {
+    if (bestState.solution != null) {
+      State st = initialState;
+      SingleStepper stepper = new SingleStepper(sconfig);
+      Command[] commands = bestState.solution.allCommands();
+
+      Log.println(st);
+      Log.println();
+      for (Command command : commands) {
+        st = stepper.step(st, command);
+        Log.println(st);
+        Log.println();
+      }
+    }
+  }
 
   // kill states that have no strategies left
   private void killState(State state) {
@@ -150,6 +169,11 @@ public class Driver {
     State result = stepper.multistep(state, commands);
     result.solution = new Solution(state.solution, commands.toArray(new Command[commands.size()]), strategy);
     return result;
+  }
+  
+  public void finished() {
+    printSolution();
+    simulateSolution();
   }
 
   // TODO add exception handling?
@@ -167,12 +191,11 @@ public class Driver {
 
     Selector selector = new SimpleSelector(sconfig);
     Fitness scorer = new AverageFitness(new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
-    Driver driver = new Driver(sconfig, selector, scorer);
+    Driver driver = new Driver(sconfig, state, selector, scorer);
     
     ExitHandler.register(driver);
     driver.solve(state);
     ExitHandler.unregister(driver);
-    
-    driver.printSolution();
+    driver.finished();
   }
 }
