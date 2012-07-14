@@ -14,6 +14,7 @@ import game.log.Log;
 import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
 import game.stepper.SingleStepper;
+import game.ui.SimulateWindow;
 import interrupt.ExitHandler;
 
 import java.io.InputStreamReader;
@@ -34,6 +35,18 @@ import util.Pair;
  * @author Thomas Horstmeyer
  */
 
+/**
+ * @author User
+ *
+ */
+/**
+ * @author User
+ *
+ */
+/**
+ * @author User
+ *
+ */
 public class Driver {
 
   public static final int PRIORITY_QUEUE_CAPACITY = 5000;
@@ -56,16 +69,26 @@ public class Driver {
   public int iterations;
   public boolean timed = false;
   public long endTime = 0;
+  public boolean simulate;
 
-  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
+  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, boolean simulate) {
     this.sconfig = sconfig;
     this.initialState = initialState;
     this.strategySelector = strategySelector;
     this.fitness = fitness;
     this.stepper = new MultiStepper(sconfig);
+    this.simulate = simulate;
   }
-
-  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, int lifetime) {
+  
+  
+  /**
+ * @param sconfig
+ * @param initialState
+ * @param strategySelector
+ * @param fitness
+ * @param lifetime max runtime in seconds
+ */
+  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, boolean simulate, int lifetime) {
     this.sconfig = sconfig;
     this.initialState = initialState;
     this.strategySelector = strategySelector;
@@ -73,6 +96,7 @@ public class Driver {
     this.stepper = new MultiStepper(sconfig);
     this.endTime = System.currentTimeMillis() + (lifetime * 1000);
     this.timed = true;
+    this.simulate = simulate;
   }
   
   public void solve(State initial) {
@@ -178,14 +202,29 @@ public class Driver {
   
   public void simulateSolution() {
     if (bestState.solution != null) {
+      SimulateWindow win = null;
+      if(this.simulate) {
+    	win = new SimulateWindow();
+      }
       State st = initialState;
       SingleStepper stepper = new SingleStepper(sconfig);
       Command[] commands = bestState.solution.allCommands();
 
       Log.println(st);
       Log.println();
+      if(this.simulate) {
+    	win.addState(st.board);
+      }
       for (Command command : commands) {
         st = stepper.step(st, command);
+        if(this.simulate) {
+          win.addState(st.board);
+        }
+        Log.println(st);
+      }
+      if(this.simulate) {
+    	win.addState(st.board);
+    	win.setVisible(true);
       }
       Log.println(st);
       Log.println();
@@ -212,15 +251,17 @@ public class Driver {
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
+    boolean simulate = dconfig.simulateWindow();
     dconfig.timeOutFunction();
-    return new Driver(sconfig, state, selector, fitness);
+    return new Driver(sconfig, state, selector, fitness, simulate);
   }
 
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state, int lifetime) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
+    boolean simulate = dconfig.simulateWindow();
     dconfig.timeOutFunction();
-    return new Driver(sconfig, state, selector, fitness, lifetime);
+    return new Driver(sconfig, state, selector, fitness, simulate, lifetime);
   }
  
   public void run() {
@@ -278,20 +319,17 @@ public class Driver {
       }
 
       @Override
-      public void timeOutFunction() {
-    	new Timer().schedule(
-    	  new TimerTask() {
-			@Override
-			public void run() {
-			  System.exit(0);
-			}  		  
-    	  }, 
-    	  10000	//Milliseconds to timeout
-    	);
-      }
+      public void timeOutFunction() {}
+
+	@Override
+	public boolean simulateWindow() {
+		return true;
+	}
+      
+      
       
     };
     
-    Driver.create(stdConfig, sconfig, state).run();
+    Driver.create(stdConfig, sconfig, state, 30).run();
   }
 }

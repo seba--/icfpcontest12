@@ -27,4 +27,11 @@ public interface IDriverConfig {
   
   public void timeOutFunction();
   
+  /**
+   * Return if simulate window should be shown 
+   */
+  
+  public boolean simulateWindow();
+  
+  
 }

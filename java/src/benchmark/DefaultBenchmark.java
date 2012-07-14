@@ -39,6 +39,14 @@ public class DefaultBenchmark extends Benchmark {
       
       @Override
       public void timeOutFunction() {}
+
+      @Override
+      public boolean simulateWindow() {
+		// TODO Auto-generated method stub
+		return false;
+      }
+      
+      
       
     };
   }
