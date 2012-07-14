@@ -9,7 +9,6 @@ import game.fitness.ManhattanDirectedFitness;
 import game.fitness.ScoreFitness;
 import game.fitness.StepCountFitness;
 import game.selector.EverythingButOneSelector;
-import game.selector.SimpleSelector;
 
 public class EverythingButOneSelectorConfig implements IDriverConfig {
 
@@ -27,6 +26,11 @@ public class EverythingButOneSelectorConfig implements IDriverConfig {
   @Override
   public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
     return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
+  }
+
+  @Override
+  public boolean simulateWindow() {
+    return false;
   }
 
 }
