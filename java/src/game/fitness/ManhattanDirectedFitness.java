@@ -29,7 +29,7 @@ public class ManhattanDirectedFitness implements Fitness {
     if (state.lambdaPositions.isEmpty())
       minDistance = minDistance(state.robotCol, state.robotRow, sconfig.liftPositions);
     else {
-      int lambda = sconfig.nextLambda[state.robotCol * state.board.height + state.robotRow];
+      int lambda = state.nextLambda[state.robotCol * state.board.height + state.robotRow];
       minDistance = MathUtil.distanceToPos(state.robotCol, state.robotRow, lambda, state.board.height);
     }
     
