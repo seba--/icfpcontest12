@@ -8,6 +8,7 @@ import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
 import interrupt.ExitHandler;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -57,10 +58,9 @@ public class Driver {
 
     while (!liveStates.isEmpty()) {
       State state = liveStates.peek();
-      
+
       System.out.printf("%s\n\n", state);
-      
-      
+
       Strategy strategy = strategySelector.selectStrategy(state);
 
       if (strategy == null) {
@@ -100,6 +100,7 @@ public class Driver {
       System.out.append(command.shortName());
     }
     System.out.println("A");
+    System.out.flush();
   }
 
   // kill states that have no strategies left
@@ -112,14 +113,20 @@ public class Driver {
     return stepper.multistep(state, commands);
   }
 
-  public static void main(String[] args) {
+  // TODO add exception handling?
+  public static void main(String[] args) throws Exception {
     Selector selector = new SimpleSelector();
     Fitness scorer = new ScoreFitness();
     Driver driver = new Driver(selector, scorer);
 
     // from
     // http://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
-    String text = new Scanner(System.in).useDelimiter("\\A").next();
+    String text;
+    if (args.length > 0) {
+      text = new Scanner(new File(args[0])).useDelimiter("\\A").next();
+    } else {
+      text = new Scanner(System.in).useDelimiter("\\A").next();
+    }
     text = text.replace("\r", "");
     State state = State.parse(text);
 
