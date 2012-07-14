@@ -245,7 +245,7 @@ public class Driver {
     //anderes board -> behalten
     if (!s.board.equals(oldState.board)) return true;
     
-    //TODO: theoretisch können noch mehr verworfen werden, wenn wir mehr aufheben... vllt nicht den aufwand wert.
+    //TODO: theoretisch koennen noch mehr verworfen werden, wenn wir mehr aufheben... vllt nicht den aufwand wert.
    
     //gleiches board, weniger steps -> behalten
     if (s.steps < oldState.steps) return true;
