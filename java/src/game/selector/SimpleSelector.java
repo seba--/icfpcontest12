@@ -6,8 +6,9 @@ import game.StaticConfig;
 import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ConstantStrategy;
-import game.strategy.NextLambdaStrategy;
-import game.strategy.NextManhattanLift;
+import game.strategy.SomeLambdaStrategy;
+import game.strategy.ClosestManhattanLambda;
+import game.strategy.ClosestManhattanLift;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,9 +25,9 @@ public class SimpleSelector implements Selector {
   public final List<Strategy> strategies = new ArrayList<Strategy>();
   
   public SimpleSelector(StaticConfig sconfig) {
-    strategies.add(new NextLambdaStrategy());
-    strategies.add(new NextManhattanLift(sconfig));    
-    // strategies.add(new NextManhattanLambda());    
+    strategies.add(new SomeLambdaStrategy());
+    strategies.add(new ClosestManhattanLift(sconfig));    
+    strategies.add(new ClosestManhattanLambda(sconfig));    
     strategies.add(new ConstantStrategy(Command.Left));
     strategies.add(new ConstantStrategy(Command.Right));
     strategies.add(new ConstantStrategy(Command.Up));

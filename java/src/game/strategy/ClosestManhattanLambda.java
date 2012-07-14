@@ -13,11 +13,11 @@ import java.util.List;
  * @author horstmey
  *
  */
-public class NextManhattanLambda extends Strategy {
+public class ClosestManhattanLambda extends Strategy {
 
   public final StaticConfig sconfig;
   
-  public NextManhattanLambda(StaticConfig sconfig) {
+  public ClosestManhattanLambda(StaticConfig sconfig) {
     this.sconfig = sconfig;
   }
   

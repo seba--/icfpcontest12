@@ -15,7 +15,7 @@ import game.strategy.tom.Helpers;
  * @author horstmey
  *
  */
-public class NextLambdaStrategy extends Strategy {
+public class SomeLambdaStrategy extends Strategy {
     
   @Override
   public boolean wantsToApply(State s) {

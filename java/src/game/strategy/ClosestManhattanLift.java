@@ -8,11 +8,11 @@ import game.strategy.tom.Helpers;
 
 import java.util.List;
 
-public class NextManhattanLift extends Strategy {
+public class ClosestManhattanLift extends Strategy {
 
   private final StaticConfig sconfig;
   
-  public NextManhattanLift(StaticConfig sconfig) {
+  public ClosestManhattanLift(StaticConfig sconfig) {
     this.sconfig = sconfig;
   }
   
