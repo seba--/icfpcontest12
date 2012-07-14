@@ -67,7 +67,7 @@ public class State {
 
   public State(StaticConfig sconfig, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, Set<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsUntilNextRise) {
     this.staticConfig = sconfig;
-    this.board = board;
+    this.board = board.clone();
     this.score = score;
     this.ending = Ending.None;
     this.activePositions = new TreeSet<Integer>(activePositions);
