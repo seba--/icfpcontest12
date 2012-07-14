@@ -14,9 +14,24 @@ public class WallFollowingStrategy extends Strategy {
 
   @Override
   public List<Command> apply(State state) {
-    
+    final int numberOfSteps = 4;
     int robotx = state.robotCol;
     int roboty = state.robotRow;
+    
+    List<Command> cl = new ArrayList<Command>(5);
+    
+    for (int i = 0; i < numberOfSteps; i++) {
+      Command cmd = doStep(state, robotx, roboty);
+      if (cmd != null) {
+        cl.add(cmd);
+      }
+    }
+    
+    return cl;
+  }
+    
+  public Command doStep(State state, int robotx, int roboty) {
+
     if (robotx == 0 || roboty == 0 || robotx == state.board.width-1 || robotx == state.board.height-1) {
       // robot is on outside wall, nothing to do here
       return null;
@@ -130,7 +145,7 @@ public class WallFollowingStrategy extends Strategy {
       return null;
     }
     
-    return nextStep;
+    return nextStep.get(0);
 
     
   }

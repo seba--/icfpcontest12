@@ -20,13 +20,22 @@ public class MapUtil {
    int[] integralBoard = new int[board.grid.length];
    
    int currVal = 0;
-   for (int i = 0; i < board.grid.length; i++) {
-     if (board.grid[i] == cellType) {
-       currVal++;
+   for (int i = 0; i < board.width; i++) {
+     for (int j = 0; j < board.height; j++) {
+       currVal = (board.grid[i+j*board.width] == cellType ? 1 : 0);
+
+       if (i==0 && j==0) {
+         integralBoard[0] = currVal;
+       } else if (j == 0) { // y = 0
+         integralBoard[i + j*board.width] = currVal + integralBoard[(i-1)+(j*board.width)];
+       } else if (i == 0) { // x = 0
+         integralBoard[i + j*board.width] = currVal + integralBoard[i + ((j-1)*board.width)];
+       } else {
+         integralBoard[i + j*board.width] = currVal + integralBoard[i + (j-1)*board.width] + integralBoard[(i-1)+j*board.width] - integralBoard[(i-1) + (j-1)*board.width];
+       }
      }
-     integralBoard[i] = currVal;
    }
-    
+   
     return integralBoard;
   }
   
