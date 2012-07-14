@@ -249,8 +249,10 @@ public class Board {
       List<Cell> row = new ArrayList<Cell>();
       flippedBoard.add(row);
       
-      for (int i = 0; i < line.length(); ++i)
+      for (int i = 0; i < line.length(); ++i) {
+    	if((int)line.charAt(i) == 13) continue;
         row.add(Cell.parse(line.charAt(i)));
+      }
       
       colCount = Math.max(colCount, line.length());
     }
