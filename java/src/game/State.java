@@ -4,6 +4,7 @@ import game.ai.Solution;
 import game.ai.Strategy;
 
 import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -73,7 +74,20 @@ public class State {
    */
   public int nextLambdaStrategyIndex;
 
-  public State(Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, Set<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise) {
+  /**
+   * Position of next lambda at index position: nextLambda[robot] == position of
+   * next lambda.
+   */
+  public int[] nextLambda;
+
+
+  /**
+   * Whether the {@code nextLambda} and {@code distanceToNextLambda} fields are
+   * shared. Used to implement copy-on-write.
+   */
+  public boolean nextLambdaShared;
+
+  public State(Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, Set<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise, int[] nextLambda) {
     this.board = board.clone();
     this.score = score;
     this.ending = Ending.None;
@@ -90,6 +104,9 @@ public class State {
     this.waterLevel = waterLevel;
     this.stepsUnderwater = stepsUnderwater;
     this.stepsSinceLastRise = stepsSinceLastRise;
+
+    this.nextLambda = nextLambda;
+    this.nextLambdaShared = true;
   }
 
   public State(Board board) {
@@ -133,6 +150,95 @@ public class State {
 
     this.robotCol = rcol;
     this.robotRow = rrow;
+
+    this.nextLambda = new int[board.grid.length];
+    Arrays.fill(nextLambda, -1);
+    this.nextLambdaShared = false;
+    fillNextLambda(lambdaPositions);
+  }
+
+  /**
+   * Fills the {@link #nextLambda} array
+   * given the positions of all lambdas.
+   */
+  private void fillNextLambda(Set<Integer> positions) {
+    // copy on write
+    if (nextLambdaShared) {
+      nextLambdaShared = false;
+      nextLambda = nextLambda.clone();
+    }
+
+    int[] queue = new int[2 * board.grid.length];
+    int head = 0;
+    int tail = 0;
+
+    // initialize queue with known positions
+    for (int position : positions) {
+      queue[tail++] = position;
+      queue[tail++] = position;
+    }
+
+    // process queue
+    while (head < tail) {
+      int current = queue[head++];
+      int lambda = queue[head++];
+
+      if (nextLambda[current] < 0) {
+        nextLambda[current] = lambda;
+
+        int neighbor = board.left(current);
+        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+          queue[tail++] = neighbor;
+          queue[tail++] = lambda;
+          nextLambda[neighbor] = -2;
+        }
+
+        neighbor = board.up(current);
+        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+          queue[tail++] = neighbor;
+          queue[tail++] = lambda;
+          nextLambda[neighbor] = -2;
+        }
+
+        neighbor = board.right(current);
+        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+          queue[tail++] = neighbor;
+          queue[tail++] = lambda;
+          nextLambda[neighbor] = -2;
+        }
+
+        neighbor = board.down(current);
+        if (nextLambda[neighbor] == -1 && board.grid[neighbor] != Cell.Wall && board.grid[neighbor] != Cell.Lift) {
+          queue[tail++] = neighbor;
+          queue[tail++] = lambda;
+          nextLambda[neighbor] = -2;
+        }
+      }
+    }
+  }
+
+  /**
+   * Clear the information about nearest lambdas.
+   */
+  private void clearNextLambda() {
+    // copy on write
+    if (nextLambdaShared) {
+      nextLambdaShared = false;
+      nextLambda = nextLambda.clone();
+    }
+
+    // clear data
+    Arrays.fill(nextLambda, -1);
+  }
+
+  /**
+   * Remove a lambda and update the information about nearest lambdas.
+   */
+  public void removeLambda(int col, int row) {
+    // TODO make incremental
+    lambdaPositions.remove(col * board.height + row);
+    clearNextLambda();
+    fillNextLambda(lambdaPositions);
   }
 
   public State makeFinal() {
@@ -238,6 +344,6 @@ public class State {
   }
 
   public State clone() {
-    return new State(board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsSinceLastRise);
+    return new State(board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsSinceLastRise, nextLambda);
   }
 }

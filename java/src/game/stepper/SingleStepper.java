@@ -53,7 +53,7 @@ public class SingleStepper {
     switch (next) {
     case Lambda:
       ++st.collectedLambdas;
-      st.lambdaPositions.remove(nextCol * st.board.height + nextRow);
+      st.removeLambda(nextCol, nextRow);
     case Empty:
     case Earth:
       moveRobot(st, nextCol, nextRow);

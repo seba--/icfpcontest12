@@ -18,6 +18,7 @@ import interrupt.ExitHandler;
 
 import java.io.InputStreamReader;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -44,7 +45,8 @@ public class Driver {
   public final MultiStepper stepper;
   public Comparator<State> comparator = new FitnessComparator();
   public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
-  public Set<State> seenStates = new HashSet<State>();
+  //public Set<State> seenStates = new HashSet<State>();
+  public HashMap<Integer, State> seenStates = new HashMap<Integer, State>();
   public Fitness fitness;
   public Selector strategySelector;
 
@@ -104,8 +106,8 @@ public class Driver {
         if (commands != null) {
           assert (!commands.isEmpty());
           State newState = computeNextState(state, commands, strategy);
-          if (!seenStates.contains(newState)) {
-            seenStates.add(newState);
+          if (stateShouldBeConsidered(newState)) {
+            seenStates.put(newState.board.hashCode(), newState);
 //            Log.printf("%s => %8d old fitness, %8d new fitness, %12d\n", commands.get(0), state.fitness, fitness.evaluate(newState), state.hashCode());
 
             if (newState.score > bestState.score) {
@@ -196,6 +198,28 @@ public class Driver {
     ExitHandler.unregister(this);
     
     finished();
+  }
+  
+  private boolean stateShouldBeConsidered(State s) {
+    State oldState = seenStates.get(s.board.hashCode());
+    
+    if (oldState == null) return true;
+    
+    //TODO: check improvement
+    boolean consider = true;
+    
+    //anderes board -> behalten
+    if (!s.board.equals(oldState.board)) return true;
+    
+    //TODO: theoretisch können noch mehr verworfen werden, wenn wir mehr aufheben... vllt nicht den aufwand wert.
+   
+    //gleiches board, weniger steps -> behalten
+    if (s.steps < oldState.steps) return true;
+    
+    //gleiches board, weniger stepsUnderwater -> behalten
+    if (s.stepsUnderwater < oldState.stepsUnderwater) return true;
+    
+    return false;
   }
   
   // TODO add exception handling?

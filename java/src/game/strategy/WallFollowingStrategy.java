@@ -1,10 +1,10 @@
 package game.strategy;
 
-import game.Board;
 import game.Cell;
 import game.Command;
 import game.State;
 import game.ai.Strategy;
+import game.util.MapUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class WallFollowingStrategy extends Strategy {
     
     // get the 8-neighborhood
     
-    Cell[] robot8neigh = get8neigh(robotx, roboty, state.board);
+    Cell[] robot8neigh = MapUtil.get8neigh(robotx, roboty, state.board);
     
     // compute the number of wall elements top, bottom, left, right
     int[] wallSum = computeWallSum(robot8neigh);
@@ -79,25 +79,25 @@ public class WallFollowingStrategy extends Strategy {
         
         if (smallestIdxs[i] == 0) {// go down
           if ((robot8neigh[1] != Cell.Wall) && (robot8neigh[7] != Cell.FallingRock)){ // robot can actually move down
-            new8neigh = get8neigh(robotx, roboty-1, state.board);
+            new8neigh = MapUtil.get8neigh(robotx, roboty-1, state.board);
           } else {
             continue;
           }
         } else if (smallestIdxs[i] == 1) { // go up
           if (robot8neigh[7] != Cell.Wall) { // robot can actually move up
-            new8neigh = get8neigh(robotx, roboty+1, state.board);
+            new8neigh = MapUtil.get8neigh(robotx, roboty+1, state.board);
           } else {
             continue;
           }
         } else if (smallestIdxs[i] == 2) { // go left
           if (robot8neigh[3] != Cell.Wall) {
-            new8neigh = get8neigh(robotx-1, roboty, state.board);
+            new8neigh = MapUtil.get8neigh(robotx-1, roboty, state.board);
           } else {
             continue;
           }
         } else { // go right
           if (robot8neigh[5] != Cell.Wall) {
-            new8neigh = get8neigh(robotx+1, roboty, state.board);
+            new8neigh = MapUtil.get8neigh(robotx+1, roboty, state.board);
           } else {
             continue;
           }
@@ -148,24 +148,6 @@ public class WallFollowingStrategy extends Strategy {
     return nextStep.get(0);
 
     
-  }
-  
-  /**
-   * get 8-neighborhood
-   * @param x should be > 0
-   * @param y should be > 0
-   * @param b board
-   * @return
-   */
-  public Cell[] get8neigh(int x, int y, Board b) {
-    Cell[] robot8neigh = new Cell[3*3];
-    for (int j = 0; j < 3; j++) {
-      for (int i = 0; i < 3; i++) {
-        robot8neigh[i+3*j] = b.get(x-1+i, y-1+j);
-      }
-    }
-    
-    return robot8neigh;
   }
 
   public int[] computeWallSum(Cell[] robot8neigh) {
