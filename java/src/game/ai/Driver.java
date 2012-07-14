@@ -236,9 +236,6 @@ public class Driver {
     
     if (oldState == null) return true;
     
-    //TODO: check improvement
-    boolean consider = true;
-    
     //anderes board -> behalten
     if (!s.board.equals(oldState.board)) return true;
     
