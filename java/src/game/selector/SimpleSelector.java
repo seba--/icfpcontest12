@@ -11,6 +11,7 @@ import game.strategy.ClosestManhattanLambda;
 import game.strategy.ClosestManhattanLift;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,6 +34,11 @@ public class SimpleSelector implements Selector {
     strategies.add(new ConstantStrategy(Command.Up));
     strategies.add(new ConstantStrategy(Command.Down));
     strategies.add(new ConstantStrategy(Command.Wait));
+    
+  }
+  
+  public SimpleSelector(StaticConfig sconfig, Strategy ... strategies) {
+    this.strategies.addAll(Arrays.asList(strategies));
   }
   
   /* (non-Javadoc)
