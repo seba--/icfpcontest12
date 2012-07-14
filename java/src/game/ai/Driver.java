@@ -8,6 +8,7 @@ import game.fitness.AverageFitness;
 import game.fitness.ManhattanDirectedFitness;
 import game.fitness.Scoring;
 import game.fitness.StepCountFitness;
+import game.log.Log;
 import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
 import interrupt.ExitHandler;
@@ -67,8 +68,8 @@ public class Driver {
     // choose 5000k more cleverly
     // explain final solution (what strategies)
 
-    System.out.printf(" iter  |  score  |  live   |  dead   \n");
-    System.out.printf(" ------+---------+---------+---------\n");
+    Log.printf(" iter  |  score  |  live   |  dead   \n");
+    Log.printf(" ------+---------+---------+---------\n");
 
     while (!liveStates.isEmpty()) {
       iterations++;
@@ -76,7 +77,7 @@ public class Driver {
       State state = liveStates.peek();
 
       if (iterations % 5000 == 0) {
-        System.out.printf("%4dk  |  %5d  |  %4dk  |  %4dk  \n",
+        Log.printf("%4dk  |  %5d  |  %4dk  |  %4dk  \n",
             iterations / 1000,
             bestState.score,
             liveStates.size() / 1000,
@@ -122,11 +123,11 @@ public class Driver {
     // while already outputting... (use StringBuilder perhaps?!)
 
     // print statistics
-    System.out.printf("\nStrategy applications:\n");
+    Log.printf("\nStrategy applications:\n");
     for (Strategy strategy : strategySelector.getUsedStrategies()) {
-      System.out.printf("  %3dk %s\n", strategy.applicationCount / 1000, strategy);
+      Log.printf("  %3dk %s\n", strategy.applicationCount / 1000, strategy);
     }
-    System.out.println();
+    Log.println();
 
     // print solution
     if (bestState.solution != null) {

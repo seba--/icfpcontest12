@@ -1,6 +1,7 @@
 package interrupt;
 
 import game.ai.Driver;
+import game.log.Log;
 
 import java.util.HashMap;
 
@@ -31,7 +32,7 @@ public class ExitHandler extends Thread {
   }
 
   public void run() {
-    System.out.println("interrupted");
+    Log.println("interrupted");
     //TODO: print out result
     driver.printSolution();
   }
