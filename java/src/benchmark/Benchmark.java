@@ -49,7 +49,7 @@ public abstract class Benchmark {
     for (String arg : args)
       results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
     
-    
+    benchmark.executor.shutdown();
   }
   
   /**
@@ -77,7 +77,7 @@ public abstract class Benchmark {
     
     Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver));
     driver.run();
-    
+
     return monitoringResult.get();
   }
   
