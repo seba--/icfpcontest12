@@ -27,9 +27,6 @@ public class Driver {
 
   public static final int PRIORITY_QUEUE_CAPACITY = 5000;
 
-  // state choosing: compute one integer score, store in state, use priority
-  // queue.
-
   // TODO is contains on PriorityQueue fast enough?
   public MultiStepper stepper = new MultiStepper();
   public Comparator<State> comparator = new FitnessComparator();
@@ -54,17 +51,23 @@ public class Driver {
 
     // TODO when to stop?
 
-    // TODO set scorerScore
-    
     int iterations = 0;
+
+    System.out.printf(" iter  |  score  |  live   |  dead   \n");
+    System.out.printf(" ------+---------+---------+---------\n");
 
     while (!liveStates.isEmpty()) {
       iterations++;
       
       State state = liveStates.peek();
 
-      if (iterations % 5000 == 0)
-        System.out.println(iterations + "\t: " + bestState.score);
+      if (iterations % 5000 == 0) {
+        System.out.printf("%4dk  |  %5d  |  %4dk  |  %4dk  \n",
+            iterations / 1000,
+            bestState.score,
+            liveStates.size() / 1000,
+            deadStates.size() / 1000);
+      }
 
       Strategy strategy = strategySelector.selectStrategy(state);
 
