@@ -186,9 +186,11 @@ public class Driver {
       Log.println();
       for (Command command : commands) {
         st = stepper.step(st, command);
+        Log.println(st);
+        Log.println();
       }
-      Log.println(st);
-      Log.println();
+//      Log.println(st);
+//      Log.println();
     }
   }
 
@@ -212,14 +214,12 @@ public class Driver {
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    dconfig.timeOutFunction();
     return new Driver(sconfig, state, selector, fitness);
   }
 
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state, int lifetime) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    dconfig.timeOutFunction();
     return new Driver(sconfig, state, selector, fitness, lifetime);
   }
  
@@ -273,22 +273,8 @@ public class Driver {
       public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
         return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
       }
-
-      @Override
-      public void timeOutFunction() {
-    	new Timer().schedule(
-    	  new TimerTask() {
-			@Override
-			public void run() {
-			  System.exit(0);
-			}  		  
-    	  }, 
-    	  10000	//Milliseconds to timeout
-    	);
-      }
-      
     };
     
-    Driver.create(stdConfig, sconfig, state).run();
+    Driver.create(stdConfig, sconfig, state, 10).run();
   }
 }
