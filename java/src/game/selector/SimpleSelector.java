@@ -2,18 +2,16 @@ package game.selector;
 
 import game.Command;
 import game.State;
+import game.StaticConfig;
 import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ConstantStrategy;
 import game.strategy.NextLambdaStrategy;
-import game.strategy.NextManhattanLambda;
 import game.strategy.NextManhattanLift;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A simple strategy for selecting a strategy.
@@ -25,9 +23,9 @@ import java.util.Set;
 public class SimpleSelector implements Selector {
   public final List<Strategy> strategies = new ArrayList<Strategy>();
   
-  {
+  public SimpleSelector(StaticConfig sconfig) {
     strategies.add(new NextLambdaStrategy());
-    strategies.add(new NextManhattanLift());    
+    strategies.add(new NextManhattanLift(sconfig));    
     // strategies.add(new NextManhattanLambda());    
     strategies.add(new ConstantStrategy(Command.Left));
     strategies.add(new ConstantStrategy(Command.Right));

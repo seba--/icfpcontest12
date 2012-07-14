@@ -5,6 +5,7 @@ import game.Cell;
 import game.Command;
 import game.Ending;
 import game.State;
+import game.StaticConfig;
 import game.fitness.Scoring;
 
 /**
@@ -12,6 +13,12 @@ import game.fitness.Scoring;
  */
 public class SingleStepper {
 
+  public final StaticConfig sconfig;
+  
+  public SingleStepper(StaticConfig sconfig) {
+    this.sconfig = sconfig;
+  }
+  
   protected void moveRobot(State st, Command cmd) {
     int nextCol;
     int nextRow;
@@ -158,13 +165,12 @@ public class SingleStepper {
     /*
      * update water level
      */
-    if (st.staticConfig.floodingRate > 0) {
-      if (st.stepsUntilNextRise == 1) {
+    if (sconfig.floodingRate > 0) {
+      st.stepsSinceLastRise++;
+      if (st.stepsSinceLastRise + 1 == sconfig.floodingRate) {
         st.waterLevel++;
-        st.stepsUntilNextRise = st.staticConfig.floodingRate;
+        st.stepsSinceLastRise = 0;
       }
-      else
-        st.stepsUntilNextRise--;
     }
   }
 
@@ -183,7 +189,7 @@ public class SingleStepper {
     else
       st.stepsUnderwater = 0;
     
-    if (st.stepsUnderwater > st.staticConfig.waterResistance)
+    if (st.stepsUnderwater > sconfig.waterResistance)
       st.ending = Ending.LoseWater;
   }
   

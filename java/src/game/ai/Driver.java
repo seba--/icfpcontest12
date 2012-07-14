@@ -3,6 +3,7 @@ package game.ai;
 import game.Command;
 import game.Ending;
 import game.State;
+import game.StaticConfig;
 import game.fitness.AverageFitness;
 import game.fitness.ManhattanDirectedFitness;
 import game.fitness.Scoring;
@@ -19,6 +20,8 @@ import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
 
+import util.Pair;
+
 /**
  * The main driver of the artifical intelligence.
  * 
@@ -31,7 +34,9 @@ public class Driver {
   public static final int PRIORITY_QUEUE_CAPACITY = 5000;
 
   // TODO is contains on PriorityQueue fast enough?
-  public MultiStepper stepper = new MultiStepper();
+  
+  public final StaticConfig sconfig;
+  public final MultiStepper stepper;
   public Comparator<State> comparator = new FitnessComparator();
   public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
   public Set<State> deadStates = new HashSet<State>();
@@ -40,9 +45,11 @@ public class Driver {
 
   public State bestState;
 
-  public Driver(Selector strategySelector, Fitness fitness) {
+  public Driver(StaticConfig sconfig, Selector strategySelector, Fitness fitness) {
+    this.sconfig = sconfig;
     this.strategySelector = strategySelector;
     this.fitness = fitness;
+    this.stepper = new MultiStepper(sconfig);
   }
 
   public void solve(State initial) {
@@ -146,10 +153,6 @@ public class Driver {
 
   // TODO add exception handling?
   public static void main(String[] args) throws Exception {
-    Selector selector = new SimpleSelector();
-    Fitness scorer = new AverageFitness(new StepCountFitness(), new ManhattanDirectedFitness());
-    Driver driver = new Driver(selector, scorer);
-
     // from
     // http://weblogs.java.net/blog/pat/archive/2004/10/stupid_scanner_1.html
     String text;
@@ -159,9 +162,16 @@ public class Driver {
       text = new Scanner(System.in).useDelimiter("\\A").next();
     }
     text = text.replace("\r", "");
-    State state = State.parse(text);
+    Pair<StaticConfig, State> p = State.parse(text);
+    StaticConfig sconfig = p.a;
+    State state = p.b;
 
+    Selector selector = new SimpleSelector(sconfig);
+    Fitness scorer = new AverageFitness(new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
+    Driver driver = new Driver(sconfig, selector, scorer);
     ExitHandler.register(driver);
+
+    
     driver.solve(state);
     driver.printSolution();
   }

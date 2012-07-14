@@ -4,10 +4,13 @@ import game.Cell;
 import game.Command;
 import game.Ending;
 import game.State;
+import game.StaticConfig;
 import game.stepper.SingleStepper;
 import junit.framework.Assert;
 
 import org.junit.Test;
+
+import util.Pair;
 
 public class TestSingleStepper {
 
@@ -67,8 +70,8 @@ public class TestSingleStepper {
     return cmds;
   }
   
-  protected State runStepper(State st, Command[] cmds) {
-    SingleStepper stepper = new SingleStepper();
+  protected State runStepper(StaticConfig sconfig, State st, Command[] cmds) {
+    SingleStepper stepper = new SingleStepper(sconfig);
     
     System.out.println(st.board);
     System.out.println();
@@ -89,8 +92,9 @@ public class TestSingleStepper {
     System.out.println("testMap1");
     
     String map1 = TestBoard.map1();
-    State st = State.parse(map1);
-    st = runStepper(st, solution1Map1());
+    Pair<StaticConfig, State> p = State.parse(map1);
+    State st = p.b;
+    st = runStepper(p.a, st, solution1Map1());
     
     Assert.assertEquals(Ending.Win, st.ending);
     Assert.assertEquals(3, st.collectedLambdas);
@@ -106,8 +110,9 @@ public class TestSingleStepper {
     System.out.println("testMap1variant");
     
     String map1 = TestBoard.map1();
-    State st = State.parse(map1);
-    st = runStepper(st, solution2Map1());
+    Pair<StaticConfig, State> p = State.parse(map1);
+    State st = p.b;
+    st = runStepper(p.a, st, solution2Map1());
     
     Assert.assertEquals(3, st.robotCol);
     Assert.assertEquals(4, st.robotRow);
@@ -121,8 +126,9 @@ public class TestSingleStepper {
     System.out.println("testFloodMap1");
     
     String map1 = TestBoard.floodMap1();
-    State st = State.parse(map1);
-    st = runStepper(st, drowning1FloodMap1());
+    Pair<StaticConfig, State> p = State.parse(map1);
+    State st = p.b;
+    st = runStepper(p.a, st, drowning1FloodMap1());
     
     Assert.assertEquals(Ending.LoseWater, st.ending);
   }

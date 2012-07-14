@@ -1,12 +1,11 @@
 package game.strategy;
 
-import java.util.List;
-
-import game.Cell;
 import game.Command;
 import game.State;
 import game.ai.Strategy;
 import game.strategy.tom.Helpers;
+
+import java.util.List;
 /**
  * Goes to nearest lambda or exit if no  lambdas left
  * 

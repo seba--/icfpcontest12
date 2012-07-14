@@ -3,11 +3,16 @@ package game.stepper;
 import game.Command;
 import game.Ending;
 import game.State;
+import game.StaticConfig;
 import game.fitness.Scoring;
 
 import java.util.List;
 
 public class MultiStepper extends SingleStepper {
+  public MultiStepper(StaticConfig sconfig) {
+    super(sconfig);
+  }
+  
   public State multistep(State st, List<Command> cmds) {
     State newSt = st.clone();
 

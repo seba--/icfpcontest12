@@ -1,11 +1,14 @@
 package unittest;
 
-import junit.framework.Assert;
 import game.Board;
 import game.Cell;
 import game.State;
+import game.StaticConfig;
+import junit.framework.Assert;
 
 import org.junit.Test;
+
+import util.Pair;
 
 public class TestBoard {
 
@@ -100,10 +103,10 @@ public class TestBoard {
   public void testFloodMap1() {
     String floodMap1 = floodMap1();
     
-    State st = State.parse(floodMap1);
+    Pair<StaticConfig, State> p = State.parse(floodMap1);
     
-    Assert.assertEquals(1, st.waterLevel);
-    Assert.assertEquals(8, st.staticConfig.floodingRate);
-    Assert.assertEquals(5, st.staticConfig.waterResistance);
+    Assert.assertEquals(1, p.b.waterLevel);
+    Assert.assertEquals(8, p.a.floodingRate);
+    Assert.assertEquals(5, p.a.waterResistance);
   }  
 }

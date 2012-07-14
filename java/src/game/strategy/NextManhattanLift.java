@@ -1,14 +1,21 @@
 package game.strategy;
 
-import java.util.List;
-
 import game.Command;
 import game.State;
+import game.StaticConfig;
 import game.ai.Strategy;
 import game.strategy.tom.Helpers;
 
+import java.util.List;
+
 public class NextManhattanLift extends Strategy {
 
+  private final StaticConfig sconfig;
+  
+  public NextManhattanLift(StaticConfig sconfig) {
+    this.sconfig = sconfig;
+  }
+  
   @Override
   public List<Command> apply(State s) {
     
@@ -22,7 +29,7 @@ public class NextManhattanLift extends Strategy {
     
     
     
-    for(int p : s.staticConfig.liftPositions) {
+    for(int p : sconfig.liftPositions) {
       int col = p / s.board.height;
       int row = p % s.board.height;
       int d = Helpers.manhattan(s.robotCol, s.robotRow, col, row); 

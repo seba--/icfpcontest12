@@ -8,12 +8,12 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import util.Pair;
+
 /**
  * @author seba
  */
 public class State {
-
-  public final StaticConfig staticConfig;
 
   public Board board;
   public int robotCol;
@@ -66,15 +66,14 @@ public class State {
    */
   public int waterLevel;
   public int stepsUnderwater;
-  public int stepsUntilNextRise;
+  public int stepsSinceLastRise;
 
   /*
    * used by NextLambdaStrategy
    */
   public int nextLambdaStrategyIndex;
 
-  public State(StaticConfig sconfig, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, Set<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsUntilNextRise) {
-    this.staticConfig = sconfig;
+  public State(Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, Set<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise) {
     this.board = board.clone();
     this.score = score;
     this.ending = Ending.None;
@@ -90,18 +89,17 @@ public class State {
 
     this.waterLevel = waterLevel;
     this.stepsUnderwater = stepsUnderwater;
-    this.stepsUntilNextRise = stepsUntilNextRise;
+    this.stepsSinceLastRise = stepsSinceLastRise;
   }
 
-  public State(StaticConfig sconfig, Board board) {
-    this(sconfig, board, 0);
+  public State(Board board) {
+    this(board, 0);
   }
 
   /**
    * Auto-initialize state from initial board.
    */
-  public State(StaticConfig sconfig, Board board, int waterLevel) {
-    this.staticConfig = sconfig;
+  public State(Board board, int waterLevel) {
     this.board = board;
     this.activePositions = new TreeSet<Integer>();
     this.score = 0;
@@ -110,7 +108,7 @@ public class State {
     this.steps = 0;
     this.waterLevel = waterLevel;
     this.stepsUnderwater = 0;
-    this.stepsUntilNextRise = sconfig.floodingRate;
+    this.stepsSinceLastRise = 0;
     this.lambdaPositions = new TreeSet<Integer>();
 
     int rcol = -1;
@@ -153,7 +151,7 @@ public class State {
     return 75 * (collectedLambdas + lambdaPositions.size()) - steps;
   }
 
-  public static State parse(String s) {
+  public static Pair<StaticConfig, State> parse(String s) {
     String[] parts = s.split("\n\n");
     Board board = Board.parse(parts[0]);
 
@@ -187,8 +185,9 @@ public class State {
     }
 
     StaticConfig sconfig = new StaticConfig(liftPositionsArray, floodingRate, waterResistance);
+    State st = new State(board, waterLevel);
 
-    return new State(sconfig, board, waterLevel);
+    return Pair.create(sconfig, st);
   }
 
   @Override
@@ -211,7 +210,7 @@ public class State {
     result = prime * result + score;
     result = prime * result + steps;
     result = prime * result + stepsUnderwater;
-    result = prime * result + stepsUntilNextRise;
+    result = prime * result + stepsSinceLastRise;
     result = prime * result + waterLevel;
     return result;
   }
@@ -244,7 +243,7 @@ public class State {
       return false;
     if (stepsUnderwater != other.stepsUnderwater)
       return false;
-    if (stepsUntilNextRise != other.stepsUntilNextRise)
+    if (stepsSinceLastRise != other.stepsSinceLastRise)
       return false;
     if (waterLevel != other.waterLevel)
       return false;
@@ -252,6 +251,6 @@ public class State {
   }
 
   public State clone() {
-    return new State(staticConfig, board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsUntilNextRise);
+    return new State(board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsSinceLastRise);
   }
 }

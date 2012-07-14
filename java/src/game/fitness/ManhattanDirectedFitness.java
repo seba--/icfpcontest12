@@ -1,6 +1,7 @@
 package game.fitness;
 
 import game.State;
+import game.StaticConfig;
 import game.ai.Fitness;
 
 import java.util.Set;
@@ -13,12 +14,18 @@ import java.util.Set;
  */
 public class ManhattanDirectedFitness implements Fitness {
 
+  private final StaticConfig sconfig;
+  
+  public ManhattanDirectedFitness(StaticConfig sconfig) {
+    this.sconfig = sconfig;
+  }
+  
   @Override
   public int evaluate(State state) {
     int maxDistance = state.board.height + state.board.width;
     int minDistance;
     if (state.lambdaPositions.isEmpty())
-      minDistance = minDistance(state.robotCol, state.robotRow, state.staticConfig.liftPositions);
+      minDistance = minDistance(state.robotCol, state.robotRow, sconfig.liftPositions);
     else
       minDistance = minDistance(state.robotCol, state.robotRow, state.lambdaPositions);
     
