@@ -1,6 +1,8 @@
 package benchmark;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,5 +45,21 @@ public class MonitorBenchmarkResult implements IBenchmarkResult {
     sb.append("time         ,");
     sb.append(results.get(0).b.columnHeadings());
     return sb.toString();
+  }
+  
+  public IBenchmarkResult merge(List<IBenchmarkResult> others) {
+    MonitorBenchmarkResult result = new MonitorBenchmarkResult();
+    for (IBenchmarkResult other : others)
+      if (other instanceof MonitorBenchmarkResult)
+        result.results.addAll(((MonitorBenchmarkResult) other).results);
+    
+    Collections.sort(results, new Comparator<Pair<Long, IBenchmarkResult>>() {
+      @Override
+      public int compare(Pair<Long, IBenchmarkResult> o1, Pair<Long, IBenchmarkResult> o2) {
+        return Long.compare(o1.a, o2.a);
+      }
+    });
+    
+    return result;
   }
 }
