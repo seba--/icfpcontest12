@@ -71,7 +71,7 @@ public class State {
     // collect all states from here to the initial state
     List<State> states = new ArrayList<State>();
     State state = this;
-    while (state != null) {
+    while (state.parent != null) {
       states.add(state);
       state = state.parent;
     }
@@ -80,7 +80,8 @@ public class State {
     List<Command> result = new ArrayList<Command>();
     ListIterator<State> iterator = states.listIterator(states.size());
     while (iterator.hasPrevious()) {
-      result.addAll(iterator.previous().fromParent);
+      State prev = iterator.previous();
+      result.addAll(prev.fromParent);
     }
 
     return result;
@@ -138,7 +139,7 @@ public class State {
 
     for (int col = 0; col < board.width; ++col)
       for (int row = 0; row < board.height; ++row)
-        switch (board.get(col,row)) {
+        switch (board.get(col, row)) {
         case Robot:
           rcol = col;
           rrow = row;
@@ -185,6 +186,26 @@ public class State {
 
     return new State(new StaticConfig(floodingRate, waterResistance), board, waterLevel);
   }
+
+  
+  private Coordinate[] lambdaPositions = null;
+  /**
+   * NOTE: The returned array is shared and should not be mutated!
+   * 
+   * @return an array of lambda positions
+   */
+  public Coordinate[] getLambdaPositions() {
+    if (lambdaPositions == null) {
+      lambdaPositions = new Coordinate[lambdasLeft];
+      for (int i = lambdasLeft - 1, j = 0; i >= 0; i--) {
+        while (board.grid[j] != Cell.Lambda) j++;
+        int c = j % board.height;
+        lambdaPositions[i] = new Coordinate(c, j - c);
+      }
+    }
+    return lambdaPositions;
+  }
+  
   
   @Override
   public String toString() {
@@ -248,9 +269,8 @@ public class State {
       return false;
     return true;
   }
-  
+
   public State clone() {
     return new State(staticConfig, board, activePositions, score, robotCol, robotRow, lambdasLeft, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsUntilNextRise);
-  }
-  
+  }  
 }
