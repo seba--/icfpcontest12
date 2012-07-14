@@ -21,7 +21,13 @@ public class State {
   public int robotCol;
   public int robotRow;
   public int collectedLambdas;
+  
+  
+  /**
+   * Positions of lambdas in board.
+   */
   public Set<Integer> lambdaPositions;
+  
   public Ending ending;
   
   /**
@@ -99,13 +105,13 @@ public class State {
     this.board = board;
     this.score = score;
     this.ending = Ending.None;
-    this.activePositions = activePositions;
+    this.activePositions = new TreeSet<Integer>(activePositions);
 
     this.robotCol = robotCol;
     this.robotRow = robotRow;
 
     this.collectedLambdas = collectedLambdas;
-    this.lambdaPositions = lambdaPositions;
+    this.lambdaPositions = new TreeSet<Integer>(lambdaPositions);
 
     this.steps = steps;
 
