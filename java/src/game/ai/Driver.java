@@ -22,8 +22,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import util.FileCommands;
 import util.Pair;
@@ -207,23 +205,24 @@ public class Driver {
     	win = new SimulateWindow();
       }
       State st = initialState;
+      st.fitness = fitness.evaluate(st);
       SingleStepper stepper = new SingleStepper(sconfig);
       Command[] commands = bestState.solution.allCommands();
 
       Log.println(st);
       Log.println();
       if(this.simulate) {
-    	win.addState(st.board);
+    	win.addState(st);
       }
       for (Command command : commands) {
         st = stepper.step(st, command);
+        st.fitness = fitness.evaluate(st);
         if(this.simulate) {
-          win.addState(st.board);
+          win.addState(st);
         }
 //        Log.println(st);
       }
       if(this.simulate) {
-    	win.addState(st.board);
     	win.setVisible(true);
       }
       Log.println(st);
