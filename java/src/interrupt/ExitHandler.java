@@ -19,7 +19,7 @@ public class ExitHandler extends Thread {
   }
   
   public void run() {
-    System.err.println("iterrupted");
+    System.out.println("interrupted");
     //TODO: print out result
     driver.printSolution();
   }
