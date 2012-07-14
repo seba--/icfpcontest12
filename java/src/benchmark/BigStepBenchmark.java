@@ -1,14 +1,14 @@
 package benchmark;
 
+import game.config.BigStepSelectorConfig;
 import game.config.IDriverConfig;
-import game.config.SimpleSelectorConfig;
 
 /**
  * The default benchmark.
  * 
  * @author seba
  */
-public class DefaultBenchmark extends Benchmark {
+public class BigStepBenchmark extends Benchmark {
 
   @Override
   public String name() {
@@ -17,7 +17,7 @@ public class DefaultBenchmark extends Benchmark {
 
   @Override
   public IDriverConfig config() {
-    return new SimpleSelectorConfig();
+    return new BigStepSelectorConfig();
   }
 
 }
