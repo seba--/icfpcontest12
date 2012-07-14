@@ -64,6 +64,8 @@ public class SingleStepper {
         moveRobot(st, nextCol, nextRow);
         break;
       }
+      // invalid move
+      break;
         
     case Rock:
     case FallingRock:
