@@ -5,6 +5,7 @@ import game.Ending;
 import game.State;
 import game.StaticConfig;
 import game.config.IDriverConfig;
+import game.config.SimpleSelectorConfig;
 import game.fitness.AverageFitness;
 import game.fitness.ManhattanDirectedFitness;
 import game.fitness.ScoreFitness;
@@ -307,23 +308,7 @@ public class Driver {
     StaticConfig sconfig = p.a;
     State state = p.b;
 
-    IDriverConfig stdConfig = new IDriverConfig() {
-      @Override
-      public Selector strategySelector(StaticConfig sconfig, State initialState) {
-        return new SimpleSelector(sconfig);
-      }
-
-      @Override
-      public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
-        return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
-      }
-
-      @Override
-      public boolean simulateWindow() {
-        return true;
-      }
-
-    };
+    IDriverConfig stdConfig = new SimpleSelectorConfig();
 
     Driver.create(stdConfig, sconfig, state, 15).run();
   }

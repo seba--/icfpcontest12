@@ -1,6 +1,3 @@
-/**
- * 
- */
 package game.config;
 
 import game.State;
@@ -8,7 +5,6 @@ import game.StaticConfig;
 import game.ai.Fitness;
 import game.ai.Selector;
 import game.fitness.AverageFitness;
-import game.fitness.LambdasLeftFitness;
 import game.fitness.ManhattanDirectedFitness;
 import game.fitness.ScoreFitness;
 import game.fitness.StepCountFitness;
@@ -26,7 +22,7 @@ public class SimpleSelectorConfig implements IDriverConfig {
   
   @Override
   public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
-    return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
+    return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig, initialState));
   }
 
   @Override
