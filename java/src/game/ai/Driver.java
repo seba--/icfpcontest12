@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 import util.FileCommands;
@@ -46,12 +47,13 @@ public class Driver {
   /*
    * Elements are ordered in ascending order: poll() retrieves the smallest state.
    */
-//  public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
+  public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
   
   /*
    * Elements collected in list.
    */
-  public ArrayList<State> liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
+  //public ArrayList<State> liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
+  
   /*
    * Random generator to access live states.
    */
@@ -125,8 +127,8 @@ public class Driver {
 
       iterations++;
 
-//      State state = liveStates.peek();
-      State state = liveStates.get(random.nextInt(liveStates.size()));
+      State state = liveStates.peek();
+//      State state = liveStates.get(random.nextInt(liveStates.size()));
 
       if (iterations % 5000 == 0) {
         printDataRow();
