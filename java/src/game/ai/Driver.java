@@ -234,15 +234,14 @@ public class Driver {
     st.fitness = fitness.evaluate(st);
     SimulateWindow win = new SimulateWindow(name, fitness, stepper);
     win.addState(st);
-
     if (bestState.solution != null) {
-      Command[] commands = bestState.solution.allCommands();
-  
-      for (Command command : commands) {
-        st = stepper.step(st, command);
-        st.fitness = fitness.evaluate(st);
-        win.addState(st);
-      }
+	    Command[] commands = bestState.solution.allCommands();
+	
+	    for (Command command : commands) {
+	      st = stepper.step(st, command);
+	      st.fitness = fitness.evaluate(st);
+	      win.addState(st);
+	    }
     }
     win.setVisible(true);
   }
@@ -336,7 +335,7 @@ public class Driver {
     Pair<StaticConfig, State> p = State.parse(text);
     StaticConfig sconfig = p.a;
     State state = p.b;
-
+    
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
     Driver d = Driver.create(name, stdConfig, sconfig, state, 5);

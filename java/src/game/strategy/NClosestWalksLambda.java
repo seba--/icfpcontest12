@@ -3,7 +3,6 @@ package game.strategy;
 import game.Cell;
 import game.Command;
 import game.State;
-import game.StaticConfig;
 import game.ai.Strategy;
 import game.strategy.tom.Helpers;
 

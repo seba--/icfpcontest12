@@ -1,5 +1,7 @@
 package game;
 
+import java.util.Map;
+
 
 /**
  * @author seba
@@ -17,6 +19,10 @@ public class StaticConfig {
    */
   public final int floodingRate;
   public final int waterResistance;
+  
+  /*
+   * for trampolines
+   */
   
   public StaticConfig(State initialState) {
     this(initialState, 0, 10);
