@@ -4,7 +4,6 @@ import game.State;
 import game.StaticConfig;
 import game.ai.Fitness;
 import game.ai.Selector;
-import game.fitness.AliveFitness;
 import game.fitness.AverageFitness;
 import game.fitness.LiftReachable;
 import game.fitness.ManhattanDirectedFitness;
@@ -26,7 +25,7 @@ public class SimpleSelectorConfig implements IDriverConfig {
   public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
     return new AverageFitness(
         new LiftReachable(sconfig),
-        new AliveFitness(),
+//        new AliveFitness(),
         new ScoreFitness(), 
         new StepCountFitness(), 
         new ManhattanDirectedFitness(sconfig, initialState));
