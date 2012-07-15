@@ -16,10 +16,7 @@ public class LambdasLeftFitness implements Fitness {
    */
   @Override
   public int evaluate(State state) {
-    if (state.previousState != null && 
-        state.previousState.lambdaPositions.size() < state.lambdaPositions.size())
-      return 1000000;
-    return 0;
+    return (int) (((double) state.collectedLambdas / (state.collectedLambdas + state.lambdaPositions.size())) * 1000000);
   }
 
 }
