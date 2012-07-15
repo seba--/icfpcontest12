@@ -32,7 +32,7 @@ public class Helpers {
       if (m[wc.col][wc.row] == null || m[wc.col][wc.row].steps > wc.steps) { // not already better way
 
         Cell c = s.board.get(wc.col, wc.row);
-        if (c == Cell.Earth || c == Cell.Empty || c == Cell.Lambda || c == Cell.Robot) { // may move there
+        if (c == Cell.Earth || c == Cell.Empty || c == Cell.Lambda || c == Cell.Robot || Cell.Razor) { // may move there
           
           m[wc.col][wc.row] = wc;
 
@@ -105,7 +105,7 @@ public class Helpers {
           if (seenTargets == N) break;
         }
         
-        if (c == Cell.Earth || c == Cell.Empty || c == Cell.Lambda || c == Cell.Robot) { // may move there
+        if (c == Cell.Earth || c == Cell.Empty || c == Cell.Lambda || c == Cell.Robot || Cell.Razor) { // may move there
           
           m[wc.col][wc.row] = wc;
 
