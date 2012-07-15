@@ -79,7 +79,7 @@ public class SimpleStrategyComparisonBenchmark extends Benchmark {
   }
 
   public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state, String mapName) throws InterruptedException, ExecutionException {
-    Driver driver = Driver.create(config(), sconfig, state, lifetime());
+    Driver driver = Driver.create(mapName, config(), sconfig, state, lifetime());
     
     Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver, mapName));
     driver.run();

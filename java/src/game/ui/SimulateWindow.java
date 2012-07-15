@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.LinkedList;
+import java.util.prefs.BackingStoreException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -68,8 +69,8 @@ public class SimulateWindow extends JFrame implements KeyListener {
 		
 	}
 	
-	public SimulateWindow(Fitness fitness, SingleStepper stepper) {		
-	  super("Simulation");
+	public SimulateWindow(String name, Fitness fitness, SingleStepper stepper) {		
+	  super("Simulation " + name);
 	  player = this.new Player(200);
 	  custom = null;
 	  customStates = new LinkedList<State>();
@@ -88,7 +89,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	  final JButton buttonNext = new JButton("Next");
 	  tbar.add(buttonNext);
 	  final JButton buttonPlay = new JButton("Play"); 
-//	  tbar.add(buttonPlay);
+	  tbar.add(buttonPlay);
 	    
 	  buttonPlay.addActionListener(new ActionListener() {
 		
@@ -112,6 +113,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			custom = null;
 			updateText(states.get(--current));
 			if(current == 0) {
 				buttonBack.setEnabled(false);		
@@ -125,6 +127,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			custom = null;
 			updateText(states.get(++current));
 			if(current == (states.size()-1)) {
 				buttonNext.setEnabled(false);		
@@ -230,7 +233,9 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	
 	public void updateText(State state) {
 	  currentState = state;
-	  textArea.setText("fitness: " + state.fitness + "\n" + state.toString());
+	  textArea.setText(
+	    "fitness=" + state.fitness + ", score=" + state.score + "\n"
+	  + state.toString());
 	}
 
 	@Override

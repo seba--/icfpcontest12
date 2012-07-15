@@ -3,7 +3,9 @@ package game;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
@@ -22,14 +24,18 @@ public class Board {
    */
   // public final Cell[] grid;
   
-  public static final int N = 5;
+  public static final int N = 7;
   private static final Cell[] cells = Cell.values();
 
   public final int width;
   public final int height;
 
   public final BitSet[] bitsets = new BitSet[N];
-
+  
+  public Map<Integer, String> trampolinePos;
+  public Map<String, Integer> targetPos;
+  public Map<String, String> trampolineTargets;
+  
   public final int length;
   
   public int robot;
@@ -94,6 +100,9 @@ public class Board {
     for (int i = 0; i < N; i++) {
       this.bitsets[i] = new BitSet(length);
     }
+    trampolinePos = new HashMap<Integer, String>();
+    targetPos = new HashMap<String, Integer>();
+    trampolineTargets = new HashMap<String, String>();
   }
 
   /**
@@ -106,6 +115,9 @@ public class Board {
     System.arraycopy(that.bitsets, 0, this.bitsets, 0, N);
     this.robot = that.robot;
     this.lift = that.lift;
+    this.trampolinePos = that.trampolinePos;
+    this.targetPos = that.targetPos;
+    this.trampolineTargets = that.trampolineTargets;
   }
   
   /**
@@ -114,6 +126,14 @@ public class Board {
   public Cell get(int position) {
     for (int  i = 0; i < N; i++) {
       if (bitsets[i].get(position)) {
+    	if(i == Cell.Trampoline.ordinal()) {
+    		String trampoline = trampolinePos.get(position);
+    		String target = trampolineTargets.get(trampoline);
+    		Integer jumppos  = targetPos.get(target);
+    		if(get(jumppos) != Cell.Target) {
+    		  return Cell.Empty;
+    		}
+    	}
         return cells[i];
       }
     }
@@ -226,6 +246,15 @@ public class Board {
     return get(position) == Cell.Empty;
   }
   
+  public boolean isTrampoline(int position) {
+	return get(position) == Cell.Trampoline;
+  }
+  
+  public boolean isTarget(int position) {
+	return get(position) == Cell.Target;
+  }
+
+  
   public boolean isPosition(int position) {
     int col = position / height;
     int row = position % height;
@@ -247,6 +276,7 @@ public class Board {
     List<List<Cell>> flippedBoard = new ArrayList<List<Cell>>();
     int colCount = -1;
     
+    
     StringTokenizer tokenizer = new StringTokenizer(s, "\n");
     while (tokenizer.hasMoreTokens()) {
       String line = tokenizer.nextToken();
@@ -255,9 +285,9 @@ public class Board {
       
       for (int i = 0; i < line.length(); ++i) {
     	if((int)line.charAt(i) == 13) continue;
-        row.add(Cell.parse(line.charAt(i)));
+    	Cell cell = Cell.parse(line.charAt(i));
+        row.add(cell);
       }
-      
       colCount = Math.max(colCount, line.length());
     }
     
@@ -280,6 +310,23 @@ public class Board {
         }
       }
     
+    tokenizer = new StringTokenizer(s, "\n");
+    int row = rowCount;
+    while (tokenizer.hasMoreTokens()) {
+      --row;
+      String line = tokenizer.nextToken();
+      for (int i = 0; i < line.length(); ++i) {
+    	Cell cell = Cell.parse(line.charAt(i));
+    	if(cell == Cell.Trampoline) {
+    		int pos = board.position(i, row);
+    		board.trampolinePos.put(pos, String.valueOf(line.charAt(i)));
+    	}
+    	if(cell == Cell.Target) {
+    		int pos = board.position(i, row);
+    		board.targetPos.put(String.valueOf(line.charAt(i)), pos);
+    	}    	
+      }
+    }
     return board;
   }
   
@@ -343,5 +390,32 @@ public class Board {
     return true;
   }
 
+  /**
+   * Returns true if the rock at (col, row) cannot ever be pushed.
+   */
+  public boolean unpushable(int col, int row) {
+    Cell left = get(col - 1, row);
+    Cell right = get(col + 1, row);
+    
+    if (left == Cell.Wall || right == Cell.Wall)
+      return true;
+    if (left == Cell.Rock && get(col - 1, row - 1) == Cell.Wall)
+      return true;
+    if (right == Cell.Rock && get(col + 1, row - 1) == Cell.Wall)
+      return true;
+    
+    return false;
+  }
 
+  /**
+   * Returns true if the rock at (col, row) cannot ever move.
+   */
+  public boolean immovable(int col, int row) {
+    if (get(col, row - 1) == Cell.Wall ||
+        (get(col, row - 1) == Cell.Lambda &&
+         get(col + 1, row - 1) == Cell.Wall))
+      return unpushable(col, row);
+    return false;
+      
+  }
 }

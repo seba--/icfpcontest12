@@ -101,6 +101,7 @@ public class Helpers {
         
         if (c == goal) { //target cell found
           seenTargets++;
+          m[wc.col][wc.row] = wc;
           if (seenTargets == N) break;
         }
         

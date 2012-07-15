@@ -7,7 +7,7 @@ import game.State;
  */
 public class Scoring {
   public static int totalScore(int steps, int collectedLambdas, boolean abort, boolean win) {
-    return -steps + (25 * collectedLambdas) + (abort ? 25 * collectedLambdas : 0) + (win ? 50 * collectedLambdas : 0);
+    return -steps + 50 * collectedLambdas + (win ? 25 * collectedLambdas : 0);
   }
 
   /**

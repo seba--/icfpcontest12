@@ -13,6 +13,8 @@ import game.ui.SimulateWindow;
 import game.util.Scoring;
 import interrupt.ExitHandler;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -33,6 +35,8 @@ import util.Pair;
 public class Driver {
   public static final int PRIORITY_QUEUE_CAPACITY = 5000;
 
+  public final String name;
+  
   public final StaticConfig sconfig;
   public final State initialState;
   public final MultiStepper stepper;
@@ -56,7 +60,8 @@ public class Driver {
   public long lastPrintInfoTime;
   public int lastPrintInfoIter;
 
-  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
+  public Driver(String name, StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
+    this.name = name;
     this.sconfig = sconfig;
     this.initialState = initialState;
     this.strategySelector = strategySelector;
@@ -72,7 +77,8 @@ public class Driver {
    * @param lifetime
    *          max runtime in seconds
    */
-  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, int lifetime) {
+  public Driver(String name, StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, int lifetime) {
+    this.name = name;
     this.sconfig = sconfig;
     this.initialState = initialState;
     this.strategySelector = strategySelector;
@@ -136,8 +142,8 @@ public class Driver {
             }
 
             if (newState.ending == Ending.None && newState.steps < newState.board.width * newState.board.height && Scoring.maximalReachableScore(newState) > bestState.score) {
-              liveStates.add(newState);
               newState.fitness = fitness.evaluate(newState);
+              liveStates.add(newState);
               strategySelector.prepareState(newState);
             }
           }
@@ -226,17 +232,16 @@ public class Driver {
   public void simulationWindow() {
     State st = initialState;
     st.fitness = fitness.evaluate(st);
-    SimulateWindow win = new SimulateWindow(fitness, stepper);
+    SimulateWindow win = new SimulateWindow(name, fitness, stepper);
     win.addState(st);
-
     if (bestState.solution != null) {
-      Command[] commands = bestState.solution.allCommands();
-  
-      for (Command command : commands) {
-        st = stepper.step(st, command);
-        st.fitness = fitness.evaluate(st);
-        win.addState(st);
-      }
+	    Command[] commands = bestState.solution.allCommands();
+	
+	    for (Command command : commands) {
+	      st = stepper.step(st, command);
+	      st.fitness = fitness.evaluate(st);
+	      win.addState(st);
+	    }
     }
     win.setVisible(true);
   }
@@ -262,16 +267,16 @@ public class Driver {
     simulateSolution();
   }
 
-  public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state) {
+  public static Driver create(String name, IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    return new Driver(sconfig, state, selector, fitness);
+    return new Driver(name, sconfig, state, selector, fitness);
   }
 
-  public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state, int lifetime) {
+  public static Driver create(String name, IDriverConfig dconfig, StaticConfig sconfig, State state, int lifetime) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    return new Driver(sconfig, state, selector, fitness, lifetime);
+    return new Driver(name, sconfig, state, selector, fitness, lifetime);
   }
 
   public void run() {
@@ -307,20 +312,33 @@ public class Driver {
   }
 
   // TODO add exception handling?
-  public static void main(String[] args) throws Exception {
-    String text;
+  public static void main(String[] args) throws IOException {
     if (args.length > 0) {
-      text = FileCommands.readFileAsString(args[0]);
+      LinkedList<File> files = new LinkedList<File>();
+      files.add(new File(args[0]));
+      
+      while (!files.isEmpty()) {
+        File file = files.poll();
+        if (file.isDirectory())
+          for (File other : file.listFiles())
+            files.add(other);
+        else
+          main(file.getName(), FileCommands.readFileAsString(file.getAbsolutePath()));
+      }
     } else {
-      text = FileCommands.readAsString(new InputStreamReader(System.in));
+      String text = FileCommands.readAsString(new InputStreamReader(System.in));
+      main("stdin", text);
     }
+  }
+  
+  public static void main(String name, String text) {
     Pair<StaticConfig, State> p = State.parse(text);
     StaticConfig sconfig = p.a;
     State state = p.b;
-
+    
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-    Driver d = Driver.create(stdConfig, sconfig, state, 15);
+    Driver d = Driver.create(name, stdConfig, sconfig, state, 5);
     d.run();
     d.simulationWindow();    
   }

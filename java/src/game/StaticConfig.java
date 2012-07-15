@@ -1,5 +1,7 @@
 package game;
 
+import java.util.Map;
+
 
 /**
  * @author seba
@@ -17,6 +19,11 @@ public class StaticConfig {
    */
   public final int floodingRate;
   public final int waterResistance;
+  public final boolean boardHasTrampolines;
+  
+  /*
+   * for trampolines
+   */
   
   public StaticConfig(State initialState) {
     this(initialState, 0, 10);
@@ -27,7 +34,8 @@ public class StaticConfig {
     this.waterResistance = waterResistance;
     
     Board board = initialState.board;
-    
+    this.boardHasTrampolines = !board.bitsets[Cell.Trampoline.ordinal()].isEmpty();
+        
     int x = -1;
     int y = -1;
     for (int col = 0; col < board.width; ++col) {

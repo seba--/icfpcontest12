@@ -43,6 +43,6 @@ public class TestFitness extends TestCase {
     System.out.println(f.evaluate(stepper.step(st, Command.Left)));
     System.out.println(f.evaluate(stepper.step(st, Command.Right)));
     
-    Driver.create(config, p.a, p.b).run();
+    Driver.create("test", config, p.a, p.b).run();
   }
 }
