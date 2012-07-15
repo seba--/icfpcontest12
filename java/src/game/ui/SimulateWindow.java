@@ -68,8 +68,8 @@ public class SimulateWindow extends JFrame implements KeyListener {
 		
 	}
 	
-	public SimulateWindow(Fitness fitness, SingleStepper stepper) {		
-	  super("Simulation");
+	public SimulateWindow(String name, Fitness fitness, SingleStepper stepper) {		
+	  super("Simulation " + name);
 	  player = this.new Player(200);
 	  custom = null;
 	  customStates = new LinkedList<State>();
