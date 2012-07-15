@@ -19,17 +19,15 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
     public final int iterations;
     public final int bestScore;
     public final int liveStates;
-    public final int deadStates;
     public final Map<Strategy, Integer> appliedStrategies;
     public final int liftReachable;
     public final int remainingLambdas;
     public final String mapName;
     
     public SimpleBenchmarkResult(Driver driver, String mapName) {
-      this(driver.iterations, 
+      this(driver.allIterations, 
            driver.bestState != null ? driver.bestState.score : 0, 
-           driver.liveStates.size(), 
-           driver.seenStates.size() - driver.liveStates.size(),
+           driver.allLivestates, 
            countUsedStrategies(driver.strategySelector.getUsedStrategies()),
            driver.bestState != null ? 
                              (LiftReachable.liftReachable(driver.bestState.board, driver.sconfig.liftx, driver.sconfig.lifty) > 0 ? 1 : 0) : 
@@ -39,11 +37,10 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
       
     }
     
-    public SimpleBenchmarkResult(int iterations, int bestScore, int liveStates, int deadStates, Map<Strategy, Integer> appliedStrategies, int liftReachable, int remainingLambdas, String mapName) {
+    public SimpleBenchmarkResult(int iterations, int bestScore, int liveStates, Map<Strategy, Integer> appliedStrategies, int liftReachable, int remainingLambdas, String mapName) {
       this.iterations = iterations;
       this.bestScore = bestScore;
       this.liveStates = liveStates;
-      this.deadStates = deadStates;
       this.appliedStrategies = appliedStrategies;
       this.liftReachable = liftReachable;
       this.remainingLambdas = remainingLambdas;
@@ -63,7 +60,7 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
 
     @Override
     public String asString() {
-      return String.format("%8d,%9d,%8d,%8d,%10d,%13d,%s", iterations, bestScore, liveStates, deadStates, remainingLambdas, liftReachable, mapName);
+      return String.format("%8d,%9d,%8d,%10d,%13d,%s", iterations, bestScore, liveStates, remainingLambdas, liftReachable, mapName);
     }
 
     @Override
@@ -76,7 +73,6 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
       int iterationsSum = 0;
       int bestScoreSum = 0;
       int liveStatesSum = 0;
-      int deadStatesSum = 0;
       
       for (IBenchmarkResult next : results) {
         if (next instanceof SimpleBenchmarkResult) {
@@ -84,7 +80,6 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
           iterationsSum += sbr.iterations;
           bestScoreSum += sbr.bestScore;
           liveStatesSum += sbr.liveStates;
-          deadStatesSum += sbr.deadStates;
         }
       }
       
@@ -104,10 +99,6 @@ public class SimpleBenchmarkResult implements IBenchmarkResult {
       result.data.add(liveStatesSum);
       result.headers.add("liveStates-avg");
       result.data.add((double) liveStatesSum / results.size());
-      result.headers.add("deadStates-sum");
-      result.data.add(deadStatesSum);
-      result.headers.add("deadStates-avg");
-      result.data.add((double) deadStatesSum / results.size());
       result.headers.add("liftReachable-avg");
       result.data.add((double) liftReachable / results.size());
       result.headers.add("remainingLamdas-avg");
