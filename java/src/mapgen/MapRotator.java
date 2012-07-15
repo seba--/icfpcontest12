@@ -32,9 +32,10 @@ public class MapRotator {
   
   public static void main(File file, String text) throws IOException {
     Pair<StaticConfig, State> orig = State.parse(text);
+    String tmpName = FileCommands.dropExtension(file.getName());
 
+    System.out.println("parsing " + tmpName);
     for (int i = 0; i < 5; i++) {
-      String tmpName = FileCommands.dropExtension(file.getName());
       String rotFileName = tmpName + ".r" + i + ".map";
       Pair<StaticConfig, State> processed = rotateMap(i, orig);
       System.out.println("writing " + rotFileName);
