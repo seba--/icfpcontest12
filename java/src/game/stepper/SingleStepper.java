@@ -48,6 +48,8 @@ public class SingleStepper {
     case Abort:
       st.ending = Ending.Abort;
       return true;
+    case Shave:
+      st.shaveBeard(st.robotCol, st.robotRow);
     default:
       throw new IllegalArgumentException("Unknown command " + cmd);
     }

@@ -260,6 +260,13 @@ public class State {
     clearNextLambda();
     fillNextLambda(lambdaPositions);
   }
+  
+  /**
+   * Shave a beard
+   */
+  public void shaveBeard(int col, int row) {
+    // TODO: Implement.
+  }
 
   public State makeFinal() {
     /*
