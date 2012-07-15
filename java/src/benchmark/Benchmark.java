@@ -54,7 +54,7 @@ public abstract class Benchmark {
     int argNum = 0;
     for (String arg : args) {
       if (argNum == 0) {
-        if (arg.equals("--t")) {
+        if (arg.equals("--timeout")) {
           argNum = 1;
           continue;
         } else {
