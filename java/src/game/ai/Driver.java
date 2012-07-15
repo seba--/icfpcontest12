@@ -37,6 +37,8 @@ import util.Pair;
  */
 public class Driver {
   public static final int PRIORITY_QUEUE_CAPACITY = 5000;
+  
+  public static final int MAX_NUM_STATES = 20000;
 
   public final String name;
   
@@ -196,8 +198,7 @@ public class Driver {
       double newStatesNormalizer = liveStates.size();
       
       double size = liveStates.size();
-      int MAX_NUM_STATES = 10000;
-      double spaceFactor = (double) MAX_NUM_STATES / size;
+      double spaceFactor = (double) 0.5*MAX_NUM_STATES / size;
 
       for (int i = 0; i < liveStates.size(); ) {
         State state = liveStates.get(i);
@@ -252,7 +253,7 @@ public class Driver {
       size = liveStates.size() + newStatesCount;
       double averageFitness = (liveStatesAverageFitness * (liveStates.size() / size) + newStatesAverageFitness * (newStatesCount / size));
       
-      spaceFactor = (double) MAX_NUM_STATES / size;
+      spaceFactor = (double) 0.5*MAX_NUM_STATES / size;
       
       liveStatesAverageFitness = 0;
       for (int i = 0; i < liveStates.size(); i++) {
