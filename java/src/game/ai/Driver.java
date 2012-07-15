@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Random;
 
 import util.FileCommands;
+import util.MathUtil;
 import util.Pair;
 
 /**
@@ -48,17 +48,13 @@ public class Driver {
   /*
    * Elements are ordered in ascending order: poll() retrieves the smallest state.
    */
-  public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
+  public PriorityQueue<State> liveStateQueue = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
   
   /*
    * Elements collected in list.
    */
-  //public ArrayList<State> liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
-  
-  /*
-   * Random generator to access live states.
-   */
-  public Random random = new Random(110101010);
+  public ArrayList<State> liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
+  public double liveStatesAverageFitness;
   
   // public Set<State> seenStates = new HashSet<State>();
   public HashMap<Integer, State> seenStates = new HashMap<Integer, State>();
@@ -102,10 +98,10 @@ public class Driver {
     this.endTime = System.currentTimeMillis() + (lifetime * 1000);
     this.timed = true;
   }
-
-  public void solve(State initial) {
+  
+  public void solveGreedy(State initial) {
     strategySelector.prepareState(initial);
-    liveStates.add(initial);
+    liveStateQueue.add(initial);
     initial.fitness = fitness.evaluate(initial);
 
     bestState = initial;
@@ -119,7 +115,7 @@ public class Driver {
     // explain final solution (what strategies)
 
     printDataHeader();
-    while (!liveStates.isEmpty()) {
+    while (!liveStateQueue.isEmpty()) {
       // TODO why is this needed?
       if (timed && System.currentTimeMillis() >= endTime) {
         printDataRow();
@@ -128,8 +124,7 @@ public class Driver {
 
       iterations++;
 
-      State state = liveStates.peek();
-//      State state = liveStates.get(random.nextInt(liveStates.size()));
+      State state = liveStateQueue.peek();
 
       if (iterations % 5000 == 0) {
         printDataRow();
@@ -160,13 +155,138 @@ public class Driver {
 
             if (newState.ending == Ending.None && newState.steps < newState.board.width * newState.board.height && Scoring.maximalReachableScore(newState) > bestState.score) {
               newState.fitness = fitness.evaluate(newState);
-              liveStates.add(newState);
+              liveStateQueue.add(newState);
               strategySelector.prepareState(newState);
             }
           }
         }
       }
     }
+  }
+
+
+  public void solveEvolutionary(State initial) {
+    strategySelector.prepareState(initial);
+    initial.fitness = fitness.evaluate(initial);
+    liveStates.add(initial);
+    liveStatesAverageFitness = initial.fitness;
+
+    bestState = initial;
+
+    // TODO when to stop?
+
+    iterations = 0;
+
+    // choose k, M, G more cleverly
+    // choose 5000k more cleverly
+
+    printDataHeader();
+    
+    while (!liveStates.isEmpty()) {
+      if (timed && System.currentTimeMillis() >= endTime) {
+        // timeout for testing
+        printDataRow();
+        break;
+      }
+
+      iterations++;
+      printDataRow();
+
+      ArrayList<State> newStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
+      double newStatesFitnessNormalized = 0;
+      double newStatesStepsNormalized = 0;
+      double newStatesNormalizer = liveStates.size();
+      
+      double size = liveStates.size();
+      int MAX_NUM_STATES = 10000;
+      double spaceFactor = (double) MAX_NUM_STATES / size;
+
+      for (int i = 0; i < liveStates.size(); ) {
+        State state = liveStates.get(i);
+
+        Strategy strategy = strategySelector.selectStrategy(state);
+        
+        if (strategy == null) {
+          liveStates.remove(i);
+          // do not increase 'i'
+        } else {
+          i++;
+          
+          // apply strategy to create new state
+          List<Command> commands = strategy.apply(state);
+          strategy.applicationCount++;
+          
+          if (commands != null) {
+            assert (!commands.isEmpty());
+
+            State newState = computeNextState(state, commands, strategy);
+            
+//            if (stateShouldBeConsidered(newState)) {
+//              seenStates.put(newState.board.hashCode(), newState);
+              
+              if (newState.score > bestState.score) {
+                bestState = newState;
+              }
+              
+              if (newState.ending == Ending.None &&
+                  newState.steps < newState.board.width * newState.board.height && 
+                  Scoring.maximalReachableScore(newState) > bestState.score) {
+                newState.fitness = fitness.evaluate(newState);
+                
+                double fitnessFactor = newState.fitness / liveStatesAverageFitness;
+                boolean keep = fitnessFactor * spaceFactor > MathUtil.RANDOM.nextDouble();
+                
+                if (keep) {
+                  // the kid is better than the average of all parents
+                  newStates.add(newState);
+                  newStatesFitnessNormalized += newState.fitness / newStatesNormalizer;
+                  newStatesStepsNormalized += newState.steps / newStatesNormalizer;
+                  strategySelector.prepareState(newState);
+                }
+              }
+//            }
+          }
+        }
+      }
+      
+      double newStatesAverageFitness = newStatesFitnessNormalized * newStatesNormalizer / newStates.size();
+      
+      int newStatesCount = newStates.size();
+      size = liveStates.size() + newStatesCount;
+      double averageFitness = (liveStatesAverageFitness * (liveStates.size() / size) + newStatesAverageFitness * (newStatesCount / size));
+      
+      spaceFactor = (double) MAX_NUM_STATES / size;
+      
+      liveStatesAverageFitness = 0;
+      for (int i = 0; i < liveStates.size(); i++) {
+        State s = liveStates.get(i);
+        double fitnessFactor = s.fitness / averageFitness;
+        boolean keep = spaceFactor * fitnessFactor > MathUtil.RANDOM.nextDouble();
+        if (keep) {
+          newStates.add(s);
+          liveStatesAverageFitness += s.fitness / liveStates.size();
+        }
+      }
+      
+      int keptStates = newStates.size() - newStatesCount;
+      
+      if (newStates.size() > newStatesCount) {
+        liveStatesAverageFitness = liveStatesAverageFitness * (liveStates.size() / keptStates);
+        liveStatesAverageFitness = (newStatesAverageFitness * (newStatesCount / size) + liveStatesAverageFitness * (liveStates.size() / size));
+      }
+      else {
+        liveStatesAverageFitness = newStatesAverageFitness;
+      }
+        
+      int keptOldStatesCount = newStates.size() - newStatesCount;
+
+      Log.printf("was: %6d, keep: %6d, new: %6d, fitness: %f \n",
+          liveStates.size(), keptOldStatesCount, newStatesCount, liveStatesAverageFitness);
+      
+      liveStates = newStates;
+    }
+    
+    printDataRow();
   }
 
   private void printDataHeader() {
@@ -181,10 +301,10 @@ public class Driver {
     long now = System.currentTimeMillis();
     int iterPerSec = 1000 * (iterations - lastPrintInfoIter) / (int) (now - lastPrintInfoTime+1);
 
-    Log.printf("%4dk  |  %5d  |  %4dk  |  %4dk  |  %7d  \n",
-        iterations / 1000,
+    Log.printf("%4d  |  %5d  |  %4d  |  %4dk  |  %7d  \n",
+        iterations,
         bestState.score,
-        liveStates.size() / 1000,
+        liveStates.size(),
         (seenStates.size() - liveStates.size()) / 1000,
         iterPerSec);
 
@@ -299,7 +419,7 @@ public class Driver {
 
   public void run() {
     ExitHandler.register(this);
-    solve(initialState);
+    solveEvolutionary(initialState);
     ExitHandler.unregister(this);
 
     finished();
@@ -356,7 +476,7 @@ public class Driver {
     
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-    Driver d = Driver.create(name, stdConfig, sconfig, state, 5);
+    Driver d = Driver.create(name, stdConfig, sconfig, state, 20);
     d.run();
     d.simulationWindow();    
   }

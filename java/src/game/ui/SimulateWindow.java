@@ -98,6 +98,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 			playing = !playing;
 			if(playing) {
 				buttonPlay.setText("Pause");
+				player = new Player(200);
 				player.stopped = false;
 				player.start();
 			} else {
@@ -107,6 +108,21 @@ public class SimulateWindow extends JFrame implements KeyListener {
 			
 		}
 		  
+	  });
+	  
+	  final JButton buttonReset = new JButton("Reset");
+	  tbar.add(buttonReset);
+	  
+	  buttonReset.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				current = 0;
+				updateText(states.get(current));
+				player.stopped = true;
+				playing = false;
+				buttonPlay.setText("Play");
+			}			  
 	  });
 	  
 	  buttonBack.addActionListener(new ActionListener() {
