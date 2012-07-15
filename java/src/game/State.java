@@ -86,16 +86,23 @@ public class State {
    * next lambda.
    */
   private int[] nextLambda;
+  private boolean nextLambdaCleared;
 
   public int nextLambda(int position) {
+    if (nextLambdaCleared)
+      fillNextLambda(lambdaPositions);
     return nextLambda[position];
   }
 
   public int nextLambda(int col, int row) {
+    if (nextLambdaCleared)
+      fillNextLambda(lambdaPositions);
     return nextLambda[board.position(col, row)];
   }
 
   public int[] getNextLambda() {
+    if (nextLambdaCleared)
+      fillNextLambda(lambdaPositions);
     nextLambdaShared = true;
     return nextLambda;
   }
@@ -174,7 +181,6 @@ public class State {
     this.nextLambda = new int[board.length];
     Arrays.fill(nextLambda, -1);
     this.nextLambdaShared = false;
-    fillNextLambda(lambdaPositions);
   }
 
   /**
@@ -182,6 +188,8 @@ public class State {
    * given the positions of all lambdas.
    */
   private void fillNextLambda(List<Integer> positions) {
+    nextLambdaCleared = false;
+    
     // copy on write
     if (nextLambdaShared) {
       nextLambdaShared = false;
@@ -241,6 +249,8 @@ public class State {
    * Clear the information about nearest lambdas.
    */
   private void clearNextLambda() {
+    nextLambdaCleared = true;
+    
     // copy on write
     if (nextLambdaShared) {
       nextLambdaShared = false;
@@ -258,7 +268,6 @@ public class State {
     // TODO make incremental
     lambdaPositions.remove((Object) (col * board.height + row));
     clearNextLambda();
-    fillNextLambda(lambdaPositions);
   }
   
   /**
