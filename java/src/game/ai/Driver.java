@@ -9,6 +9,7 @@ import game.config.SimpleSelectorConfig;
 import game.log.Log;
 import game.stepper.MultiStepper;
 import game.stepper.SingleStepper;
+import game.strategy.StartStateStrategy;
 import game.ui.SimulateWindow;
 import game.util.Scoring;
 import interrupt.ExitHandler;
@@ -377,6 +378,7 @@ public class Driver {
 	    for (Command command : commands) {
 	      st = stepper.step(st, command);
 	      st.fitness = fitness.evaluate(st);
+	      st.solution = bestState.solution;
 	      win.addState(st);
 	    }
     }

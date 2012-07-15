@@ -251,8 +251,8 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	  currentState = state;
 	  textArea.setText(
 	    "fitness=" + state.fitness + ", score=" + state.score + "\n"+
-	    "Growth Counter: " + state.board.growthcounter + ", Razor: " + state.board.razors +"\n"
-	  + state.toString());
+	    "Growth Counter: " + state.board.growthcounter + ", Razor: " + state.board.razors +"\n" +
+	    state.toString());
 	}
 
 	@Override
