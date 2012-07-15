@@ -22,6 +22,7 @@ public class SomeLambdaStrategy extends Strategy {
     return !s.lambdaPositions.isEmpty() && s.nextLambdaStrategyIndex < s.lambdaPositions.size();
   }
   
+  @Override
   public boolean isUseOnce() {
     return false;
   }

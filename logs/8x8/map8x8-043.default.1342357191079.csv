@@ -1,0 +1,2 @@
+time         ,iter.    ,bestScore,live    ,dead    ,lambdaLeft,liftReachable,mapName
+1342357191079,     2281,      144,       0,    1147,         0,            1,map8x8-043

@@ -78,28 +78,32 @@ public class Helpers {
 
   
   /**
-   * Moves to the given target destination in the shortest way.
+   * Moves to the n-th closest given target cell in the shortest way.
    * But does not consider rock movement. 
    * 
    * @param s starting state
    * @param destCol destination column
    * @param destRow destination row
-   * @return commands leading to destination or null if no wa yfound
+   * @return commands leading to destination or null if no way found
    */
-  public static List<Command> moveToCell(State s, Cell goal) {
+  public static List<Command> moveToCell(State s, Cell goal, final int N) {
     
     WayCoordinateSimple[][] m = new WayCoordinateSimple[s.board.width][s.board.height];
     PriorityQueue<WayCoordinateSimple> p = new PriorityQueue<WayCoordinateSimple>();
     WayCoordinateSimple wc = new WayCoordinateSimple(s.robotCol, s.robotRow, 0, null);
      
+    int seenTargets = 0;
     
     while (wc != null) {
       Cell c = s.board.get(wc.col, wc.row);
-      if (c == goal)
-        break;
       
-      if (m[wc.col][wc.row] == null || m[wc.col][wc.row].steps > wc.steps) { // not already better way
-
+      if (m[wc.col][wc.row] == null) { // not already better way
+        
+        if (c == goal) { //target cell found
+          seenTargets++;
+          if (seenTargets == N) break;
+        }
+        
         if (c == Cell.Earth || c == Cell.Empty || c == Cell.Lambda || c == Cell.Robot) { // may move there
           
           m[wc.col][wc.row] = wc;

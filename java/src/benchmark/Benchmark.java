@@ -25,6 +25,8 @@ import util.Pair;
  * @author Sebastian Erdweg
  */
 public abstract class Benchmark {
+  static int benchmarkTimeout = 25;
+  
   public Benchmark() {
   }
   
@@ -49,7 +51,20 @@ public abstract class Benchmark {
     Benchmark benchmark = (Benchmark) mainClass.newInstance();
     
     List<IBenchmarkResult> results = new ArrayList<IBenchmarkResult>();
+    int argNum = 0;
     for (String arg : args) {
+      if (argNum == 0) {
+        if (arg.equals("--timeout")) {
+          argNum = 1;
+          continue;
+        } else {
+          argNum = 2;
+        }
+      } else if (argNum == 1) {
+        benchmarkTimeout = Integer.parseInt(arg);
+        argNum = 2;
+        continue;
+      }
       results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
       if (new File(arg).isDirectory()) {
         String aggregateLogFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + ".agg." + System.currentTimeMillis() + ".csv";
@@ -75,7 +90,7 @@ public abstract class Benchmark {
    * Time per file in seconds.
    */
   public int lifetime() {
-    return 1;
+    return benchmarkTimeout;
   }
   
   /**
