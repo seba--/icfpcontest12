@@ -2,6 +2,7 @@ package game.fitness;
 
 import game.State;
 import game.ai.Fitness;
+import game.util.Scoring;
 
 /**
  * Evaluates how many points we already secured in a state.

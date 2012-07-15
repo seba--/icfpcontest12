@@ -6,11 +6,11 @@ import game.State;
 import game.StaticConfig;
 import game.config.IDriverConfig;
 import game.config.SimpleSelectorConfig;
-import game.fitness.Scoring;
 import game.log.Log;
 import game.stepper.MultiStepper;
 import game.stepper.SingleStepper;
 import game.ui.SimulateWindow;
+import game.util.Scoring;
 import interrupt.ExitHandler;
 
 import java.io.InputStreamReader;

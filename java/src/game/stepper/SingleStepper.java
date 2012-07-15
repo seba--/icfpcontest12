@@ -6,7 +6,7 @@ import game.Command;
 import game.Ending;
 import game.State;
 import game.StaticConfig;
-import game.fitness.Scoring;
+import game.util.Scoring;
 
 /**
  * @author seba

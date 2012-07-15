@@ -1,4 +1,4 @@
-package game.fitness;
+package game.util;
 
 import game.State;
 
