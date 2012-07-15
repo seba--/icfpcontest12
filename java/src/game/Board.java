@@ -42,7 +42,7 @@ public class Board {
   public int robot;
   public int lift;
   public int growthcounter;
-  public int razor;
+  public int razors;
 
   /**
    * Packs a two-dimensional coordinate in a single integer.
@@ -107,7 +107,7 @@ public class Board {
     targetPos = new TreeMap<String, Integer>();
     trampolineTargets = new TreeMap<String, String>();
     growthcounter = 15;
-    razor = 0;
+    razors = 0;
   }
 
   /**
@@ -124,7 +124,7 @@ public class Board {
     this.targetPos = that.targetPos;
     this.trampolineTargets = that.trampolineTargets;
     this.growthcounter = that.growthcounter;
-    this.razor = that.razor;
+    this.razors = that.razors;
   }
   
   /**
