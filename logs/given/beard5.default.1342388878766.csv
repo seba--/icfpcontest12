@@ -1,0 +1,3 @@
+time         ,iter.    ,bestScore,live    ,dead    ,lambdaLeft,liftReachable,mapName
+1342388878566,        0,        0,       1,      -1,        14,            1,beard5
+1342388878766,        1,        0,       0,       0,        14,            1,beard5
