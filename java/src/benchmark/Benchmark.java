@@ -52,8 +52,9 @@ public abstract class Benchmark {
     for (String arg : args) {
       results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
       if (new File(arg).isDirectory()) {
-        String logFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + "." + System.currentTimeMillis() + ".csv";
-        benchmark.logResults(logFile, results);
+        String aggregateLogFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + ".agg." + System.currentTimeMillis() + ".csv";
+        String rawLogFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + ".raw." + System.currentTimeMillis() + ".csv";
+        benchmark.logResults(aggregateLogFile, rawLogFile, results);
       }
     }
     
@@ -74,23 +75,23 @@ public abstract class Benchmark {
    * Time per file in seconds.
    */
   public int lifetime() {
-    return 15;
+    return 1;
   }
   
   /**
    * Selects and returns a monitor for driver.
    */
-  public IBenchmarkMonitor makeMonitor(final Driver driver) {
-    return new SimpleBenchmarkMonitor(driver);
+  public IBenchmarkMonitor makeMonitor(final Driver driver, String mapName) {
+    return new SimpleBenchmarkMonitor(driver, mapName);
   }
   
   
   protected final ExecutorService executor = Executors.newSingleThreadExecutor();
   
-  public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state) throws InterruptedException, ExecutionException {
+  public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state, String mapName) throws InterruptedException, ExecutionException {
     Driver driver = Driver.create(config(), sconfig, state, lifetime());
     
-    Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver));
+    Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver, mapName));
     driver.run();
 
     return monitoringResult.get();
@@ -105,7 +106,7 @@ public abstract class Benchmark {
   public List<IBenchmarkResult> benchmarkFileTree(File file, String path) throws IOException, InterruptedException, ExecutionException {
     if (file.isFile()) {
       Pair<StaticConfig, State> p = State.parse(FileCommands.readFileAsString(file.getAbsolutePath()));
-      IBenchmarkResult result = monitorDriver(p.a, p.b);
+      IBenchmarkResult result = monitorDriver(p.a, p.b, FileCommands.dropExtension(file.getName()));
       String logFile =  "../logs/" + path + "/" + FileCommands.dropExtension(file.getName()) + "." + name() + "." + System.currentTimeMillis() + ".csv";
       logResult(logFile, result);
       return Collections.singletonList(result);
@@ -124,11 +125,17 @@ public abstract class Benchmark {
     FileCommands.writeToFile(logFile, result.columnHeadings() + "\n" + result.asString() + "\n");
   }
   
-  public void logResults(String logFile, List<IBenchmarkResult> results) throws IOException {
+  public void logResults(String aggregateLogFile, String rawLogFile, List<IBenchmarkResult> results) throws IOException {
     if (results.isEmpty())
       return;
     
+    StringBuilder sb = new StringBuilder();
+    for (IBenchmarkResult r : results) {
+      sb.append(r.asString() + "\n");
+    }
+    
     IBenchmarkResult aggregate = results.get(0).merge(results);
-    FileCommands.writeToFile(logFile, aggregate.columnHeadings() + "\n" + aggregate.asString() + "\n");
+    FileCommands.writeToFile(aggregateLogFile, aggregate.columnHeadings() + "\n" + aggregate.asString() + "\n");
+    FileCommands.writeToFile(rawLogFile, results.get(0).columnHeadings() + "\n" +  sb.toString() + "\n");
   }
 }
