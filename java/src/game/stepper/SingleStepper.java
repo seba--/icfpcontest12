@@ -50,7 +50,7 @@ public class SingleStepper {
       return true;
     case Shave:
       st.shaveBeard(st.robotCol, st.robotRow);
-      return false;
+      return true;
     default:
       throw new IllegalArgumentException("Unknown command " + cmd);
     }
