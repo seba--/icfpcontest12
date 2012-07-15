@@ -1,0 +1,2 @@
+iterations-sum,iterations-avg,bestScore-sum,bestScore-avg,liveStates-sum,liveStates-avg,deadStates-sum,deadStates-avg,liftReachable-avg,remainingLamdas-avg,remainingLambdas-max,remainingLambdasMax-map,Wait,Down,Up,ClosestManhattanLambda,ClosestManhattanLift,Left,Right
+229411,22941.1,5927,592.7,29150,2915.0,30911,3091.1,0.1,0.0,11,map9,18.1,160.6,180.8,231.7,14.5,175.9,166.9
