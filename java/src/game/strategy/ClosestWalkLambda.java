@@ -26,7 +26,7 @@ public class ClosestWalkLambda extends Strategy {
   public List<Command> apply(State s) {
     if (s.lambdaPositions.isEmpty()) return null;
     
-    return Helpers.moveToCell(s, Cell.Lambda);
+    return Helpers.moveToCell(s, Cell.Lambda, 1);
   }
   
   @Override
@@ -36,7 +36,7 @@ public class ClosestWalkLambda extends Strategy {
   
   @Override
   public String toString() {
-    return "ClosestManhattanLambda";
+    return "ClosestWalkLambda";
   }
 
 }
