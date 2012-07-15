@@ -47,7 +47,7 @@ public class Driver {
   /*
    * Elements are ordered in ascending order: poll() retrieves the smallest state.
    */
-  public PriorityQueue<State> liveStateQueue = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
+  public PriorityQueue<State> liveStateQueue;
   
   /*
    * Elements collected in list.
@@ -99,6 +99,7 @@ public class Driver {
   }
   
   public void solveGreedy(State initial) {
+    liveStateQueue = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
     strategySelector.prepareState(initial);
     liveStateQueue.add(initial);
     initial.fitness = fitness.evaluate(initial);
@@ -474,7 +475,7 @@ public class Driver {
     
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-    Driver d = Driver.create(name, stdConfig, sconfig, state, 20);
+    Driver d = Driver.create(name, stdConfig, sconfig, state, 45);
     d.run();
     d.simulationWindow();    
   }

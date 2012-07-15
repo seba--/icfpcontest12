@@ -50,7 +50,9 @@ public class SimpleSelector implements Selector {
       strategies.add(new ReachableUnderwaterLambda(sconfig));
       strategies.add(new DiveUpStrategy(sconfig));
     }
-    strategies.add(new DiggingStrategy());
+    
+//    strategies.add(new DiggingStrategy());
+    
     strategies.add(new LeftStrategy());
     strategies.add(new RightStrategy());
     strategies.add(new UpStrategy());
