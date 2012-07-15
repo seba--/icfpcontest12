@@ -1,16 +1,48 @@
 package mapgen;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
+
 import game.Board;
 import game.State;
 import game.StaticConfig;
+import util.FileCommands;
 import util.Pair;
 
 public class MapRotator {
-  public static void main(String[] args) {
-
-
+  public static void main(String[] args) throws IOException {
+    if (args.length > 0) {
+      LinkedList<File> files = new LinkedList<File>();
+      files.add(new File(args[0]));
+      
+      while (!files.isEmpty()) {
+        File file = files.poll();
+        if (file.isDirectory())
+          for (File other : file.listFiles())
+            files.add(other);
+        else
+          main(file, FileCommands.readFileAsString(file.getAbsolutePath()));
+      }
+    } else {
+      System.out.println("Please tell the map rotator which files to process.");
+      System.exit(-1);
+    }
   }
   
+  public static void main(File file, String text) throws IOException {
+    Pair<StaticConfig, State> orig = State.parse(text);
+
+    for (int i = 0; i < 5; i++) {
+      String tmpName = FileCommands.dropExtension(file.getName());
+      String rotFileName = tmpName + ".r" + i + ".map";
+      Pair<StaticConfig, State> processed = rotateMap(i, orig);
+      System.out.println("writing " + rotFileName);
+      String s = file.getAbsolutePath();
+      FileCommands.writeToFile(s.substring(0, s.length() - file.getName().length()) + rotFileName, processed.b.board.toString());
+    }
+    
+  }
 
   public static Pair<StaticConfig, State> rotateMap(int orientation, Pair<StaticConfig, State> p) {
     // orientation: 0 - rotate -90, 1 - rotate +90, 2 - rotate 180, 3 - flip horiz, 4 - flip vert
