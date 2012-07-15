@@ -73,7 +73,7 @@ public class SingleStepper {
       // invalid move
       return false;
     case Razor:
-     ++st.board.razor;
+     ++st.board.razors;
      moveRobot(st, nextCol, nextRow);
      return true;
     case Rock:

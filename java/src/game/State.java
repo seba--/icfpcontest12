@@ -284,7 +284,7 @@ public class State {
    * Shave a beard
    */
   public void shaveBeard(int col, int row) {
-    if(board.razor > 0) {
+    if(board.razors > 0) {
       if(board.get(col+1, row+1) == Cell.Beard) {
         board.set(col+1, row+1, Cell.Empty);
       }
@@ -309,7 +309,7 @@ public class State {
       if(board.get(col-1, row-1) == Cell.Beard) {
         board.set(col-1, row-1, Cell.Empty);
       }
-      --board.razor;
+      --board.razors;
     }
   }
 
@@ -366,7 +366,7 @@ public class State {
     }
     board.trampolineTargets = trampolineTargets;
     board.growthcounter = beardgrowth;
-    board.razor = razors;
+    board.razors = razors;
     State st = new State(board, waterLevel);
     StaticConfig sconfig = new StaticConfig(st, floodingRate, waterResistance, beardgrowth);
     return Pair.create(sconfig, st);
