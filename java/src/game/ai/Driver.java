@@ -156,7 +156,7 @@ public class Driver {
 
   private void printDataRow() {
     long now = System.currentTimeMillis();
-    int iterPerSec = 1000 * (iterations - lastPrintInfoIter) / (int) (now - lastPrintInfoTime);
+    int iterPerSec = 1000 * (iterations - lastPrintInfoIter) / (int) (now - lastPrintInfoTime+1);
 
     Log.printf("%4dk  |  %5d  |  %4dk  |  %4dk  |  %7d  \n",
         iterations / 1000,
@@ -226,14 +226,17 @@ public class Driver {
   public void simulationWindow() {
     State st = initialState;
     st.fitness = fitness.evaluate(st);
-    Command[] commands = bestState.solution.allCommands();
-
     SimulateWindow win = new SimulateWindow(fitness, stepper);
     win.addState(st);
-    for (Command command : commands) {
-      st = stepper.step(st, command);
-      st.fitness = fitness.evaluate(st);
-      win.addState(st);
+
+    if (bestState.solution != null) {
+      Command[] commands = bestState.solution.allCommands();
+  
+      for (Command command : commands) {
+        st = stepper.step(st, command);
+        st.fitness = fitness.evaluate(st);
+        win.addState(st);
+      }
     }
     win.setVisible(true);
   }
