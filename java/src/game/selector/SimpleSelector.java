@@ -29,7 +29,7 @@ public class SimpleSelector implements Selector {
   public final List<Strategy> strategies = new ArrayList<Strategy>();
   
   public SimpleSelector(StaticConfig sconfig) {
-    strategies.add(new SomeLambdaStrategy());
+//    strategies.add(new SomeLambdaStrategy());
     strategies.add(new ClosestManhattanLift(sconfig));    
     strategies.add(new ClosestManhattanLambda(sconfig));  
 //    strategies.add(new DiggingStrategy());
