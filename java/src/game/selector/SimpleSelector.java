@@ -6,8 +6,10 @@ import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ClosestManhattanLift;
 import game.strategy.ClosestWalkLambda;
+import game.strategy.ClosestWalkTrampoline;
 import game.strategy.DownStrategy;
 import game.strategy.LeftStrategy;
+import game.strategy.NClosestWalksLambda;
 import game.strategy.RightStrategy;
 import game.strategy.UpStrategy;
 import game.strategy.WaitStrategy;
@@ -30,7 +32,9 @@ public class SimpleSelector implements Selector {
   public SimpleSelector(StaticConfig sconfig) {
 //    strategies.add(new SomeLambdaStrategy());
     strategies.add(new ClosestManhattanLift(sconfig));    
-    strategies.add(new ClosestWalkLambda(sconfig));  
+    strategies.add(new ClosestWalkLambda(sconfig));
+    //strategies.add(new NClosestWalksLambda(2));
+    if (sconfig.boardHasTrampolines) strategies.add(new ClosestWalkTrampoline());
 //    strategies.add(new DiggingStrategy());
     strategies.add(new LeftStrategy());
     strategies.add(new RightStrategy());

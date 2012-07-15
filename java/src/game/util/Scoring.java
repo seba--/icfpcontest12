@@ -21,6 +21,13 @@ public class Scoring {
   public static int maximalScore(State state) {
     return Scoring.totalScore(0, state.lambdaPositions.size() + state.collectedLambdas, false, true);
   }
+  
+  /**
+   * Just like {@item maximalScore(State)} but without reaching the lift.
+   */
+  public static int maximalScoreWithoutLift(State state) {
+    return Scoring.totalScore(0, state.lambdaPositions.size() + state.collectedLambdas, false, false);
+  }
 
   /**
    * An upper bound on the score we can get starting from the given state.
@@ -28,4 +35,13 @@ public class Scoring {
   public static int maximalReachableScore(State state) {
     return Scoring.totalScore(state.steps, state.lambdaPositions.size() + state.collectedLambdas, false, true);
   }
+  
+  /**
+   * Just like {@item maximalReachableScore(State)} but without reaching the lift.
+   */
+  public static int maximalReachableScoreWithoutLift(State state) {
+    return Scoring.totalScore(state.steps, state.lambdaPositions.size() + state.collectedLambdas, false, false);
+  }
 }
+
+

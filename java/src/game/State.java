@@ -317,11 +317,11 @@ public class State {
       while (tokenizer.hasMoreTokens()) {
         String next = tokenizer.nextToken();
         if (next.startsWith("Waterproof"))
-          waterResistance = Integer.parseInt(next.substring(11));
+          waterResistance = Integer.parseInt(next.substring(11).trim());
         else if (next.startsWith("Water"))
-          waterLevel = Integer.parseInt(next.substring(6));
+          waterLevel = Integer.parseInt(next.substring(6).trim());
         else if (next.startsWith("Flooding"))
-          floodingRate = Integer.parseInt(next.substring(9));
+          floodingRate = Integer.parseInt(next.substring(9).trim());
         else if (next.startsWith("Trampoline")) {
         	Pattern regex = Pattern.compile("Trampoline ([A-I]) targets ([1-9])");
         	Matcher match = regex.matcher(next);
