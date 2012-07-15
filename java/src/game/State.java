@@ -159,7 +159,7 @@ public class State {
     this.collectedLambdas = 0;
     this.ending = Ending.None;
     this.steps = 0;
-    this.waterLevel = waterLevel;
+    this.waterLevel = waterLevel - 1;
     this.stepsUnderwater = 0;
     this.stepsSinceLastRise = 0;
     this.lambdaPositions = new ArrayList<Integer>();
