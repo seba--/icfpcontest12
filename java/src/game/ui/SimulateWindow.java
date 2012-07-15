@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.LinkedList;
+import java.util.prefs.BackingStoreException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -88,7 +89,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	  final JButton buttonNext = new JButton("Next");
 	  tbar.add(buttonNext);
 	  final JButton buttonPlay = new JButton("Play"); 
-//	  tbar.add(buttonPlay);
+	  tbar.add(buttonPlay);
 	    
 	  buttonPlay.addActionListener(new ActionListener() {
 		
@@ -230,7 +231,9 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	
 	public void updateText(State state) {
 	  currentState = state;
-	  textArea.setText("fitness: " + state.fitness + "\n" + state.toString());
+	  textArea.setText(
+	    "fitness=" + state.fitness + ", score=" + state.score + "\n"
+	  + state.toString());
 	}
 
 	@Override

@@ -142,8 +142,8 @@ public class Driver {
             }
 
             if (newState.ending == Ending.None && newState.steps < newState.board.width * newState.board.height && Scoring.maximalReachableScore(newState) > bestState.score) {
-              liveStates.add(newState);
               newState.fitness = fitness.evaluate(newState);
+              liveStates.add(newState);
               strategySelector.prepareState(newState);
             }
           }
