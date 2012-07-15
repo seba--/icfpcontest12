@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -178,6 +177,7 @@ public class State {
         case Lambda:
           lambdaPositions.add(col * board.height + row);
           break;
+        case HoRock:
         case Rock:
           activePositions.add(col * board.height + row);
           break;

@@ -27,7 +27,7 @@ public class MultiStepper extends SingleStepper {
         updateBoard(newSt);
         checkEnding(newSt);
       }
-      newSt.score = Scoring.totalScore(newSt.steps, newSt.collectedLambdas, newSt.ending == Ending.Abort, newSt.ending == Ending.Win);
+      newSt.score = Scoring.totalScore(newSt.steps, newSt.collectedLambdas, newSt.ending != Ending.LoseRock && newSt.ending != Ending.LoseWater, newSt.ending == Ending.Win);
       if (!isValid || newSt.ending != Ending.None)
         break;
     }
