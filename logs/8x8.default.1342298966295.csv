@@ -1,0 +1,2 @@
+initial-iterations-sum,initial-iterations-avg,initial-bestScore-sum,initial-bestScore-avg,initial-liveStates-sum,initial-liveStates-avg,initial-deadStates-sum,initial-deadStates-avg,final-iterations-sum,final-iterations-avg,final-bestScore-sum,final-bestScore-avg,final-liveStates-sum,final-liveStates-avg,final-deadStates-sum,final-deadStates-avg
+24402,244.02,1375,13.75,2467,24.67,4683,46.83,46311170,463111.7,10456,104.56,2071022,20710.22,3153180,31531.8
