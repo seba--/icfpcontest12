@@ -16,12 +16,13 @@ import interrupt.ExitHandler;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.Random;
 
 import util.FileCommands;
 import util.Pair;
@@ -41,10 +42,21 @@ public class Driver {
   public final State initialState;
   public final MultiStepper stepper;
   public Comparator<State> comparator = new FitnessComparator();
+  
   /*
    * Elements are ordered in ascending order: poll() retrieves the smallest state.
    */
-  public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
+//  public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
+  
+  /*
+   * Elements collected in list.
+   */
+  public ArrayList<State> liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
+  /*
+   * Random generator to access live states.
+   */
+  public Random random = new Random(110101010);
+  
   // public Set<State> seenStates = new HashSet<State>();
   public HashMap<Integer, State> seenStates = new HashMap<Integer, State>();
   public Fitness fitness;
@@ -113,10 +125,12 @@ public class Driver {
 
       iterations++;
 
-      State state = liveStates.peek();
+//      State state = liveStates.peek();
+      State state = liveStates.get(random.nextInt(liveStates.size()));
 
       if (iterations % 5000 == 0) {
         printDataRow();
+        
       }
 
       Strategy strategy = strategySelector.selectStrategy(state);

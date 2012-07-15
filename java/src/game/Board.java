@@ -41,6 +41,8 @@ public class Board {
   
   public int robot;
   public int lift;
+  public int growthcounter;
+  public int razor;
 
   /**
    * Packs a two-dimensional coordinate in a single integer.
@@ -104,6 +106,8 @@ public class Board {
     trampolinePos = new TreeMap<Integer, String>();
     targetPos = new TreeMap<String, Integer>();
     trampolineTargets = new TreeMap<String, String>();
+    growthcounter = 15;
+    razor = 0;
   }
 
   /**
@@ -119,6 +123,8 @@ public class Board {
     this.trampolinePos = that.trampolinePos;
     this.targetPos = that.targetPos;
     this.trampolineTargets = that.trampolineTargets;
+    this.growthcounter = that.growthcounter;
+    this.razor = that.razor;
   }
   
   /**
@@ -404,9 +410,7 @@ public class Board {
    * Returns true if the rock at (col, row) cannot ever move.
    */
   public boolean immovable(int col, int row) {
-    if (get(col, row - 1) == Cell.Wall ||
-        (get(col, row - 1) == Cell.Lambda &&
-         get(col + 1, row - 1) == Cell.Wall))
+    if (get(col, row - 1) == Cell.Wall)
       return unpushable(col, row);
     return false;
       

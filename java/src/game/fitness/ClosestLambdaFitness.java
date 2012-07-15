@@ -32,7 +32,7 @@ public class ClosestLambdaFitness implements Fitness {
     int maxDistance = state.board.height + state.board.width;
     int minDistance;
     if (state.lambdaPositions.isEmpty())
-      minDistance = MathUtil.distance(state.robotCol, state.robotRow, sconfig.liftx, sconfig.lifty);
+      return 1000000;
     else {
       int bestLambda = nextLambda[state.board.position(state.robotCol, state.robotRow)];
       minDistance = MathUtil.distanceToPos(state.robotCol, state.robotRow, bestLambda, state.board.height);
