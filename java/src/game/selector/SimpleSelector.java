@@ -1,18 +1,15 @@
 package game.selector;
 
-import game.Command;
 import game.State;
 import game.StaticConfig;
 import game.ai.Selector;
 import game.ai.Strategy;
-import game.strategy.ConstantStrategy;
-import game.strategy.DiggingStrategy;
+import game.strategy.ClosestManhattanLambda;
+import game.strategy.ClosestManhattanLift;
 import game.strategy.DownStrategy;
 import game.strategy.LeftStrategy;
 import game.strategy.RightStrategy;
 import game.strategy.SomeLambdaStrategy;
-import game.strategy.ClosestManhattanLambda;
-import game.strategy.ClosestManhattanLift;
 import game.strategy.UpStrategy;
 import game.strategy.WaitStrategy;
 

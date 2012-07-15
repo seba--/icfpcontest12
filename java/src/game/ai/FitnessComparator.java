@@ -13,6 +13,6 @@ import java.util.Comparator;
 
 public class FitnessComparator implements Comparator<State> {
   public int compare(State a, State b) {
-    return Integer.compare(b.fitness, a.fitness);
+    return Integer.compare(a.fitness, b.fitness);
   }
 }

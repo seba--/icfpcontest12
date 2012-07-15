@@ -63,10 +63,11 @@ public class State {
    */
   public Solution solution;
 
-  /**
-   * The previous state.
-   */
-  public State previousState;
+// Try to avoid using it.
+//  /**
+//   * The previous state.
+//   */
+//  public State previousState;
   
   /*
    * for flooding
@@ -106,7 +107,7 @@ public class State {
   public boolean nextLambdaShared;
 
   public State(State previousState, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, List<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise, int[] nextLambda) {
-    this.previousState = previousState;
+//    this.previousState = previousState;
     this.board = board.clone();
     this.score = score;
     this.ending = Ending.None;

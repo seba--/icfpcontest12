@@ -20,11 +20,4 @@ public interface IDriverConfig {
    * Returns the strategy selector to be used in the driver.
    */
   public Fitness fitnessFunction(StaticConfig sconfig, State initialState);
-  
-  /**
-   * Return if simulate window should be shown 
-   */
-  
-  public boolean simulateWindow();
-
 }

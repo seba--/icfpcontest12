@@ -5,21 +5,19 @@ import game.Ending;
 import game.State;
 import game.StaticConfig;
 import game.config.IDriverConfig;
-import game.fitness.AverageFitness;
-import game.fitness.ManhattanDirectedFitness;
-import game.fitness.ScoreFitness;
+import game.config.SimpleSelectorConfig;
 import game.fitness.Scoring;
-import game.fitness.StepCountFitness;
 import game.log.Log;
-import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
 import game.stepper.SingleStepper;
 import game.ui.SimulateWindow;
 import interrupt.ExitHandler;
 
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -39,6 +37,9 @@ public class Driver {
   public final State initialState;
   public final MultiStepper stepper;
   public Comparator<State> comparator = new FitnessComparator();
+  /*
+   * Elements are ordered in ascending order: poll() retrieves the smallest state.
+   */
   public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
   // public Set<State> seenStates = new HashSet<State>();
   public HashMap<Integer, State> seenStates = new HashMap<Integer, State>();
@@ -51,18 +52,16 @@ public class Driver {
   public int iterations;
   public boolean timed = false;
   public long endTime = 0;
-  public boolean simulate;
 
   public long lastPrintInfoTime;
   public int lastPrintInfoIter;
 
-  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, boolean simulate) {
+  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
     this.sconfig = sconfig;
     this.initialState = initialState;
     this.strategySelector = strategySelector;
     this.fitness = fitness;
     this.stepper = new MultiStepper(sconfig);
-    this.simulate = simulate;
   }
 
   /**
@@ -73,7 +72,7 @@ public class Driver {
    * @param lifetime
    *          max runtime in seconds
    */
-  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, boolean simulate, int lifetime) {
+  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, int lifetime) {
     this.sconfig = sconfig;
     this.initialState = initialState;
     this.strategySelector = strategySelector;
@@ -81,7 +80,6 @@ public class Driver {
     this.stepper = new MultiStepper(sconfig);
     this.endTime = System.currentTimeMillis() + (lifetime * 1000);
     this.timed = true;
-    this.simulate = simulate;
   }
 
   public void solve(State initial) {
@@ -200,33 +198,44 @@ public class Driver {
   public void simulateSolution() {
     if (bestState.solution != null) {
       SingleStepper stepper = new SingleStepper(sconfig);
-      SimulateWindow win = null;
-      if (this.simulate) {
-        win = new SimulateWindow(fitness, stepper);
-      }
       State st = initialState;
       st.fitness = fitness.evaluate(st);
-      Command[] commands = bestState.solution.allCommands();
-
       Log.println(st);
       Log.println();
-      if (this.simulate) {
-        win.addState(st);
+
+      List<Solution> sols = new LinkedList<Solution>();
+      Solution sol = bestState.solution;
+      while (sol != null) {
+        sols.add(0, sol);
+        sol = sol.prefix;
       }
-      for (Command command : commands) {
-        st = stepper.step(st, command);
-        st.fitness = fitness.evaluate(st);
-        if (this.simulate) {
-          win.addState(st);
+      
+      for (Solution s : sols) {
+        Log.println(s.strategy + ": " + Arrays.toString(s.commands));
+        for (Command command : s.commands) {
+          st = stepper.step(st, command);
+          st.fitness = fitness.evaluate(st);
         }
-        // Log.println(st);
       }
-      if (this.simulate) {
-        win.setVisible(true);
-      }
+      
       Log.println(st);
       Log.println();
     }
+  }
+  
+  public void simulationWindow() {
+    State st = initialState;
+    st.fitness = fitness.evaluate(st);
+    Command[] commands = bestState.solution.allCommands();
+
+    SimulateWindow win = new SimulateWindow(fitness, stepper);
+    win.addState(st);
+    for (Command command : commands) {
+      st = stepper.step(st, command);
+      st.fitness = fitness.evaluate(st);
+      win.addState(st);
+    }
+    win.setVisible(true);
   }
 
   // kill states that have no strategies left
@@ -236,7 +245,11 @@ public class Driver {
 
   private State computeNextState(State state, List<Command> commands, Strategy strategy) {
     State result = stepper.multistep(state, commands);
-    result.solution = new Solution(state.solution, commands.toArray(new Command[commands.size()]), strategy);
+    int stepsPerformed = result.steps - state.steps;
+    Command[] usedCommands = new Command[stepsPerformed];
+    for (int i = 0; i < stepsPerformed; i++)
+      usedCommands[i] = commands.get(i);
+    result.solution = new Solution(state.solution, usedCommands, strategy);
     return result;
   }
 
@@ -249,15 +262,13 @@ public class Driver {
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    boolean simulate = dconfig.simulateWindow();
-    return new Driver(sconfig, state, selector, fitness, simulate);
+    return new Driver(sconfig, state, selector, fitness);
   }
 
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state, int lifetime) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    boolean simulate = dconfig.simulateWindow();
-    return new Driver(sconfig, state, selector, fitness, simulate, lifetime);
+    return new Driver(sconfig, state, selector, fitness, lifetime);
   }
 
   public void run() {
@@ -304,24 +315,10 @@ public class Driver {
     StaticConfig sconfig = p.a;
     State state = p.b;
 
-    IDriverConfig stdConfig = new IDriverConfig() {
-      @Override
-      public Selector strategySelector(StaticConfig sconfig, State initialState) {
-        return new SimpleSelector(sconfig);
-      }
+    IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-      @Override
-      public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
-        return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig));
-      }
-
-      @Override
-      public boolean simulateWindow() {
-        return true;
-      }
-
-    };
-
-    Driver.create(stdConfig, sconfig, state, 15).run();
+    Driver d = Driver.create(stdConfig, sconfig, state, 15);
+    d.run();
+    d.simulationWindow();    
   }
 }

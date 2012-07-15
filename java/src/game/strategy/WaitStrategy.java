@@ -28,4 +28,9 @@ public class WaitStrategy extends Strategy {
     return !s.board.bitsets[Cell.FallingRock.ordinal()].isEmpty();
     //return !s.activePositions.isEmpty();
   }
+  
+  @Override
+  public String toString() {
+    return "Wait";
+  }
 }

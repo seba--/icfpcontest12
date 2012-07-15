@@ -25,4 +25,9 @@ public class DownStrategy extends Strategy {
     int pos = s.robotCol * s.board.height + s.robotRow - 1;
     return s.board.isPosition(pos) && (s.board.isEarth(pos) || s.board.isEmpty(pos) || s.board.isLambda(pos));
   }
+  
+  @Override
+  public String toString() {
+    return "Down";
+  }
 }

@@ -1,6 +1,5 @@
 package game.fitness;
 
-import game.Cell;
 import game.State;
 import game.StaticConfig;
 import game.ai.Fitness;
@@ -11,6 +10,8 @@ import util.MathUtil;
 
 /**
  * Directed towards next lambda (if any), otherwise next lift.
+ * Use the original lambda positions (from the intial state). If the
+ * lambdas are gone, scoring will take care of that.
  * 
  * @author seba
  *
@@ -19,8 +20,11 @@ public class ManhattanDirectedFitness implements Fitness {
 
   private final StaticConfig sconfig;
   
-  public ManhattanDirectedFitness(StaticConfig sconfig) {
+  int[] nextLambda;
+  
+  public ManhattanDirectedFitness(StaticConfig sconfig, State state) {
     this.sconfig = sconfig;
+    this.nextLambda = state.nextLambda;
   }
   
   @Override
@@ -29,13 +33,9 @@ public class ManhattanDirectedFitness implements Fitness {
     int minDistance;
     if (state.lambdaPositions.isEmpty())
       minDistance = MathUtil.distance(state.robotCol, state.robotRow, sconfig.liftx, sconfig.lifty);
-    else if (state.previousState != null && state.previousState.board.get(state.robotCol, state.robotRow) == Cell.Lambda) {
-      // if we just ate a lambda, that's great!
-      return 1000000;
-    }
     else {
-      int lambda = state.nextLambda(state.robotCol, state.robotRow);
-      minDistance = MathUtil.distanceToPos(state.robotCol, state.robotRow, lambda, state.board.height);
+      int bestLambda = nextLambda[state.board.position(state.robotCol, state.robotRow)];
+      minDistance = MathUtil.distanceToPos(state.robotCol, state.robotRow, bestLambda, state.board.height);
     }
     
     int r = (int) ((1 - (double) minDistance / maxDistance) * 1000000);
