@@ -1,7 +1,5 @@
 package game.stepper;
 
-import java.util.Set;
-
 import game.Board;
 import game.Cell;
 import game.Command;
@@ -52,6 +50,7 @@ public class SingleStepper {
       return true;
     case Shave:
       st.shaveBeard(st.robotCol, st.robotRow);
+      return false;
     default:
       throw new IllegalArgumentException("Unknown command " + cmd);
     }
@@ -73,7 +72,10 @@ public class SingleStepper {
       }
       // invalid move
       return false;
-        
+    case Razor:
+     ++st.board.razor;
+     moveRobot(st, nextCol, nextRow);
+     return true;
     case Rock:
     case FallingRock:
       if (cmd == Command.Left && st.board.get(nextCol - 1, nextRow) == Cell.Empty) {
@@ -205,8 +207,45 @@ public class SingleStepper {
         }
         
         // skip checking whether we should open lambda lifts
-      }
+      } 
     }
+    
+    //Update beards
+    if(oldBoard.growthcounter <= 0) {
+      for(int pos = 0; pos < oldBoard.length; ++pos) {
+    	int col = oldBoard.col(pos);
+    	int row = oldBoard.row(pos);
+    	if(oldBoard.get(col, row) == Cell.Beard) {  
+		  if(oldBoard.get(col-1, row-1) == Cell.Empty ) {
+		    st.board.set(col-1,  row-1, Cell.Beard);
+		  }
+		  if(oldBoard.get(col, row-1) == Cell.Empty ) {
+	   	    st.board.set(col,  row-1, Cell.Beard);
+	  	  }
+		  if(oldBoard.get(col+1, row-1) == Cell.Empty ) {
+	   	    st.board.set(col+1,  row-1, Cell.Beard);
+	   	  }
+		  if(oldBoard.get(col-1, row) == Cell.Empty ) {
+	        st.board.set(col-1,  row, Cell.Beard);
+	      }
+		  if(oldBoard.get(col+1, row) == Cell.Empty ) {
+	        st.board.set(col+1,  row, Cell.Beard);
+	      }
+		  if(oldBoard.get(col-1, row+1) == Cell.Empty ) {
+	        st.board.set(col-1,  row+1, Cell.Beard);
+	      }
+		  if(oldBoard.get(col, row+1) == Cell.Empty ) {
+	        st.board.set(col,  row+1, Cell.Beard);
+	      }
+		  if(oldBoard.get(col+1, row+1) == Cell.Empty ) {
+	        st.board.set(col+1,  row+1, Cell.Beard);
+	      }
+    	}
+      }
+	  st.board.growthcounter = sconfig.beardgrowth;
+    }
+
+    --st.board.growthcounter;
     
     /*
      * update water level
@@ -254,3 +293,4 @@ public class SingleStepper {
   }
 
 }
+

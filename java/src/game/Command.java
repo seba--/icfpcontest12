@@ -47,6 +47,8 @@ public enum Command {
       return "Wait";
     case Abort:
       return "Abort";
+    case Shave:
+      return "Shave";
     default:
       throw new IllegalStateException("Unknown command " + this);
     }
