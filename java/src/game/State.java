@@ -177,6 +177,7 @@ public class State {
         case Lambda:
           lambdaPositions.add(col * board.height + row);
           break;
+        case HoRock:
         case Rock:
           activePositions.add(col * board.height + row);
           break;
@@ -283,7 +284,33 @@ public class State {
    * Shave a beard
    */
   public void shaveBeard(int col, int row) {
-    // TODO: Implement.
+    if(board.razors > 0) {
+      if(board.get(col+1, row+1) == Cell.Beard) {
+        board.set(col+1, row+1, Cell.Empty);
+      }
+      if(board.get(col, row+1) == Cell.Beard) {
+        board.set(col, row+1, Cell.Empty);
+      }
+      if(board.get(col-1, row+1) == Cell.Beard) {
+        board.set(col-1, row+1, Cell.Empty);
+      }
+      if(board.get(col-1, row) == Cell.Beard) {
+        board.set(col-1, row, Cell.Empty);
+      }
+      if(board.get(col+1, row) == Cell.Beard) {
+        board.set(col+1, row, Cell.Empty);
+      }
+      if(board.get(col+1, row-1) == Cell.Beard) {
+        board.set(col+1, row-1, Cell.Empty);
+      }
+      if(board.get(col, row-1) == Cell.Beard) {
+        board.set(col, row-1, Cell.Empty);
+      }
+      if(board.get(col-1, row-1) == Cell.Beard) {
+        board.set(col-1, row-1, Cell.Empty);
+      }
+      --board.razors;
+    }
   }
 
   public State makeFinal() {
@@ -311,6 +338,8 @@ public class State {
     int waterLevel = 0;
     int floodingRate = 0;
     int waterResistance = 10;
+    int beardgrowth = 25;
+    int razors = 0;
     Map<String, String> trampolineTargets = new HashMap<String, String>();
     if (parts.length > 1) {
       StringTokenizer tokenizer = new StringTokenizer(parts[1], "\n");
@@ -322,6 +351,10 @@ public class State {
           waterLevel = Integer.parseInt(next.substring(6).trim());
         else if (next.startsWith("Flooding"))
           floodingRate = Integer.parseInt(next.substring(9).trim());
+        else if (next.startsWith("Growth")) 
+          beardgrowth = Integer.parseInt(next.substring(7).trim());
+        else if (next.startsWith("Razors")) 
+            razors = Integer.parseInt(next.substring(7).trim());
         else if (next.startsWith("Trampoline")) {
         	Pattern regex = Pattern.compile("Trampoline ([A-I]) targets ([1-9])");
         	Matcher match = regex.matcher(next);
@@ -332,8 +365,10 @@ public class State {
       }
     }
     board.trampolineTargets = trampolineTargets;
+    board.growthcounter = beardgrowth;
+    board.razors = razors;
     State st = new State(board, waterLevel);
-    StaticConfig sconfig = new StaticConfig(st, floodingRate, waterResistance);
+    StaticConfig sconfig = new StaticConfig(st, floodingRate, waterResistance, beardgrowth);
     return Pair.create(sconfig, st);
   }
 

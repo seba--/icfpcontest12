@@ -234,7 +234,8 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	public void updateText(State state) {
 	  currentState = state;
 	  textArea.setText(
-	    "fitness=" + state.fitness + ", score=" + state.score + "\n"
+	    "fitness=" + state.fitness + ", score=" + state.score + "\n"+
+	    "Growth Counter: " + state.board.growthcounter + ", Razor: " + state.board.razors +"\n"
 	  + state.toString());
 	}
 
@@ -280,6 +281,9 @@ public class SimulateWindow extends JFrame implements KeyListener {
 			case KeyEvent.VK_W:
 				custom = stepper.step(parent, Command.Wait);
 				break;
+			case KeyEvent.VK_S:
+			  custom = stepper.step(parent, Command.Shave);
+			  break;
 			case KeyEvent.VK_U:
 				custom = customStates.removeLast();
 				if(customStates.size() != 0) {

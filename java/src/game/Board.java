@@ -25,7 +25,7 @@ public class Board {
    */
   // public final Cell[] grid;
   
-  public static final int N = 9;
+  public static final int N = 11;
   private static final Cell[] cells = Cell.values();
 
   public final int width;
@@ -41,6 +41,8 @@ public class Board {
   
   public int robot;
   public int lift;
+  public int growthcounter;
+  public int razors;
 
   /**
    * Packs a two-dimensional coordinate in a single integer.
@@ -104,6 +106,8 @@ public class Board {
     trampolinePos = new TreeMap<Integer, String>();
     targetPos = new TreeMap<String, Integer>();
     trampolineTargets = new TreeMap<String, String>();
+    growthcounter = 15;
+    razors = 0;
   }
 
   /**
@@ -119,6 +123,8 @@ public class Board {
     this.trampolinePos = that.trampolinePos;
     this.targetPos = that.targetPos;
     this.trampolineTargets = that.trampolineTargets;
+    this.growthcounter = that.growthcounter;
+    this.razors = that.razors;
   }
   
   /**

@@ -1,7 +1,5 @@
 package game.stepper;
 
-import java.util.Set;
-
 import game.Board;
 import game.Cell;
 import game.Command;
@@ -52,6 +50,7 @@ public class SingleStepper {
       return true;
     case Shave:
       st.shaveBeard(st.robotCol, st.robotRow);
+      return false;
     default:
       throw new IllegalArgumentException("Unknown command " + cmd);
     }
@@ -67,13 +66,16 @@ public class SingleStepper {
       return true;
 
     case Lift:
-      if (st.lambdaPositions.isEmpty()) {
+      if (st.lambdaPositions.isEmpty() && st.board.bitsets[Cell.HoRock.ordinal()].isEmpty() && st.board.bitsets[Cell.FallingHoRock.ordinal()].isEmpty()) {
         moveRobot(st, nextCol, nextRow);
         return true;
       }
       // invalid move
       return false;
-        
+    case Razor:
+     ++st.board.razors;
+     moveRobot(st, nextCol, nextRow);
+     return true;
     case Rock:
     case FallingRock:
       if (cmd == Command.Left && st.board.get(nextCol - 1, nextRow) == Cell.Empty) {
@@ -86,6 +88,22 @@ public class SingleStepper {
       if (cmd == Command.Right && st.board.get(nextCol + 1, nextRow) == Cell.Empty) {
         // push rock to the right
         st.board.set(nextCol + 1, nextRow, Cell.FallingRock);
+        fallingPosition(st, nextCol + 1, nextRow);
+        moveRobot(st, nextCol, nextRow);
+        return true;
+      }
+    case HoRock:
+    case FallingHoRock:
+      if (cmd == Command.Left && st.board.get(nextCol - 1, nextRow) == Cell.Empty) {
+        // push rock to the left
+        st.board.set(nextCol - 1, nextRow, Cell.FallingHoRock);
+        fallingPosition(st, nextCol - 1, nextRow);
+        moveRobot(st, nextCol, nextRow);
+        return true;
+      }
+      if (cmd == Command.Right && st.board.get(nextCol + 1, nextRow) == Cell.Empty) {
+        // push rock to the right
+        st.board.set(nextCol + 1, nextRow, Cell.FallingHoRock);
         fallingPosition(st, nextCol + 1, nextRow);
         moveRobot(st, nextCol, nextRow);
         return true;
@@ -156,11 +174,29 @@ public class SingleStepper {
     st.robotRow = nextRow;
   }
 
-  protected void moveRock(State st, int oldCol, int oldRow, int newCol, int newRow) {
+  protected void moveRock(State st, int oldCol, int oldRow, int newCol, int newRow, Cell type, Board board) {
     st.board.set(oldCol, oldRow, Cell.Empty);
     freePosition(st, oldCol, oldRow);
-    st.board.set(newCol, newRow, Cell.FallingRock);
-    fallingPosition(st, newCol, newRow);
+    if(type == Cell.Rock)
+    	st.board.set(newCol, newRow, Cell.FallingRock);
+    else 
+    	st.board.set(newCol, newRow, Cell.FallingHoRock);
+    fallingPosition(st, newCol, newRow); 
+    if(type == Cell.HoRock) {
+    	if(board.get(newCol, newRow-1) != Cell.Empty
+    		&& board.get(newCol, newRow-1) != Cell.Robot 
+    		&& board.get(newCol, newRow-1) != Cell.Rock 
+    		&& board.get(newCol, newRow-1) != Cell.FallingRock 
+    		&& board.get(newCol, newRow-1) != Cell.HoRock
+    		&& board.get(newCol, newRow-1) != Cell.FallingHoRock) {
+    		st.board.set(newCol, newRow, Cell.Lambda);
+    	} else if(board.get(newCol, newRow-1) != Cell.Empty
+    		&& board.get(newCol, newRow-1) != Cell.Robot
+    		&& board.get(newCol-1, newRow-1) != Cell.Empty
+    		&& board.get(newCol+1, newRow-1) != Cell.Empty) {
+    		st.board.set(newCol, newRow, Cell.Lambda);
+    	}
+    }
   }
 
   protected void updateBoard(State st) {
@@ -170,34 +206,38 @@ public class SingleStepper {
 
     // all further activations are only due in the next iteration
     st.activePositions.clear();
-    
     for (int pos : positions) {
       int col = pos / st.board.height;
       int row = pos % st.board.height;
       
-      if (oldBoard.get(col, row) == Cell.Rock || oldBoard.get(col, row) == Cell.FallingRock) {
-        st.board.set(col, row, Cell.Rock);
+      if (oldBoard.get(col, row) == Cell.Rock || oldBoard.get(col, row) == Cell.FallingRock || oldBoard.get(col, row) == Cell.HoRock || oldBoard.get(col, row) == Cell.FallingHoRock) {
+    	Cell oldType;
+    	if(oldBoard.get(col, row) == Cell.Rock || oldBoard.get(col, row) == Cell.FallingRock)
+    		oldType = Cell.Rock;
+    	else 
+    		oldType = Cell.HoRock;
+    	st.board.set(col, row, oldType);
         
         if (oldBoard.get(col, row - 1) == Cell.Empty) {
           // fall straight down
-          moveRock(st, col, row, col, row - 1);
+          moveRock(st, col, row, col, row - 1, oldType, oldBoard);
         }
         else if (oldBoard.get(col, row - 1) == Cell.Rock || oldBoard.get(col, row - 1) == Cell.FallingRock) {
           // there is a rock below
           if (oldBoard.get(col + 1,  row) == Cell.Empty &&
               oldBoard.get(col + 1, row - 1) == Cell.Empty)
             // rock slides to the right
-            moveRock(st, col, row, col + 1, row - 1);
+            moveRock(st, col, row, col + 1, row - 1, oldType, oldBoard);
           else if (oldBoard.get(col - 1, row) == Cell.Empty &&
                    oldBoard.get(col - 1, row - 1) == Cell.Empty)
             // rock slides to the left
-            moveRock(st, col, row, col - 1, row - 1);
+            moveRock(st, col, row, col - 1, row - 1, oldType, oldBoard);
         }
         else if (oldBoard.get(col, row - 1) == Cell.Lambda &&
                  oldBoard.get(col + 1, row) == Cell.Empty &&
                  oldBoard.get(col + 1, row - 1) == Cell.Empty) {
           // rock slides to the right off the back of a lambda
-          moveRock(st, col, row, col + 1, row - 1);
+          moveRock(st, col, row, col + 1, row - 1, oldType, oldBoard);
         }
         else if (oldBoard.immovable(col, row)) {
           // rock cannot ever be moved => rock can be considered a wall
@@ -207,6 +247,43 @@ public class SingleStepper {
         // skip checking whether we should open lambda lifts
       }
     }
+    
+    //Update beards
+    if(oldBoard.growthcounter <= 0) {
+      for(int pos = 0; pos < oldBoard.length; ++pos) {
+    	int col = oldBoard.col(pos);
+    	int row = oldBoard.row(pos);
+    	if(oldBoard.get(col, row) == Cell.Beard) {  
+		  if(oldBoard.get(col-1, row-1) == Cell.Empty ) {
+		    st.board.set(col-1,  row-1, Cell.Beard);
+		  }
+		  if(oldBoard.get(col, row-1) == Cell.Empty ) {
+	   	    st.board.set(col,  row-1, Cell.Beard);
+	  	  }
+		  if(oldBoard.get(col+1, row-1) == Cell.Empty ) {
+	   	    st.board.set(col+1,  row-1, Cell.Beard);
+	   	  }
+		  if(oldBoard.get(col-1, row) == Cell.Empty ) {
+	        st.board.set(col-1,  row, Cell.Beard);
+	      }
+		  if(oldBoard.get(col+1, row) == Cell.Empty ) {
+	        st.board.set(col+1,  row, Cell.Beard);
+	      }
+		  if(oldBoard.get(col-1, row+1) == Cell.Empty ) {
+	        st.board.set(col-1,  row+1, Cell.Beard);
+	      }
+		  if(oldBoard.get(col, row+1) == Cell.Empty ) {
+	        st.board.set(col,  row+1, Cell.Beard);
+	      }
+		  if(oldBoard.get(col+1, row+1) == Cell.Empty ) {
+	        st.board.set(col+1,  row+1, Cell.Beard);
+	      }
+    	}
+      }
+	  st.board.growthcounter = sconfig.beardgrowth;
+    }
+
+    --st.board.growthcounter;
     
     /*
      * update water level
@@ -221,7 +298,7 @@ public class SingleStepper {
   }
 
   protected void checkEnding(State st) {
-    if (st.lambdaPositions.isEmpty() && st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
+    if (st.lambdaPositions.isEmpty() && st.board.bitsets[Cell.HoRock.ordinal()].isEmpty() && st.board.bitsets[Cell.FallingHoRock.ordinal()].isEmpty() && st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
       st.ending = Ending.Win;
     else if (st.board.get(st.robotCol, st.robotRow + 1) == Cell.FallingRock)
       st.ending = Ending.LoseRock;
@@ -248,9 +325,10 @@ public class SingleStepper {
       updateBoard(newSt);
       checkEnding(newSt);
     }
-    newSt.score = Scoring.totalScore(newSt.steps, newSt.collectedLambdas, newSt.ending == Ending.Abort, newSt.ending == Ending.Win);
+    newSt.score = Scoring.totalScore(newSt.steps, newSt.collectedLambdas, newSt.ending != Ending.LoseRock && newSt.ending != Ending.LoseWater, newSt.ending == Ending.Win);
     
     return newSt.makeFinal();
   }
 
 }
+

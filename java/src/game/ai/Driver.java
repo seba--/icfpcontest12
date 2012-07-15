@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import util.FileCommands;
 import util.MathUtil;
@@ -46,7 +47,7 @@ public class Driver {
   /*
    * Elements are ordered in ascending order: poll() retrieves the smallest state.
    */
-//  public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
+  public PriorityQueue<State> liveStateQueue = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
   
   /*
    * Elements collected in list.
