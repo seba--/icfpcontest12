@@ -21,9 +21,12 @@ public class ClosestWalkBeard extends Strategy {
 
   @Override
   public List<Command> apply(State s) {
-    List<Command> ret = new ArrayList<Command>(Helpers.moveToCell(s, Cell.Beard, 1));
-    ret.add(Command.Shave);
-    return ret;
+    List<Command> commands = Helpers.moveToCell(s, Cell.Beard, 1);
+    if (commands == null)
+      return null;
+    commands = new ArrayList<Command>(commands);
+    commands.add(Command.Shave);
+    return commands;
   }
 
   @Override
