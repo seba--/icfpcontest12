@@ -112,6 +112,11 @@ public class State {
    * shared. Used to implement copy-on-write.
    */
   public boolean nextLambdaShared;
+  
+  /*
+   * used by NClosestWalksStrategy
+   */
+  public int nClosestWalksStrategyIndex = 0;
 
   public State(State previousState, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, List<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise, int[] nextLambda) {
 //    this.previousState = previousState;
