@@ -115,6 +115,7 @@ public class Driver {
     // choose 5000k more cleverly
 
     printDataHeader();
+    
     while (!liveStates.isEmpty()) {
       if (timed && System.currentTimeMillis() >= endTime) {
         // timeout for testing
@@ -162,7 +163,7 @@ public class Driver {
                   Scoring.maximalReachableScore(newState) > bestState.score) {
                 newState.fitness = fitness.evaluate(newState);
                 
-                if (newState.fitness > liveStatesAverageFitness) {
+                if (true) {
                   // the kid is better than the average of all parents
                   newStates.add(newState);
                   newStatesFitnessNormalized += newState.fitness / newStatesNormalizer;
@@ -178,34 +179,57 @@ public class Driver {
       double newStatesAverageFitness = newStatesFitnessNormalized * newStatesNormalizer / newStates.size();
       double newStatesAverageSteps = newStatesStepsNormalized * newStatesNormalizer / newStates.size();
       
+
+      int MAX_NUM_STATES = 10000;
       int newStatesCount = newStates.size();
+      double size = liveStates.size() + newStatesCount;
+      double averageFitness = (liveStatesAverageFitness * (liveStates.size() / size) + newStatesAverageFitness * (newStatesCount / size));
+      
+      double spaceFactor = (double) MAX_NUM_STATES / size;
+      double fitnessFactor = s.fitness / averageFitness;
+      
+      boolean keep = spaceFactor * fitnessFactor > MathUtil.RANDOM.nextDouble();
+
 
       if (newStates.size() < 1000) {
         newStates.addAll(liveStates);
-        if (newStatesCount != 0)
+        if (newStatesCount != 0) {
           liveStatesAverageFitness = (newStatesAverageFitness + liveStatesAverageFitness) / 2;
+          liveStatesAverageSteps = (newStatesAverageSteps + liveStatesAverageSteps) / 2;
+        }
       }
       else {
+        double oldFitness = liveStatesAverageFitness;
+        double oldSteps = liveStatesAverageSteps;
         liveStatesAverageFitness = 0;
+        liveStatesAverageSteps = 0;
         for (int i = 0; i < liveStates.size(); i++) {
           State s = liveStates.get(i);
-          if (s.steps < newStatesAverageSteps) {
+          if ((s.fitness > oldFitness ||
+               s.steps < oldSteps*0.0)) {
             newStates.add(s);
             liveStatesAverageFitness += s.fitness / (liveStates.size() / 2);
+            liveStatesAverageSteps += s.steps / (liveStates.size() / 2);
           }
         }
-       
+        
         if (newStates.size() > newStatesCount) {
           liveStatesAverageFitness = liveStatesAverageFitness * (liveStates.size() / 2) / (newStates.size() - newStatesCount);
           liveStatesAverageFitness = (newStatesAverageFitness + liveStatesAverageFitness) / 2;
+          
+          liveStatesAverageSteps = liveStatesAverageSteps * (liveStates.size() / 2) / (newStates.size() - newStatesCount);
+          liveStatesAverageSteps = (newStatesAverageSteps + liveStatesAverageSteps) / 2;
         }
-        else
+        else {
           liveStatesAverageFitness = newStatesAverageFitness;
+          liveStatesAverageSteps = newStatesAverageSteps;
+        }
       }
         
       int keptOldStatesCount = newStates.size() - newStatesCount;
 
-      Log.printf("was: %6d, keep: %6d, new: %6d, fitness: %f\n", liveStates.size(), keptOldStatesCount, newStatesCount, liveStatesAverageFitness);
+      Log.printf("was: %6d, keep: %6d, new: %6d, fitness: %f, steps: %3f\n",
+          liveStates.size(), keptOldStatesCount, newStatesCount, liveStatesAverageFitness, liveStatesAverageSteps);
       
       liveStates = newStates;
     }
@@ -399,7 +423,7 @@ public class Driver {
     
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-    Driver d = Driver.create(name, stdConfig, sconfig, state, 60);
+    Driver d = Driver.create(name, stdConfig, sconfig, state, 20);
     d.run();
     d.simulationWindow();    
   }
