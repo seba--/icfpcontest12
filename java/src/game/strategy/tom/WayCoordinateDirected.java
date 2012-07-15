@@ -2,16 +2,16 @@ package game.strategy.tom;
 
 import game.Command;
 
-public class WayCoordinate implements Comparable<WayCoordinate>{
+public class WayCoordinateDirected implements Comparable<WayCoordinateDirected>{
 
   public int steps;
-  public int row;
   public int col;
+  public int row;
   public Command steppedHereWith;
   
   private int cmp;
 
-  public WayCoordinate(int col, int row, int destCol, int destRow, int steps, Command lastStep) {
+  public WayCoordinateDirected(int col, int row, int destCol, int destRow, int steps, Command lastStep) {
     this.col = col;
     this.row = row;
     this.steps = steps;
@@ -21,7 +21,7 @@ public class WayCoordinate implements Comparable<WayCoordinate>{
   }
 
   @Override
-  public int compareTo(WayCoordinate other) {
+  public int compareTo(WayCoordinateDirected other) {
     return Integer.compare(cmp, other.cmp);
   }
 
