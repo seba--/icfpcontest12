@@ -76,7 +76,7 @@ public class MapRotator {
         }
       }
     } else if (orientation == 0) { // rotate -90
-      return rotateMap(1, rotateMap(1, rotateMap(1, p)));
+      return(rotateMap(1, rotateMap(2, p)));
     }
     
     Pair<StaticConfig, State> ret = new Pair<StaticConfig, State>(p.a, new State(rb));
