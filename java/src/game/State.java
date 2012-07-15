@@ -5,10 +5,14 @@ import game.ai.Strategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import util.Pair;
 
@@ -293,6 +297,7 @@ public class State {
     int waterLevel = 0;
     int floodingRate = 0;
     int waterResistance = 10;
+    Map<String, String> trampolineTargets = new HashMap<String, String>();
     if (parts.length > 1) {
       StringTokenizer tokenizer = new StringTokenizer(parts[1], "\n");
       while (tokenizer.hasMoreTokens()) {
@@ -303,12 +308,18 @@ public class State {
           waterLevel = Integer.parseInt(next.substring(6));
         else if (next.startsWith("Flooding"))
           floodingRate = Integer.parseInt(next.substring(9));
+        else if (next.startsWith("Trampoline")) {
+        	Pattern regex = Pattern.compile("Trampoline ([A-I]) targets ([1-9])");
+        	Matcher match = regex.matcher(next);
+        	if(match.matches()) {
+        		trampolineTargets.put(match.group(1), match.group(2));
+        	}        	
+        }
       }
     }
-
+    board.trampolineTargets = trampolineTargets;
     State st = new State(board, waterLevel);
     StaticConfig sconfig = new StaticConfig(st, floodingRate, waterResistance);
-
     return Pair.create(sconfig, st);
   }
 

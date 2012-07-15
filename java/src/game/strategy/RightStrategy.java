@@ -24,7 +24,7 @@ public class RightStrategy extends Strategy {
   public boolean wantsToApply(State s) {
     int pos1 = (s.robotCol + 1) * s.board.height + s.robotRow;
     int pos2 = (s.robotCol + 2) * s.board.height + s.robotRow;
-    return s.board.isPosition(pos1) && (s.board.isEarth(pos1) || s.board.isEmpty(pos1) || s.board.isLambda(pos1) || (s.board.isPosition(pos2) && s.board.isEmpty(pos2) && (s.board.isRock(pos1) || s.board.isFallingRock(pos1))));
+    return s.board.isPosition(pos1) && (s.board.isEarth(pos1) || s.board.isEmpty(pos1) || s.board.isLambda(pos1) || s.board.isTrampoline(pos1) || (s.board.isPosition(pos2) && s.board.isEmpty(pos2) && (s.board.isRock(pos1) || s.board.isFallingRock(pos1))));
   }
   
   @Override

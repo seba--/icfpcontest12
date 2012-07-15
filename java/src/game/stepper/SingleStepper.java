@@ -1,5 +1,7 @@
 package game.stepper;
 
+import java.util.Set;
+
 import game.Board;
 import game.Cell;
 import game.Command;
@@ -88,7 +90,20 @@ public class SingleStepper {
         moveRobot(st, nextCol, nextRow);
         return true;
       }
-
+    case Target:
+      return false;
+    case Trampoline:
+      int trampolinePos = st.board.position(nextCol, nextRow);
+      String trampoline = st.board.trampolinePos.get(trampolinePos);
+      st.board.set(nextCol, nextRow, Cell.Empty);
+      String target = st.board.trampolineTargets.get(trampoline);
+      int jumpPos = st.board.targetPos.get(target);
+      st.board.set(jumpPos, Cell.Empty);
+      int jumpCol = st.board.col(jumpPos);
+      int jumpRow = st.board.row(jumpPos);
+      moveRobot(st, jumpCol, jumpRow);
+           
+      return true;
     default:
       // the move was invalid => execute Wait
       return false;

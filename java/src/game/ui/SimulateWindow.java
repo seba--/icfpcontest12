@@ -114,6 +114,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			custom = null;
 			updateText(states.get(--current));
 			if(current == 0) {
 				buttonBack.setEnabled(false);		
@@ -127,6 +128,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			custom = null;
 			updateText(states.get(++current));
 			if(current == (states.size()-1)) {
 				buttonNext.setEnabled(false);		
