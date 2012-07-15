@@ -22,9 +22,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import util.FileCommands;
+import util.MathUtil;
 import util.Pair;
 
 /**
@@ -52,10 +52,8 @@ public class Driver {
    * Elements collected in list.
    */
   public ArrayList<State> liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
-  /*
-   * Random generator to access live states.
-   */
-  public Random random = new Random(110101010);
+  public double liveStatesAverageFitness;
+  public double liveStatesAverageSteps;
   
   // public Set<State> seenStates = new HashSet<State>();
   public HashMap<Integer, State> seenStates = new HashMap<Integer, State>();
@@ -102,8 +100,10 @@ public class Driver {
 
   public void solve(State initial) {
     strategySelector.prepareState(initial);
-    liveStates.add(initial);
     initial.fitness = fitness.evaluate(initial);
+    liveStates.add(initial);
+    liveStatesAverageFitness = initial.fitness;
+    liveStatesAverageSteps = initial.steps;
 
     bestState = initial;
 
@@ -113,57 +113,101 @@ public class Driver {
 
     // choose k, M, G more cleverly
     // choose 5000k more cleverly
-    // explain final solution (what strategies)
 
     printDataHeader();
     while (!liveStates.isEmpty()) {
-      // TODO why is this needed?
       if (timed && System.currentTimeMillis() >= endTime) {
+        // timeout for testing
         printDataRow();
         break;
       }
 
       iterations++;
+      printDataRow();
 
-//      State state = liveStates.peek();
-      State state = liveStates.get(random.nextInt(liveStates.size()));
+      ArrayList<State> newStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
+      double newStatesFitnessNormalized = 0;
+      double newStatesNormalizer = liveStates.size();
+      
+      for (int i = 0; i < liveStates.size(); ) {
+        State state = liveStates.get(i);
 
-      if (iterations % 5000 == 0) {
-        printDataRow();
+        Strategy strategy = strategySelector.selectStrategy(state);
         
-      }
+        if (strategy == null) {
+          liveStates.remove(i);
+          // do not increase 'i'
+        } else {
+          i++;
+          
+          // apply strategy to create new state
+          List<Command> commands = strategy.apply(state);
+          strategy.applicationCount++;
+          
+          if (commands != null) {
+            assert (!commands.isEmpty());
 
-      Strategy strategy = strategySelector.selectStrategy(state);
-
-      if (strategy == null) {
-        killState(state);
-      } else {
-        // apply strategy to create new state
-        List<Command> commands = strategy.apply(state);
-        strategy.applicationCount++;
-
-        if (commands != null) {
-          assert (!commands.isEmpty());
-          State newState = computeNextState(state, commands, strategy);
-          if (stateShouldBeConsidered(newState)) {
-            seenStates.put(newState.board.hashCode(), newState);
-            // Log.printf("%s => %8d old fitness, %8d new fitness, %12d\n",
-            // commands.get(0), state.fitness, fitness.evaluate(newState),
-            // state.hashCode());
-
-            if (newState.score > bestState.score) {
-              bestState = newState;
-            }
-
-            if (newState.ending == Ending.None && newState.steps < newState.board.width * newState.board.height && Scoring.maximalReachableScore(newState) > bestState.score) {
-              newState.fitness = fitness.evaluate(newState);
-              liveStates.add(newState);
-              strategySelector.prepareState(newState);
-            }
+            State newState = computeNextState(state, commands, strategy);
+            
+//            if (stateShouldBeConsidered(newState)) {
+//              seenStates.put(newState.board.hashCode(), newState);
+              
+              if (newState.score > bestState.score) {
+                bestState = newState;
+              }
+              
+              if (newState.ending == Ending.None &&
+                  newState.steps < newState.board.width * newState.board.height && 
+                  Scoring.maximalReachableScore(newState) > bestState.score) {
+                newState.fitness = fitness.evaluate(newState);
+                
+                if (newState.fitness > liveStatesAverageFitness) {
+                  // the kid is better than the average of all parents
+                  newStates.add(newState);
+                  newStatesFitnessNormalized += newState.fitness / newStatesNormalizer;
+                  strategySelector.prepareState(newState);
+                }
+              }
+//            }
           }
         }
       }
+      
+      double newStatesAverageFitness = newStatesFitnessNormalized * newStatesNormalizer / newStates.size();
+      
+      int newStatesCount = newStates.size();
+
+      if (newStates.size() < 1000) {
+        newStates.addAll(liveStates);
+        if (newStatesCount != 0)
+          liveStatesAverageFitness = (newStatesAverageFitness + liveStatesAverageFitness) / 2;
+      }
+      else {
+        liveStatesAverageFitness = 0;
+        for (int i = 0; i < liveStates.size(); i++) {
+          State s = liveStates.get(i);
+          if (s.fitness > 50 * liveStates.size()) {
+            newStates.add(s);
+            liveStatesAverageFitness += s.fitness / (liveStates.size() / 2);
+          }
+        }
+       
+        if (newStates.size() > newStatesCount) {
+          liveStatesAverageFitness = liveStatesAverageFitness * (liveStates.size() / 2) / (newStates.size() - newStatesCount);
+          liveStatesAverageFitness = (newStatesAverageFitness + liveStatesAverageFitness) / 2;
+        }
+        else
+          liveStatesAverageFitness = newStatesAverageFitness;
+      }
+        
+      int keptOldStatesCount = newStates.size() - newStatesCount;
+
+      Log.printf("was: %8d, keep: %8d, new: %8d, fitness: %8f\n", liveStates.size(), keptOldStatesCount, newStatesCount, liveStatesAverageFitness);
+      
+      liveStates = newStates;
     }
+    
+    printDataRow();
   }
 
   private void printDataHeader() {
@@ -178,10 +222,10 @@ public class Driver {
     long now = System.currentTimeMillis();
     int iterPerSec = 1000 * (iterations - lastPrintInfoIter) / (int) (now - lastPrintInfoTime+1);
 
-    Log.printf("%4dk  |  %5d  |  %4dk  |  %4dk  |  %7d  \n",
-        iterations / 1000,
+    Log.printf("%4d  |  %5d  |  %4d  |  %4dk  |  %7d  \n",
+        iterations,
         bestState.score,
-        liveStates.size() / 1000,
+        liveStates.size(),
         (seenStates.size() - liveStates.size()) / 1000,
         iterPerSec);
 
@@ -352,7 +396,7 @@ public class Driver {
     
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-    Driver d = Driver.create(name, stdConfig, sconfig, state, 5);
+    Driver d = Driver.create(name, stdConfig, sconfig, state, 60);
     d.run();
     d.simulationWindow();    
   }

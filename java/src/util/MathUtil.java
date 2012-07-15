@@ -1,9 +1,16 @@
 package util;
 
+import java.util.Random;
+
 /**
  * @author seba
  */
 public class MathUtil {
+  /*
+   * Random generator.
+   */
+  public final static Random RANDOM = new Random(110101010);
+
   public static int distance(int col1, int row1, int col2, int row2) {
     return Math.abs(col1 - col2) + Math.abs(row1 - row2);
   }
