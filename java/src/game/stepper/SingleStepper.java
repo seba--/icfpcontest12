@@ -96,6 +96,8 @@ public class SingleStepper {
   
   protected void freePosition(State st, int col, int row) {
     st.activePositions.add(col * st.board.height + row);
+    st.activePositions.add((col + 1) * st.board.height + row);
+    st.activePositions.add((col - 1)* st.board.height + row);
     st.activePositions.add(col * st.board.height + row + 1);
     st.activePositions.add((col + 1) * st.board.height + row + 1);
     st.activePositions.add((col - 1)* st.board.height + row + 1);
