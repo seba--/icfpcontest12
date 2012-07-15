@@ -6,7 +6,7 @@ package game;
  * @author seba
  */
 public enum Command {
-  Left, Right, Up, Down, Wait, Abort;
+  Left, Right, Up, Down, Wait, Abort, Shave;
 
   public String toString() {
     return shortName();
@@ -26,6 +26,8 @@ public enum Command {
       return "W";
     case Abort:
       return "A";
+    case Shave:
+      return "S";
     default:
       throw new IllegalStateException("Unknown command " + this);
     }
@@ -64,6 +66,8 @@ public enum Command {
       return Wait;
     case 'A':
       return Abort;
+    case 'S':
+      return Shave;
     default:
       throw new IllegalArgumentException("Cannot parse command " + c);
     }
