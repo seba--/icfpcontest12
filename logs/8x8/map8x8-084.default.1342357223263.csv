@@ -1,0 +1,2 @@
+time         ,iter.    ,bestScore,live    ,dead    ,lambdaLeft,liftReachable,mapName
+1342357223263,      383,        0,       0,      55,         2,            0,map8x8-084
