@@ -102,12 +102,28 @@ public class SingleStepper {
       int jumpCol = st.board.col(jumpPos);
       int jumpRow = st.board.row(jumpPos);
       moveRobot(st, jumpCol, jumpRow);
-           
+      // remove all trampolines to used target
+      removeTrampolines(target, st);
       return true;
     default:
       // the move was invalid => execute Wait
       return false;
     }
+  }
+
+  private void removeTrampolines(String target, State st) {
+	for(int row = 0; row <= st.board.height; ++row) {
+		for(int col = 0; col <= st.board.width; ++col) {
+			if(st.board.bitsets[Cell.Trampoline.ordinal()].get(st.board.position(col, row))) {
+				String trampoline = st.board.trampolinePos.get(st.board.position(col, row));
+				String jumptarget = st.board.trampolineTargets.get(trampoline);
+				if(jumptarget.equals(target)) {
+				  st.board.set(st.board.position(col, row), Cell.Empty);
+				  freePosition(st, col, row);
+				}
+			}
+		}
+	}
   }
 
   protected void fallingPosition(State st, int col, int row) {
