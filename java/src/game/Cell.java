@@ -7,7 +7,7 @@ package game;
  *
  */
 public enum Cell {
-  Wall, Rock, Lambda, Earth, FallingRock, Trampoline, Target, Beard, Razor, Robot, Lift, Empty, RobotAndLift, HoRock;
+  Wall, Rock, Lambda, Earth, FallingRock, Trampoline, Target, Beard, Razor, HoRock, FallingHoRock, Robot, Lift, Empty, RobotAndLift;
     
   public String toString() {
     return shortName();
@@ -43,6 +43,8 @@ public enum Cell {
       return "!";
     case HoRock:
       return "@";
+    case FallingHoRock:
+      return "&";	
     default:
       throw new IllegalStateException();
     }
@@ -78,6 +80,8 @@ public enum Cell {
       return "Razor";
     case HoRock:
       return "HoRock";
+    case FallingHoRock:
+      return "FallingHoRock";
     default:
       throw new IllegalStateException();
     }

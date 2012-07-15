@@ -25,7 +25,7 @@ public class Board {
    */
   // public final Cell[] grid;
   
-  public static final int N = 9;
+  public static final int N = 11;
   private static final Cell[] cells = Cell.values();
 
   public final int width;
