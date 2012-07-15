@@ -179,8 +179,8 @@ public class State {
     this.robotRow = rrow;
 
     this.nextLambda = new int[board.length];
-    Arrays.fill(nextLambda, -1);
     this.nextLambdaShared = false;
+    clearNextLambda();
   }
 
   /**
