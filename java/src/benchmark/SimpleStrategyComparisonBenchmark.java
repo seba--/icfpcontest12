@@ -73,14 +73,14 @@ public class SimpleStrategyComparisonBenchmark extends Benchmark {
   /**
    * Selects and returns a monitor for driver.
    */
-  public IBenchmarkMonitor makeMonitor(final Driver driver) {
-    return new SimpleBenchmarkMonitor(driver);
+  public IBenchmarkMonitor makeMonitor(final Driver driver, String mapName) {
+    return new SimpleBenchmarkMonitor(driver, mapName);
   }
 
-  public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state) throws InterruptedException, ExecutionException {
+  public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state, String mapName) throws InterruptedException, ExecutionException {
     Driver driver = Driver.create(config(), sconfig, state, lifetime());
     
-    Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver));
+    Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver, mapName));
     driver.run();
 
     return monitoringResult.get();

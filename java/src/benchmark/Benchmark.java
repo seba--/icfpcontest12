@@ -80,17 +80,17 @@ public abstract class Benchmark {
   /**
    * Selects and returns a monitor for driver.
    */
-  public IBenchmarkMonitor makeMonitor(final Driver driver) {
-    return new SimpleBenchmarkMonitor(driver);
+  public IBenchmarkMonitor makeMonitor(final Driver driver, String mapName) {
+    return new SimpleBenchmarkMonitor(driver, mapName);
   }
   
   
   protected final ExecutorService executor = Executors.newSingleThreadExecutor();
   
-  public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state) throws InterruptedException, ExecutionException {
+  public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state, String mapName) throws InterruptedException, ExecutionException {
     Driver driver = Driver.create(config(), sconfig, state, lifetime());
     
-    Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver));
+    Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver, mapName));
     driver.run();
 
     return monitoringResult.get();
@@ -105,7 +105,7 @@ public abstract class Benchmark {
   public List<IBenchmarkResult> benchmarkFileTree(File file, String path) throws IOException, InterruptedException, ExecutionException {
     if (file.isFile()) {
       Pair<StaticConfig, State> p = State.parse(FileCommands.readFileAsString(file.getAbsolutePath()));
-      IBenchmarkResult result = monitorDriver(p.a, p.b);
+      IBenchmarkResult result = monitorDriver(p.a, p.b, FileCommands.dropExtension(file.getName()));
       String logFile =  "../logs/" + path + "/" + FileCommands.dropExtension(file.getName()) + "." + name() + "." + System.currentTimeMillis() + ".csv";
       logResult(logFile, result);
       return Collections.singletonList(result);

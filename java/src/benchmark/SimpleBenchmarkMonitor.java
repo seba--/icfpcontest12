@@ -10,9 +10,11 @@ import game.ai.Driver;
  */
 public class SimpleBenchmarkMonitor implements IBenchmarkMonitor {
   public final Driver driver;
+  public final String mapName;
   
-  public SimpleBenchmarkMonitor(Driver driver) {
+  public SimpleBenchmarkMonitor(Driver driver, String mapName) {
     this.driver = driver;
+    this.mapName = mapName;
   }
 
   @Override
@@ -20,7 +22,7 @@ public class SimpleBenchmarkMonitor implements IBenchmarkMonitor {
     MonitorBenchmarkResult result = new MonitorBenchmarkResult();
     
     while (true) {
-      IBenchmarkResult r = new SimpleBenchmarkResult(driver);
+      IBenchmarkResult r = new SimpleBenchmarkResult(driver, mapName);
       result.add(System.currentTimeMillis(), r);
       
       if (driver.finished)
