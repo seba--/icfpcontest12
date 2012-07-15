@@ -27,9 +27,4 @@ public class BigStepSelectorConfig implements IDriverConfig {
   public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
     return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig, initialState));
   }
-
-  @Override
-  public boolean simulateWindow() {
-	return false;
-  }
 }

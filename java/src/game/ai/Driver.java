@@ -6,13 +6,8 @@ import game.State;
 import game.StaticConfig;
 import game.config.IDriverConfig;
 import game.config.SimpleSelectorConfig;
-import game.fitness.AverageFitness;
-import game.fitness.ManhattanDirectedFitness;
-import game.fitness.ScoreFitness;
 import game.fitness.Scoring;
-import game.fitness.StepCountFitness;
 import game.log.Log;
-import game.selector.SimpleSelector;
 import game.stepper.MultiStepper;
 import game.stepper.SingleStepper;
 import game.ui.SimulateWindow;
@@ -55,18 +50,16 @@ public class Driver {
   public int iterations;
   public boolean timed = false;
   public long endTime = 0;
-  public boolean simulate;
 
   public long lastPrintInfoTime;
   public int lastPrintInfoIter;
 
-  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, boolean simulate) {
+  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
     this.sconfig = sconfig;
     this.initialState = initialState;
     this.strategySelector = strategySelector;
     this.fitness = fitness;
     this.stepper = new MultiStepper(sconfig);
-    this.simulate = simulate;
   }
 
   /**
@@ -77,7 +70,7 @@ public class Driver {
    * @param lifetime
    *          max runtime in seconds
    */
-  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, boolean simulate, int lifetime) {
+  public Driver(StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, int lifetime) {
     this.sconfig = sconfig;
     this.initialState = initialState;
     this.strategySelector = strategySelector;
@@ -85,7 +78,6 @@ public class Driver {
     this.stepper = new MultiStepper(sconfig);
     this.endTime = System.currentTimeMillis() + (lifetime * 1000);
     this.timed = true;
-    this.simulate = simulate;
   }
 
   public void solve(State initial) {
@@ -204,33 +196,35 @@ public class Driver {
   public void simulateSolution() {
     if (bestState.solution != null) {
       SingleStepper stepper = new SingleStepper(sconfig);
-      SimulateWindow win = null;
-      if (this.simulate) {
-        win = new SimulateWindow(fitness, stepper);
-      }
       State st = initialState;
       st.fitness = fitness.evaluate(st);
       Command[] commands = bestState.solution.allCommands();
 
       Log.println(st);
       Log.println();
-      if (this.simulate) {
-        win.addState(st);
-      }
       for (Command command : commands) {
         st = stepper.step(st, command);
         st.fitness = fitness.evaluate(st);
-        if (this.simulate) {
-          win.addState(st);
-        }
         // Log.println(st);
-      }
-      if (this.simulate) {
-        win.setVisible(true);
       }
       Log.println(st);
       Log.println();
     }
+  }
+  
+  public void simulationWindow() {
+    State st = initialState;
+    st.fitness = fitness.evaluate(st);
+    Command[] commands = bestState.solution.allCommands();
+
+    SimulateWindow win = new SimulateWindow(fitness, stepper);
+    win.addState(st);
+    for (Command command : commands) {
+      st = stepper.step(st, command);
+      st.fitness = fitness.evaluate(st);
+      win.addState(st);
+    }
+    win.setVisible(true);
   }
 
   // kill states that have no strategies left
@@ -253,15 +247,13 @@ public class Driver {
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    boolean simulate = dconfig.simulateWindow();
-    return new Driver(sconfig, state, selector, fitness, simulate);
+    return new Driver(sconfig, state, selector, fitness);
   }
 
   public static Driver create(IDriverConfig dconfig, StaticConfig sconfig, State state, int lifetime) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    boolean simulate = dconfig.simulateWindow();
-    return new Driver(sconfig, state, selector, fitness, simulate, lifetime);
+    return new Driver(sconfig, state, selector, fitness, lifetime);
   }
 
   public void run() {
@@ -310,6 +302,8 @@ public class Driver {
 
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-    Driver.create(stdConfig, sconfig, state, 15).run();
+    Driver d = Driver.create(stdConfig, sconfig, state, 15);
+    d.run();
+    d.simulationWindow();    
   }
 }
