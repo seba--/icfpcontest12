@@ -298,10 +298,20 @@ public class SingleStepper {
   }
 
   protected void checkEnding(State st) {
-    if (st.lambdaPositions.isEmpty() && st.board.bitsets[Cell.HoRock.ordinal()].isEmpty() && st.board.bitsets[Cell.FallingHoRock.ordinal()].isEmpty() && st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift)
+    if (st.lambdaPositions.isEmpty() && 
+        st.board.bitsets[Cell.HoRock.ordinal()].isEmpty() && 
+        st.board.bitsets[Cell.FallingHoRock.ordinal()].isEmpty() && 
+        st.board.get(st.robotCol,st.robotRow) == Cell.RobotAndLift) {
       st.ending = Ending.Win;
-    else if (st.board.get(st.robotCol, st.robotRow + 1) == Cell.FallingRock)
+      return;
+    }
+    
+    Cell onTop = st.board.get(st.robotCol, st.robotRow + 1);
+    switch (onTop) {
+    case FallingHoRock:
+    case FallingRock:
       st.ending = Ending.LoseRock;
+    }
     // abort action sets the ending field directly during movement
     
     /*

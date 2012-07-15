@@ -5,8 +5,11 @@ import game.StaticConfig;
 import game.ai.Fitness;
 import game.ai.Selector;
 import game.fitness.AverageFitness;
+import game.fitness.BeardFitness;
+import game.fitness.BeardNextToLiftFitness;
 import game.fitness.LiftReachable;
 import game.fitness.ClosestLambdaFitness;
+import game.fitness.RazorsAvailableFitness;
 import game.fitness.ScoreFitness;
 import game.fitness.StepCountFitness;
 import game.selector.SimpleSelector;
@@ -28,6 +31,10 @@ public class SimpleSelectorConfig implements IDriverConfig {
 //        new AliveFitness(),
         new ScoreFitness(), 
         new StepCountFitness(), 
-        new ClosestLambdaFitness(sconfig, initialState));
+        new ClosestLambdaFitness(sconfig, initialState),
+        new BeardNextToLiftFitness(),
+        new BeardFitness(),
+        new RazorsAvailableFitness()
+    );
   }
 }
