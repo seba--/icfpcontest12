@@ -1,12 +1,13 @@
 package game.strategy;
 
-import java.util.List;
-
 import game.Cell;
 import game.Command;
 import game.State;
 import game.ai.Strategy;
 import game.strategy.tom.Helpers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Walk to closest beard and shave
@@ -20,8 +21,8 @@ public class ClosestWalkBeard extends Strategy {
 
   @Override
   public List<Command> apply(State s) {
-    List<Command> ret = Helpers.moveToCell(s, Cell.Beard, 1);
-    //ret.add(Command.Shave);     // TOOD: why does this not work?
+    List<Command> ret = new ArrayList<Command>(Helpers.moveToCell(s, Cell.Beard, 1));
+    ret.add(Command.Shave);
     return ret;
   }
 
