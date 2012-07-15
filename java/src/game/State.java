@@ -146,7 +146,7 @@ public class State {
   }
 
   public State(Board board) {
-    this(board, 0);
+    this(board, -1);
   }
 
   /**
@@ -159,7 +159,7 @@ public class State {
     this.collectedLambdas = 0;
     this.ending = Ending.None;
     this.steps = 0;
-    this.waterLevel = waterLevel - 1;
+    this.waterLevel = waterLevel;
     this.stepsUnderwater = 0;
     this.stepsSinceLastRise = 0;
     this.lambdaPositions = new ArrayList<Integer>();
@@ -367,7 +367,7 @@ public class State {
     board.trampolineTargets = trampolineTargets;
     board.growthcounter = beardgrowth;
     board.razors = razors;
-    State st = new State(board, waterLevel);
+    State st = new State(board, waterLevel - 1);
     StaticConfig sconfig = new StaticConfig(st, floodingRate, waterResistance, beardgrowth);
     return Pair.create(sconfig, st);
   }
