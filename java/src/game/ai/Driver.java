@@ -53,7 +53,6 @@ public class Driver {
    */
   public ArrayList<State> liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
   public double liveStatesAverageFitness;
-  public double liveStatesAverageSteps;
   
   // public Set<State> seenStates = new HashSet<State>();
   public HashMap<Integer, State> seenStates = new HashMap<Integer, State>();
@@ -103,7 +102,6 @@ public class Driver {
     initial.fitness = fitness.evaluate(initial);
     liveStates.add(initial);
     liveStatesAverageFitness = initial.fitness;
-    liveStatesAverageSteps = initial.steps;
 
     bestState = initial;
 
@@ -131,6 +129,10 @@ public class Driver {
       double newStatesStepsNormalized = 0;
       double newStatesNormalizer = liveStates.size();
       
+      double size = liveStates.size();
+      int MAX_NUM_STATES = 10000;
+      double spaceFactor = (double) MAX_NUM_STATES / size;
+
       for (int i = 0; i < liveStates.size(); ) {
         State state = liveStates.get(i);
 
@@ -163,7 +165,10 @@ public class Driver {
                   Scoring.maximalReachableScore(newState) > bestState.score) {
                 newState.fitness = fitness.evaluate(newState);
                 
-                if (true) {
+                double fitnessFactor = newState.fitness / liveStatesAverageFitness;
+                boolean keep = fitnessFactor * spaceFactor > MathUtil.RANDOM.nextDouble();
+                
+                if (keep) {
                   // the kid is better than the average of all parents
                   newStates.add(newState);
                   newStatesFitnessNormalized += newState.fitness / newStatesNormalizer;
@@ -177,59 +182,38 @@ public class Driver {
       }
       
       double newStatesAverageFitness = newStatesFitnessNormalized * newStatesNormalizer / newStates.size();
-      double newStatesAverageSteps = newStatesStepsNormalized * newStatesNormalizer / newStates.size();
       
-
-      int MAX_NUM_STATES = 10000;
       int newStatesCount = newStates.size();
-      double size = liveStates.size() + newStatesCount;
+      size = liveStates.size() + newStatesCount;
       double averageFitness = (liveStatesAverageFitness * (liveStates.size() / size) + newStatesAverageFitness * (newStatesCount / size));
       
-      double spaceFactor = (double) MAX_NUM_STATES / size;
-      double fitnessFactor = s.fitness / averageFitness;
+      spaceFactor = (double) MAX_NUM_STATES / size;
       
-      boolean keep = spaceFactor * fitnessFactor > MathUtil.RANDOM.nextDouble();
-
-
-      if (newStates.size() < 1000) {
-        newStates.addAll(liveStates);
-        if (newStatesCount != 0) {
-          liveStatesAverageFitness = (newStatesAverageFitness + liveStatesAverageFitness) / 2;
-          liveStatesAverageSteps = (newStatesAverageSteps + liveStatesAverageSteps) / 2;
+      liveStatesAverageFitness = 0;
+      for (int i = 0; i < liveStates.size(); i++) {
+        State s = liveStates.get(i);
+        double fitnessFactor = s.fitness / averageFitness;
+        boolean keep = spaceFactor * fitnessFactor > MathUtil.RANDOM.nextDouble();
+        if (keep) {
+          newStates.add(s);
+          liveStatesAverageFitness += s.fitness / liveStates.size();
         }
       }
+      
+      int keptStates = newStates.size() - newStatesCount;
+      
+      if (newStates.size() > newStatesCount) {
+        liveStatesAverageFitness = liveStatesAverageFitness * (liveStates.size() / keptStates);
+        liveStatesAverageFitness = (newStatesAverageFitness * (newStatesCount / size) + liveStatesAverageFitness * (liveStates.size() / size));
+      }
       else {
-        double oldFitness = liveStatesAverageFitness;
-        double oldSteps = liveStatesAverageSteps;
-        liveStatesAverageFitness = 0;
-        liveStatesAverageSteps = 0;
-        for (int i = 0; i < liveStates.size(); i++) {
-          State s = liveStates.get(i);
-          if ((s.fitness > oldFitness ||
-               s.steps < oldSteps*0.0)) {
-            newStates.add(s);
-            liveStatesAverageFitness += s.fitness / (liveStates.size() / 2);
-            liveStatesAverageSteps += s.steps / (liveStates.size() / 2);
-          }
-        }
-        
-        if (newStates.size() > newStatesCount) {
-          liveStatesAverageFitness = liveStatesAverageFitness * (liveStates.size() / 2) / (newStates.size() - newStatesCount);
-          liveStatesAverageFitness = (newStatesAverageFitness + liveStatesAverageFitness) / 2;
-          
-          liveStatesAverageSteps = liveStatesAverageSteps * (liveStates.size() / 2) / (newStates.size() - newStatesCount);
-          liveStatesAverageSteps = (newStatesAverageSteps + liveStatesAverageSteps) / 2;
-        }
-        else {
-          liveStatesAverageFitness = newStatesAverageFitness;
-          liveStatesAverageSteps = newStatesAverageSteps;
-        }
+        liveStatesAverageFitness = newStatesAverageFitness;
       }
         
       int keptOldStatesCount = newStates.size() - newStatesCount;
 
-      Log.printf("was: %6d, keep: %6d, new: %6d, fitness: %f, steps: %3f\n",
-          liveStates.size(), keptOldStatesCount, newStatesCount, liveStatesAverageFitness, liveStatesAverageSteps);
+      Log.printf("was: %6d, keep: %6d, new: %6d, fitness: %f \n",
+          liveStates.size(), keptOldStatesCount, newStatesCount, liveStatesAverageFitness);
       
       liveStates = newStates;
     }
