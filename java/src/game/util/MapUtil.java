@@ -97,10 +97,10 @@ public class MapUtil {
           ty1 = 0;
         if (ty2 < 0)
           ty2 = 0;
-        if (ty1 > integralBoard.length/boardWidth)
-          ty1 = integralBoard.length/boardWidth;
-        if (ty2 > integralBoard.length/boardWidth)
-          ty2 = integralBoard.length/boardWidth;
+        if (ty1 > integralBoard.length/boardWidth - 1)
+          ty1 = integralBoard.length/boardWidth - 1;
+        if (ty2 > integralBoard.length/boardWidth - 1)
+          ty2 = integralBoard.length/boardWidth - 1;
         
         //temp[xcoord + tempWidth*ycoord] = getCountInArea(tx1, ty1, tx2, ty2,boardWidth, integralBoard);
         temp[xcoord + boardWidth*ycoord] = getCountInArea(tx1, ty1, tx2, ty2, boardWidth, integralBoard) / ((float) (filterSize*filterSize));

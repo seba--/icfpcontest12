@@ -67,7 +67,7 @@ public class SimpleStrategyComparisonBenchmark extends Benchmark {
   
   
   public int lifetime() {
-    return 1;
+    return 25;
   }
   
   /**

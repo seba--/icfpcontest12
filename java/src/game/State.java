@@ -84,7 +84,7 @@ public class State {
    * Position of next lambda at index position: nextLambda[robot] == position of
    * next lambda.
    */
-  private int[] nextLambda;
+  public int[] nextLambda;
 
   public int nextLambda(int position) {
     return nextLambda[position];

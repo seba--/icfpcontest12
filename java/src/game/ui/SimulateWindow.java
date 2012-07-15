@@ -1,18 +1,24 @@
 package game.ui;
 
+import game.Cell;
 import game.Command;
 import game.State;
 import game.ai.Fitness;
 import game.log.Log;
 import game.stepper.SingleStepper;
+import game.util.MapUtil;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.font.FontRenderContext;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -23,6 +29,7 @@ import javax.swing.JToolBar;
 
 /**
  * @author christoph
+ * @author Felix Rieger
  */
 
 public class SimulateWindow extends JFrame implements KeyListener {
@@ -129,19 +136,91 @@ public class SimulateWindow extends JFrame implements KeyListener {
 		  
 	  });
 	  
-	  textArea = new JTextArea();
-	  textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+	  
+	  textArea = new JTextArea() {
+	    @Override
+	    public void paintComponent(Graphics textAreaG) {
+	      super.paintComponent(textAreaG);
+	      drawStuff(textAreaG);
+	    }
+	  };
+	  
+	  Font font = new Font("Monospaced", Font.PLAIN, 18);
+	  
+	  textArea.setFont(font);
 	  textArea.setEditable(false);
 	  textArea.addKeyListener(this);
+	  /*g.setColor(new Color(1.0f, 0.0f, 0.0f));
+	  g.fillOval(10, 30, 100, 200);*/
 	  
 	  JPanel jplContentPane = new JPanel();
 	  jplContentPane.setLayout(new BorderLayout());
 	  jplContentPane.setPreferredSize(new Dimension(400, 100));
 	  jplContentPane.add(tbar, BorderLayout.NORTH);
 	  jplContentPane.add(textArea, BorderLayout.CENTER);
+	  System.out.println(" ---> " + textArea.getGraphics());
+	  //Graphics2D g = (Graphics2D) textArea.getGraphics();
+	  //g.setColor(new Color(1.0f, 0.0f, 0.0f));
+    //g.fillOval(10, 30, 100, 200);
+    
   	  setContentPane(jplContentPane);  
+  	  
+  	
 
   	  states = new LinkedList<State>();
+	}
+	
+	private State currentState;  // needed for drawing; was too lazy to implement it differently.-Felix
+	
+	
+	boolean showNextLambdaArrows = false;
+	boolean showLambdaDensity = false;
+	boolean showRobot = false;
+	
+	public void drawStuff(Graphics g) {
+	    //FontMetrics fm = g.getFontMetrics(new Font("Monospaced", Font.PLAIN, 12));
+	    if (currentState != null) {
+	    /*int yoffset = 20;
+	    int boxSizeX = 8;
+	    int boxSizeY = 18;*/
+	    int yoffset = 26;
+	    int boxSizeX = 11;
+	    int boxSizeY = 25;
+	    if (showNextLambdaArrows) {
+  	    for (int i = 0; i < currentState.nextLambda.length; i++) {
+  	      int xcoord = (i / currentState.board.width);     // XXX shouldn't this be the other way round?
+  	      int ycoord = (i % currentState.board.height);    // XXX maybe nextLambda is encoded wrongly?
+  	      int nl = currentState.nextLambda[i];
+  	      //g.setColor(Color.GREEN);
+  	      //g.drawRect(boxSizeX * xcoord, yoffset + boxSizeY * ycoord, boxSizeX, boxSizeY);
+  	      g.setColor(new Color(1.0f, 0f,0f,0.6f));
+  	      if (nl != -1) {
+  	        drawArrow(g, boxSizeX * xcoord + boxSizeX/2, yoffset + boxSizeY * (currentState.board.height - 1 - ycoord) + boxSizeY/2, boxSizeX/2 + boxSizeX * (nl / currentState.board.width), yoffset + boxSizeY/2 + boxSizeY * (currentState.board.height-1 - (nl % currentState.board.height)));
+  	      }	      
+  	    }
+	    }
+	    if (showLambdaDensity) {
+  	    int[] integralBoard = MapUtil.computeIntegralBoard(currentState.board, Cell.Lambda);
+  	    float[] lambdaDensity = MapUtil.getDensityMap(5, currentState.board.width, integralBoard);
+  	    for (int i = 0; i < lambdaDensity.length; i++) {
+  	       int xcoord = (i / currentState.board.width);     
+  	       int ycoord = (i % currentState.board.height);   
+  	       float ld = lambdaDensity[i];
+  	       g.setColor(new Color(ld, ld, ld, 0.4f));
+  	       g.fillRect(boxSizeX * xcoord, yoffset + boxSizeY * (currentState.board.height - 1 - ycoord), boxSizeX, boxSizeY);
+  	    }
+	    }
+	    if (showRobot) {
+	      g.setColor(new Color(0f,1f,0f,0.8f));
+	      g.fillOval(boxSizeX * currentState.robotCol, boxSizeY * (currentState.board.height - currentState.robotRow), boxSizeX, boxSizeY);
+	    }
+	    
+	  }
+	}
+	
+	public void drawArrow(Graphics g, int startx, int starty, int endx, int endy) {
+	  g.drawLine(startx, starty, endx, endy);
+	  g.fillRect(endx-1, endy-1, 3, 3);
 	}
 	
 	public void addState(State state) {
@@ -152,11 +231,30 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	}
 	
 	public void updateText(State state) {
+	  currentState = state;
 	  textArea.setText("fitness: " + state.fitness + "\n" + state.toString());
 	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
+	  // gui events:
+	  switch(arg0.getKeyCode()) {
+      case KeyEvent.VK_0:
+        showNextLambdaArrows = !showNextLambdaArrows;
+        repaint();
+        return;
+      case KeyEvent.VK_9:
+        showLambdaDensity = !showLambdaDensity;
+        repaint();
+        return;
+      case KeyEvent.VK_8:
+        showRobot = !showRobot;
+        repaint();
+        return;
+	  }
+	  
+	  
+	  // state-modifying events
 		State parent;
 		if(custom == null) {
 			parent = states.get(current);
@@ -187,6 +285,8 @@ public class SimulateWindow extends JFrame implements KeyListener {
 					parent = states.get(current);
 				}
 				break;
+			default:
+			  return;  // don't add extra state on invalid keypress
 		}
 		customStates.add(parent);
 		custom.fitness = fitness.evaluate(custom);
