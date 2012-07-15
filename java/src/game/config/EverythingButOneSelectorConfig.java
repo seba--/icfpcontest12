@@ -5,7 +5,7 @@ import game.StaticConfig;
 import game.ai.Fitness;
 import game.ai.Selector;
 import game.fitness.AverageFitness;
-import game.fitness.ManhattanDirectedFitness;
+import game.fitness.ColsestLambdaFitness;
 import game.fitness.ScoreFitness;
 import game.fitness.StepCountFitness;
 import game.selector.EverythingButOneSelector;
@@ -30,6 +30,6 @@ public class EverythingButOneSelectorConfig implements IDriverConfig {
 
   @Override
   public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
-    return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ManhattanDirectedFitness(sconfig, initialState));
+    return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ColsestLambdaFitness(sconfig, initialState));
   }
 }
