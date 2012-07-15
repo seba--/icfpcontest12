@@ -44,6 +44,7 @@ public class LiftReachable implements Fitness {
     case Empty:
     case Earth:
     case Lambda:
+    case Robot:
       return 1;
     default:
       return 0;
