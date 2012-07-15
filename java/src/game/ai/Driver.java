@@ -245,7 +245,11 @@ public class Driver {
 
   private State computeNextState(State state, List<Command> commands, Strategy strategy) {
     State result = stepper.multistep(state, commands);
-    result.solution = new Solution(state.solution, commands.toArray(new Command[commands.size()]), strategy);
+    int stepsPerformed = result.steps - state.steps;
+    Command[] usedCommands = new Command[stepsPerformed];
+    for (int i = 0; i < stepsPerformed; i++)
+      usedCommands[i] = commands.get(i);
+    result.solution = new Solution(state.solution, usedCommands, strategy);
     return result;
   }
 

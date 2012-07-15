@@ -17,14 +17,18 @@ public class MultiStepper extends SingleStepper {
     State newSt = st.clone();
 
     for (Command cmd : cmds) {
+      boolean isValid = moveRobot(newSt, cmd);
+
+      if (!isValid)
+        break;
       newSt.steps++;
-      moveRobot(newSt, cmd);
+      
       if (st.ending != Ending.Abort) {
         updateBoard(newSt);
         checkEnding(newSt);
       }
       newSt.score = Scoring.totalScore(newSt.steps, newSt.collectedLambdas, newSt.ending == Ending.Abort, newSt.ending == Ending.Win);
-      if (newSt.ending != Ending.None)
+      if (!isValid || newSt.ending != Ending.None)
         break;
     }
 

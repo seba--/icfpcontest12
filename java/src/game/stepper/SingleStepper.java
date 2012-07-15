@@ -19,7 +19,10 @@ public class SingleStepper {
     this.sconfig = sconfig;
   }
   
-  protected void moveRobot(State st, Command cmd) {
+  /**
+   * Moves robot. Returns true if move was valid.
+   */
+  protected boolean moveRobot(State st, Command cmd) {
     int nextCol;
     int nextRow;
     
@@ -41,10 +44,10 @@ public class SingleStepper {
       nextRow = st.robotRow - 1;
       break;
     case Wait:
-      return;
+      return true;
     case Abort:
       st.ending = Ending.Abort;
-      return;
+      return true;
     default:
       throw new IllegalArgumentException("Unknown command " + cmd);
     }
@@ -57,15 +60,15 @@ public class SingleStepper {
     case Empty:
     case Earth:
       moveRobot(st, nextCol, nextRow);
-      break;
+      return true;
 
     case Lift:
       if (st.lambdaPositions.isEmpty()) {
         moveRobot(st, nextCol, nextRow);
-        break;
+        return true;
       }
       // invalid move
-      break;
+      return false;
         
     case Rock:
     case FallingRock:
@@ -74,19 +77,19 @@ public class SingleStepper {
         st.board.set(nextCol - 1, nextRow, Cell.FallingRock);
         fallingPosition(st, nextCol - 1, nextRow);
         moveRobot(st, nextCol, nextRow);
-        break;
+        return true;
       }
       if (cmd == Command.Right && st.board.get(nextCol + 1, nextRow) == Cell.Empty) {
         // push rock to the right
         st.board.set(nextCol + 1, nextRow, Cell.FallingRock);
         fallingPosition(st, nextCol + 1, nextRow);
         moveRobot(st, nextCol, nextRow);
-        break;
+        return true;
       }
 
     default:
       // the move was invalid => execute Wait
-      break;
+      return false;
     }
   }
 
