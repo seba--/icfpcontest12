@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 /**
  * Board as specified in Section 2.1
@@ -24,7 +25,7 @@ public class Board {
    */
   // public final Cell[] grid;
   
-  public static final int N = 7;
+  public static final int N = 9;
   private static final Cell[] cells = Cell.values();
 
   public final int width;
@@ -100,9 +101,9 @@ public class Board {
     for (int i = 0; i < N; i++) {
       this.bitsets[i] = new BitSet(length);
     }
-    trampolinePos = new HashMap<Integer, String>();
-    targetPos = new HashMap<String, Integer>();
-    trampolineTargets = new HashMap<String, String>();
+    trampolinePos = new TreeMap<Integer, String>();
+    targetPos = new TreeMap<String, Integer>();
+    trampolineTargets = new TreeMap<String, String>();
   }
 
   /**
@@ -126,14 +127,6 @@ public class Board {
   public Cell get(int position) {
     for (int  i = 0; i < N; i++) {
       if (bitsets[i].get(position)) {
-    	if(i == Cell.Trampoline.ordinal()) {
-    		String trampoline = trampolinePos.get(position);
-    		String target = trampolineTargets.get(trampoline);
-    		Integer jumppos  = targetPos.get(target);
-    		if(get(jumppos) != Cell.Target) {
-    		  return Cell.Empty;
-    		}
-    	}
         return cells[i];
       }
     }
