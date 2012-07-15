@@ -6,7 +6,7 @@ import game.ai.Fitness;
 import game.ai.Selector;
 import game.fitness.AverageFitness;
 import game.fitness.LiftReachable;
-import game.fitness.ColsestLambdaFitness;
+import game.fitness.ClosestLambdaFitness;
 import game.fitness.ScoreFitness;
 import game.fitness.StepCountFitness;
 import game.selector.SimpleSelector;
@@ -28,6 +28,6 @@ public class SimpleSelectorConfig implements IDriverConfig {
 //        new AliveFitness(),
         new ScoreFitness(), 
         new StepCountFitness(), 
-        new ColsestLambdaFitness(sconfig, initialState));
+        new ClosestLambdaFitness(sconfig, initialState));
   }
 }

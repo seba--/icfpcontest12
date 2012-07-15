@@ -16,13 +16,13 @@ import util.MathUtil;
  * @author seba
  *
  */
-public class ColsestLambdaFitness implements Fitness {
+public class ClosestLambdaFitness implements Fitness {
 
   private final StaticConfig sconfig;
   
   int[] nextLambda;
   
-  public ColsestLambdaFitness(StaticConfig sconfig, State state) {
+  public ClosestLambdaFitness(StaticConfig sconfig, State state) {
     this.sconfig = sconfig;
     this.nextLambda = state.getNextLambda();
   }
