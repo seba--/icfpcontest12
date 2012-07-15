@@ -13,7 +13,7 @@ import game.util.Scoring;
 public class ScoreFitness implements Fitness {
   @Override
   public int evaluate(State state) {
-    int maximalScore = Scoring.maximalScore(state);
+    int maximalScore = Scoring.maximalScoreWithoutLift(state);
 
     if (maximalScore == 0) {
       maximalScore = 1;

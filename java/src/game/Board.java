@@ -410,9 +410,7 @@ public class Board {
    * Returns true if the rock at (col, row) cannot ever move.
    */
   public boolean immovable(int col, int row) {
-    if (get(col, row - 1) == Cell.Wall ||
-        (get(col, row - 1) == Cell.Lambda &&
-         get(col + 1, row - 1) == Cell.Wall))
+    if (get(col, row - 1) == Cell.Wall)
       return unpushable(col, row);
     return false;
       
