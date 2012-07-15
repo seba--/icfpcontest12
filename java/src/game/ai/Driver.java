@@ -39,6 +39,9 @@ public class Driver {
   public final State initialState;
   public final MultiStepper stepper;
   public Comparator<State> comparator = new FitnessComparator();
+  /*
+   * Elements are ordered in ascending order: poll() retrieves the smallest state.
+   */
   public PriorityQueue<State> liveStates = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
   // public Set<State> seenStates = new HashSet<State>();
   public HashMap<Integer, State> seenStates = new HashMap<Integer, State>();

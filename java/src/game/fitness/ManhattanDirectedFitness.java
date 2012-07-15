@@ -29,13 +29,24 @@ public class ManhattanDirectedFitness implements Fitness {
     int minDistance;
     if (state.lambdaPositions.isEmpty())
       minDistance = MathUtil.distance(state.robotCol, state.robotRow, sconfig.liftx, sconfig.lifty);
-    else if (state.previousState != null && state.previousState.board.get(state.robotCol, state.robotRow) == Cell.Lambda) {
-      // if we just ate a lambda, that's great!
-      return 1000000;
-    }
     else {
-      int lambda = state.nextLambda(state.robotCol, state.robotRow);
-      minDistance = MathUtil.distanceToPos(state.robotCol, state.robotRow, lambda, state.board.height);
+      int bestLambda = state.nextLambda(state.robotCol, state.robotRow);
+      minDistance = MathUtil.distanceToPos(state.robotCol, state.robotRow, bestLambda, state.board.height);
+      State st = state;
+      
+      for (int i = 0; i < minDistance; i++) {
+        if (state.previousState == null)
+          break;
+        st = state.previousState;
+        // we use state.robotX because we want the old distance from the current position 
+        int stNext = st.nextLambda(state.robotCol, state.robotRow);
+        // add i as penalty for old distances
+        int stDistance = i + MathUtil.distanceToPos(state.robotCol, state.robotRow, stNext, state.board.height);
+        if (stDistance < minDistance) {
+          bestLambda = stNext;
+          minDistance = stDistance;
+        }
+      }
     }
     
     int r = (int) ((1 - (double) minDistance / maxDistance) * 1000000);
