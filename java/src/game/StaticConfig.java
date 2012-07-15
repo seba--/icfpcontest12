@@ -1,7 +1,5 @@
 package game;
 
-import java.util.Map;
-
 
 /**
  * @author seba
@@ -20,6 +18,8 @@ public class StaticConfig {
   public final int floodingRate;
   public final int waterResistance;
   public final boolean boardHasTrampolines;
+  public final boolean boardHasBeard;
+  public final boolean boardHasWater;
   
   /*
    * for beards
@@ -37,7 +37,9 @@ public class StaticConfig {
     
     Board board = initialState.board;
     this.boardHasTrampolines = !board.bitsets[Cell.Trampoline.ordinal()].isEmpty();
-        
+    this.boardHasBeard       = !board.bitsets[Cell.Beard.ordinal()].isEmpty();
+    this.boardHasWater       = (initialState.waterLevel > 0 || floodingRate > 0);
+    
     int x = -1;
     int y = -1;
     for (int col = 0; col < board.width; ++col) {

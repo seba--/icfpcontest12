@@ -5,12 +5,18 @@ import game.StaticConfig;
 import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ClosestManhattanLift;
+import game.strategy.ClosestWalkBeard;
 import game.strategy.ClosestWalkLambda;
+import game.strategy.ClosestWalkRazor;
 import game.strategy.ClosestWalkTrampoline;
+import game.strategy.DiggingStrategy;
+import game.strategy.DiveUpStrategy;
 import game.strategy.DownStrategy;
 import game.strategy.LeftStrategy;
 import game.strategy.NClosestWalksLambda;
+import game.strategy.ReachableUnderwaterLambda;
 import game.strategy.RightStrategy;
+import game.strategy.ShavingStrategy;
 import game.strategy.UpStrategy;
 import game.strategy.WaitStrategy;
 
@@ -35,7 +41,16 @@ public class SimpleSelector implements Selector {
     strategies.add(new ClosestWalkLambda(sconfig));
     //strategies.add(new NClosestWalksLambda(2));
     if (sconfig.boardHasTrampolines) strategies.add(new ClosestWalkTrampoline());
-//    strategies.add(new DiggingStrategy());
+    if (sconfig.boardHasBeard) {
+      strategies.add(new ClosestWalkRazor());
+      strategies.add(new ShavingStrategy());
+      strategies.add(new ClosestWalkBeard());
+    }
+    if (sconfig.boardHasWater) {
+      strategies.add(new ReachableUnderwaterLambda(sconfig));
+      strategies.add(new DiveUpStrategy(sconfig));
+    }
+    strategies.add(new DiggingStrategy());
     strategies.add(new LeftStrategy());
     strategies.add(new RightStrategy());
     strategies.add(new UpStrategy());

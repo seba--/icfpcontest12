@@ -21,7 +21,7 @@ public class ClosestWalkBeard extends Strategy {
   @Override
   public List<Command> apply(State s) {
     List<Command> ret = Helpers.moveToCell(s, Cell.Beard, 1);
-    ret.add(Command.Shave);
+    //ret.add(Command.Shave);     // TOOD: why does this not work?
     return ret;
   }
 
