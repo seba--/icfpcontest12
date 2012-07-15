@@ -55,8 +55,9 @@ public class SimpleStrategyComparisonBenchmark extends Benchmark {
       for (String arg : args) {
         results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
         if (new File(arg).isDirectory()) {
-          String logFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + "." + System.currentTimeMillis() + ".csv";
-          benchmark.logResults(logFile, results);
+          String aggregateLogFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + ".agg." + System.currentTimeMillis() + ".csv";
+          String rawLogFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + ".raw." + System.currentTimeMillis() + ".csv";
+          benchmark.logResults(aggregateLogFile, rawLogFile, results);
         }
        // resultList.add(results);
       }

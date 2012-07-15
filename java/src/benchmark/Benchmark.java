@@ -52,8 +52,9 @@ public abstract class Benchmark {
     for (String arg : args) {
       results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
       if (new File(arg).isDirectory()) {
-        String logFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + "." + System.currentTimeMillis() + ".csv";
-        benchmark.logResults(logFile, results);
+        String aggregateLogFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + ".agg." + System.currentTimeMillis() + ".csv";
+        String rawLogFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + ".raw." + System.currentTimeMillis() + ".csv";
+        benchmark.logResults(aggregateLogFile, rawLogFile, results);
       }
     }
     
@@ -74,7 +75,7 @@ public abstract class Benchmark {
    * Time per file in seconds.
    */
   public int lifetime() {
-    return 15;
+    return 1;
   }
   
   /**
@@ -124,11 +125,17 @@ public abstract class Benchmark {
     FileCommands.writeToFile(logFile, result.columnHeadings() + "\n" + result.asString() + "\n");
   }
   
-  public void logResults(String logFile, List<IBenchmarkResult> results) throws IOException {
+  public void logResults(String aggregateLogFile, String rawLogFile, List<IBenchmarkResult> results) throws IOException {
     if (results.isEmpty())
       return;
     
+    StringBuilder sb = new StringBuilder();
+    for (IBenchmarkResult r : results) {
+      sb.append(r.asString() + "\n");
+    }
+    
     IBenchmarkResult aggregate = results.get(0).merge(results);
-    FileCommands.writeToFile(logFile, aggregate.columnHeadings() + "\n" + aggregate.asString() + "\n");
+    FileCommands.writeToFile(aggregateLogFile, aggregate.columnHeadings() + "\n" + aggregate.asString() + "\n");
+    FileCommands.writeToFile(rawLogFile, results.get(0).columnHeadings() + "\n" +  sb.toString() + "\n");
   }
 }
