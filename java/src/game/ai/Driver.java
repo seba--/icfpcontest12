@@ -127,6 +127,7 @@ public class Driver {
 
       ArrayList<State> newStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
       double newStatesFitnessNormalized = 0;
+      double newStatesStepsNormalized = 0;
       double newStatesNormalizer = liveStates.size();
       
       for (int i = 0; i < liveStates.size(); ) {
@@ -165,6 +166,7 @@ public class Driver {
                   // the kid is better than the average of all parents
                   newStates.add(newState);
                   newStatesFitnessNormalized += newState.fitness / newStatesNormalizer;
+                  newStatesStepsNormalized += newState.steps / newStatesNormalizer;
                   strategySelector.prepareState(newState);
                 }
               }
@@ -174,6 +176,7 @@ public class Driver {
       }
       
       double newStatesAverageFitness = newStatesFitnessNormalized * newStatesNormalizer / newStates.size();
+      double newStatesAverageSteps = newStatesStepsNormalized * newStatesNormalizer / newStates.size();
       
       int newStatesCount = newStates.size();
 
@@ -186,7 +189,7 @@ public class Driver {
         liveStatesAverageFitness = 0;
         for (int i = 0; i < liveStates.size(); i++) {
           State s = liveStates.get(i);
-          if (s.fitness > 50 * liveStates.size()) {
+          if (s.steps < newStatesAverageSteps) {
             newStates.add(s);
             liveStatesAverageFitness += s.fitness / (liveStates.size() / 2);
           }
@@ -202,7 +205,7 @@ public class Driver {
         
       int keptOldStatesCount = newStates.size() - newStatesCount;
 
-      Log.printf("was: %8d, keep: %8d, new: %8d, fitness: %8f\n", liveStates.size(), keptOldStatesCount, newStatesCount, liveStatesAverageFitness);
+      Log.printf("was: %6d, keep: %6d, new: %6d, fitness: %f\n", liveStates.size(), keptOldStatesCount, newStatesCount, liveStatesAverageFitness);
       
       liveStates = newStates;
     }
