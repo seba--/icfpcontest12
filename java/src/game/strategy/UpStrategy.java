@@ -26,4 +26,8 @@ public class UpStrategy extends Strategy {
     return s.board.isPosition(pos) && (s.board.isEarth(pos) || s.board.isEmpty(pos) || s.board.isLambda(pos));
   }
 
+  @Override
+  public String toString() {
+    return "Up";
+  }
 }

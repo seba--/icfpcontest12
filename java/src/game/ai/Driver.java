@@ -14,8 +14,10 @@ import game.ui.SimulateWindow;
 import interrupt.ExitHandler;
 
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -198,15 +200,24 @@ public class Driver {
       SingleStepper stepper = new SingleStepper(sconfig);
       State st = initialState;
       st.fitness = fitness.evaluate(st);
-      Command[] commands = bestState.solution.allCommands();
-
       Log.println(st);
       Log.println();
-      for (Command command : commands) {
-        st = stepper.step(st, command);
-        st.fitness = fitness.evaluate(st);
-        // Log.println(st);
+
+      List<Solution> sols = new LinkedList<Solution>();
+      Solution sol = bestState.solution;
+      while (sol != null) {
+        sols.add(0, sol);
+        sol = sol.prefix;
       }
+      
+      for (Solution s : sols) {
+        Log.println(s.strategy + ": " + Arrays.toString(s.commands));
+        for (Command command : s.commands) {
+          st = stepper.step(st, command);
+          st.fitness = fitness.evaluate(st);
+        }
+      }
+      
       Log.println(st);
       Log.println();
     }

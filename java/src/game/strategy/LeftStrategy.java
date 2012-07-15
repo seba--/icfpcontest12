@@ -26,4 +26,9 @@ public class LeftStrategy extends Strategy {
     int pos2 = (s.robotCol - 2) * s.board.height + s.robotRow;
     return s.board.isPosition(pos1) && (s.board.isEarth(pos1) || s.board.isEmpty(pos1) || s.board.isLambda(pos1) || (s.board.isPosition(pos2) && s.board.isEmpty(pos2) && (s.board.isRock(pos1) || s.board.isFallingRock(pos1))));
   }
+  
+  @Override
+  public String toString() {
+    return "Left";
+  }
 }
