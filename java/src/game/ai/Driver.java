@@ -97,8 +97,74 @@ public class Driver {
     this.endTime = System.currentTimeMillis() + (lifetime * 1000);
     this.timed = true;
   }
+  
+  public void solveGreedy(State initial) {
+    strategySelector.prepareState(initial);
+    liveStateQueue.add(initial);
+    initial.fitness = fitness.evaluate(initial);
 
-  public void solve(State initial) {
+    bestState = initial;
+
+    // TODO when to stop?
+
+    iterations = 0;
+
+    // choose k, M, G more cleverly
+    // choose 5000k more cleverly
+    // explain final solution (what strategies)
+
+    printDataHeader();
+    while (!liveStateQueue.isEmpty()) {
+      // TODO why is this needed?
+      if (timed && System.currentTimeMillis() >= endTime) {
+        printDataRow();
+        break;
+      }
+
+      iterations++;
+
+      State state = liveStateQueue.peek();
+
+      if (iterations % 5000 == 0) {
+        printDataRow();
+        
+      }
+
+      Strategy strategy = strategySelector.selectStrategy(state);
+
+      if (strategy == null) {
+        killState(state);
+      } else {
+        // apply strategy to create new state
+        List<Command> commands = strategy.apply(state);
+        strategy.applicationCount++;
+
+        if (commands != null) {
+          assert (!commands.isEmpty());
+          State newState = computeNextState(state, commands, strategy);
+          if (stateShouldBeConsidered(newState)) {
+            seenStates.put(newState.board.hashCode(), newState);
+            // Log.printf("%s => %8d old fitness, %8d new fitness, %12d\n",
+            // commands.get(0), state.fitness, fitness.evaluate(newState),
+            // state.hashCode());
+
+            if (newState.score > bestState.score) {
+              bestState = newState;
+            }
+
+            if (newState.ending == Ending.None && newState.steps < newState.board.width * newState.board.height && Scoring.maximalReachableScore(newState) > bestState.score) {
+              newState.fitness = fitness.evaluate(newState);
+              liveStateQueue.add(newState);
+              strategySelector.prepareState(newState);
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  public void solveEvolutionary(State initial) {
     strategySelector.prepareState(initial);
     initial.fitness = fitness.evaluate(initial);
     liveStates.add(initial);
@@ -351,7 +417,7 @@ public class Driver {
 
   public void run() {
     ExitHandler.register(this);
-    solve(initialState);
+    solveEvolutionary(initialState);
     ExitHandler.unregister(this);
 
     finished();
