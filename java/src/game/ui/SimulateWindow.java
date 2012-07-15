@@ -12,13 +12,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.font.FontRenderContext;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -189,10 +187,10 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	    int boxSizeX = 11;
 	    int boxSizeY = 25;
 	    if (showNextLambdaArrows) {
-  	    for (int i = 0; i < currentState.nextLambda.length; i++) {
+  	    for (int i = 0; i < currentState.board.length; i++) {
   	      int xcoord = (i / currentState.board.width);     // XXX shouldn't this be the other way round?
   	      int ycoord = (i % currentState.board.height);    // XXX maybe nextLambda is encoded wrongly?
-  	      int nl = currentState.nextLambda[i];
+  	      int nl = currentState.nextLambda(i);
   	      //g.setColor(Color.GREEN);
   	      //g.drawRect(boxSizeX * xcoord, yoffset + boxSizeY * ycoord, boxSizeX, boxSizeY);
   	      g.setColor(new Color(1.0f, 0f,0f,0.6f));

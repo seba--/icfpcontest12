@@ -24,7 +24,7 @@ public class ManhattanDirectedFitness implements Fitness {
   
   public ManhattanDirectedFitness(StaticConfig sconfig, State state) {
     this.sconfig = sconfig;
-    this.nextLambda = state.nextLambda;
+    this.nextLambda = state.getNextLambda();
   }
   
   @Override

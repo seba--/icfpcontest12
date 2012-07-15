@@ -1,0 +1,4 @@
+time         ,NextLambdaStrategy            ,NextManhattanLift             ,NextManhattanLambda           ,DiggingStrategy               ,ConstantStrategy(L)           ,ConstantStrategy(R)           ,ConstantStrategy(U)           ,ConstantStrategy(D)           ,ConstantStrategy(W)           ,
+1342288561424,                   26,                   0,                  12,                   2,                  12,                  12,                  12,                  12,                  12,
+1342288561635,                 1104,                  46,                 609,                 128,                 655,                 655,                 655,                 655,                 655,
+1342288561854,                 2700,                  86,                1530,                 316,                1616,                1616,                1616,                1616,                1616,

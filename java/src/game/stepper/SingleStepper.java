@@ -8,7 +8,7 @@ import game.Command;
 import game.Ending;
 import game.State;
 import game.StaticConfig;
-import game.fitness.Scoring;
+import game.util.Scoring;
 
 /**
  * @author seba
@@ -162,9 +162,10 @@ public class SingleStepper {
       if (oldBoard.get(col, row) == Cell.Rock || oldBoard.get(col, row) == Cell.FallingRock) {
         st.board.set(col, row, Cell.Rock);
         
-        if (oldBoard.get(col, row - 1) == Cell.Empty)
+        if (oldBoard.get(col, row - 1) == Cell.Empty) {
           // fall straight down
           moveRock(st, col, row, col, row - 1);
+        }
         else if (oldBoard.get(col, row - 1) == Cell.Rock || oldBoard.get(col, row - 1) == Cell.FallingRock) {
           // there is a rock below
           if (oldBoard.get(col + 1,  row) == Cell.Empty &&
@@ -178,9 +179,14 @@ public class SingleStepper {
         }
         else if (oldBoard.get(col, row - 1) == Cell.Lambda &&
                  oldBoard.get(col + 1, row) == Cell.Empty &&
-                 oldBoard.get(col + 1, row - 1) == Cell.Empty)
+                 oldBoard.get(col + 1, row - 1) == Cell.Empty) {
           // rock slides to the right off the back of a lambda
           moveRock(st, col, row, col + 1, row - 1);
+        }
+        else if (oldBoard.immovable(col, row)) {
+          // rock cannot ever be moved => rock can be considered a wall
+          st.board.set(col,  row, Cell.Wall);
+        }
         
         // skip checking whether we should open lambda lifts
       }

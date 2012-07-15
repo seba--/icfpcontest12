@@ -55,8 +55,9 @@ public class SimpleStrategyComparisonBenchmark extends Benchmark {
       for (String arg : args) {
         results.addAll(benchmark.benchmarkFileTree(new File(arg), ""));
         if (new File(arg).isDirectory()) {
-          String logFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + "." + System.currentTimeMillis() + ".csv";
-          benchmark.logResults(logFile, results);
+          String aggregateLogFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + ".agg." + System.currentTimeMillis() + ".csv";
+          String rawLogFile =  "../logs/" + new File(arg).getName() + "." + benchmark.name() + ".raw." + System.currentTimeMillis() + ".csv";
+          benchmark.logResults(aggregateLogFile, rawLogFile, results);
         }
        // resultList.add(results);
       }
@@ -73,14 +74,14 @@ public class SimpleStrategyComparisonBenchmark extends Benchmark {
   /**
    * Selects and returns a monitor for driver.
    */
-  public IBenchmarkMonitor makeMonitor(final Driver driver) {
-    return new SimpleBenchmarkMonitor(driver);
+  public IBenchmarkMonitor makeMonitor(final Driver driver, String mapName) {
+    return new SimpleBenchmarkMonitor(driver, mapName);
   }
 
-  public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state) throws InterruptedException, ExecutionException {
+  public IBenchmarkResult monitorDriver(StaticConfig sconfig, State state, String mapName) throws InterruptedException, ExecutionException {
     Driver driver = Driver.create(config(), sconfig, state, lifetime());
     
-    Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver));
+    Future<IBenchmarkResult> monitoringResult = executor.submit(makeMonitor(driver, mapName));
     driver.run();
 
     return monitoringResult.get();

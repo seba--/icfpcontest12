@@ -390,5 +390,32 @@ public class Board {
     return true;
   }
 
+  /**
+   * Returns true if the rock at (col, row) cannot ever be pushed.
+   */
+  public boolean unpushable(int col, int row) {
+    Cell left = get(col - 1, row);
+    Cell right = get(col + 1, row);
+    
+    if (left == Cell.Wall || right == Cell.Wall)
+      return true;
+    if (left == Cell.Rock && get(col - 1, row - 1) == Cell.Wall)
+      return true;
+    if (right == Cell.Rock && get(col + 1, row - 1) == Cell.Wall)
+      return true;
+    
+    return false;
+  }
 
+  /**
+   * Returns true if the rock at (col, row) cannot ever move.
+   */
+  public boolean immovable(int col, int row) {
+    if (get(col, row - 1) == Cell.Wall ||
+        (get(col, row - 1) == Cell.Lambda &&
+         get(col + 1, row - 1) == Cell.Wall))
+      return unpushable(col, row);
+    return false;
+      
+  }
 }
