@@ -183,13 +183,15 @@ public class SingleStepper {
     	st.board.set(newCol, newRow, Cell.FallingHoRock);
     fallingPosition(st, newCol, newRow); 
     if(type == Cell.HoRock) {
-    	if(board.get(newCol, newRow-1) != Cell.Empty 
+    	if(board.get(newCol, newRow-1) != Cell.Empty
+    		&& board.get(newCol, newRow-1) != Cell.Robot 
     		&& board.get(newCol, newRow-1) != Cell.Rock 
     		&& board.get(newCol, newRow-1) != Cell.FallingRock 
     		&& board.get(newCol, newRow-1) != Cell.HoRock
     		&& board.get(newCol, newRow-1) != Cell.FallingHoRock) {
     		st.board.set(newCol, newRow, Cell.Lambda);
-    	} else if(board.get(newCol, newRow-1) != Cell.Empty 
+    	} else if(board.get(newCol, newRow-1) != Cell.Empty
+    		&& board.get(newCol, newRow-1) != Cell.Robot
     		&& board.get(newCol-1, newRow-1) != Cell.Empty
     		&& board.get(newCol+1, newRow-1) != Cell.Empty) {
     		st.board.set(newCol, newRow, Cell.Lambda);
