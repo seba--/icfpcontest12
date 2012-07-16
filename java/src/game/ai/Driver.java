@@ -167,7 +167,7 @@ public class Driver {
 
   public void solveEvolutionary(State initial) {
 //    int maxNumStates = 20000;
-    int maxNumStates = 10000000 / sconfig.maxStratsAprox;
+    int maxNumStates = (int) (10000000 * 3 / sconfig.maxStratsAprox);
     Log.println(maxNumStates);
     
     endTime = System.currentTimeMillis() + (1000 * lifeTime);
@@ -502,7 +502,7 @@ public class Driver {
     
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-    Driver d = Driver.create(name, stdConfig, sconfig, state, 45);
+    Driver d = Driver.create(name, stdConfig, sconfig, state, 140);
     d.run();
     d.simulationWindow();    
   }
