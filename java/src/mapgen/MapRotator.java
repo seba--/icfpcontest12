@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import game.Board;
 import game.State;
 import game.StaticConfig;
+import game.log.Log;
 import util.FileCommands;
 import util.Pair;
 
@@ -25,7 +26,7 @@ public class MapRotator {
           main(file, FileCommands.readFileAsString(file.getAbsolutePath()));
       }
     } else {
-      System.out.println("Please tell the map rotator which files to process.");
+      Log.println("Please tell the map rotator which files to process.");
       System.exit(-1);
     }
   }
@@ -34,11 +35,11 @@ public class MapRotator {
     Pair<StaticConfig, State> orig = State.parse(text);
     String tmpName = FileCommands.dropExtension(file.getName());
 
-    System.out.println("parsing " + tmpName);
+    Log.println("parsing " + tmpName);
     for (int i = 0; i < 5; i++) {
       String rotFileName = tmpName + ".r" + i + ".map";
       Pair<StaticConfig, State> processed = rotateMap(i, orig);
-      System.out.println("writing " + rotFileName);
+      Log.println("writing " + rotFileName);
       String s = file.getAbsolutePath();
       FileCommands.writeToFile(s.substring(0, s.length() - file.getName().length()) + rotFileName, processed.b.board.toString());
     }

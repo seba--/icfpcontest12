@@ -345,13 +345,15 @@ public class Driver {
     Log.println();
 
     // print solution
+    StringBuilder sb = new StringBuilder();
     if (bestState.solution != null) {
       Command[] commands = bestState.solution.allCommands();
       for (Command command : commands) {
-        System.out.append(command.shortName());
+        sb.append(command.shortName());
       }
     }
-    System.out.println("A");
+    sb.append("A");
+    System.out.println(sb);
     System.out.flush();
   }
 
