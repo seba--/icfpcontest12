@@ -38,8 +38,6 @@ import util.Pair;
 public class Driver {
   public static final int PRIORITY_QUEUE_CAPACITY = 5000;
   
-  public static final int MAX_NUM_STATES = 20000;
-
   public final String name;
   
   public final IDriverConfig dconfig;
@@ -168,6 +166,9 @@ public class Driver {
 
 
   public void solveEvolutionary(State initial) {
+    int maxNumStates = 10000000 / sconfig.maxStratsAprox;
+    Log.println(maxNumStates);
+    
     endTime = System.currentTimeMillis() + (1000 * lifeTime);
     
     ArrayList<State> liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
@@ -201,7 +202,7 @@ public class Driver {
       double newStatesNormalizer = liveStates.size();
       
       double size = liveStates.size();
-      double spaceFactor = (double) 0.5*MAX_NUM_STATES / size;
+      double spaceFactor = (double) 0.5*maxNumStates / size;
 
       for (int i = 0; i < liveStates.size(); ) {
         State state = liveStates.get(i);
@@ -256,7 +257,7 @@ public class Driver {
       size = liveStates.size() + newStatesCount;
       double averageFitness = (liveStatesAverageFitness * (liveStates.size() / size) + newStatesAverageFitness * (newStatesCount / size));
       
-      spaceFactor = (double) 0.5*MAX_NUM_STATES / size;
+      spaceFactor = (double) 0.5*maxNumStates / size;
       
       liveStatesAverageFitness = 0;
       for (int i = 0; i < liveStates.size(); i++) {
@@ -399,6 +400,7 @@ public class Driver {
 
   private State computeNextState(State state, List<Command> commands, Strategy strategy) {
     State result = stepper.multistep(state, commands);
+    result.strats++;
     int stepsPerformed = result.steps - state.steps;
     Command[] usedCommands = new Command[stepsPerformed];
     for (int i = 0; i < stepsPerformed; i++)
@@ -440,8 +442,6 @@ public class Driver {
       sconfig.maxStepsAprox = Math.min(
           2 * bestState.steps, 
           initialState.board.width * initialState.board.height);
-    Log.println(sconfig.maxStepsAprox);
-    Log.println(initialState.board.width * initialState.board.height);
     strategySelector = dconfig.strategySelector(sconfig, initialState);
     fitness = dconfig.fitnessFunction(sconfig, initialState);
     solveEvolutionary(initialState);
