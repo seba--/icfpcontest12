@@ -13,8 +13,7 @@ import game.strategy.ClosestWalkTrampoline;
 import game.strategy.DiveUpStrategy;
 import game.strategy.DownStrategy;
 import game.strategy.LeftStrategy;
-import game.strategy.MakeHoRockFallStrategy;
-import game.strategy.NClosestWalksLambda;
+import game.strategy.MakeRockFallStrategy;
 import game.strategy.PushClosestPushableRockLeft;
 import game.strategy.PushClosestPushableRockRight;
 import game.strategy.ReachableUnderwaterLambda;
@@ -57,7 +56,7 @@ public class SimpleSelector implements Selector {
     
     if (sconfig.boardHasHoRocks) {
       strategies.add(new ClosestWalkHoRock());
-      strategies.add(new MakeHoRockFallStrategy());
+      strategies.add(new MakeRockFallStrategy(true));
     }
     
     //the push rock strategies are way too expensive!
@@ -71,6 +70,8 @@ public class SimpleSelector implements Selector {
     strategies.add(new UpStrategy());
     strategies.add(new DownStrategy());
     strategies.add(new WaitStrategy());
+    
+    strategies.add(new MakeRockFallStrategy(false));
   }
   
   public SimpleSelector(StaticConfig sconfig, Strategy ... strategies) {

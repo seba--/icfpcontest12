@@ -8,10 +8,18 @@ import game.Command;
 import game.State;
 import game.ai.Strategy;
 
-public class MakeHoRockFallStrategy extends Strategy {
+public class MakeRockFallStrategy extends Strategy {
 
+  private final boolean horock;
+  
+  public MakeRockFallStrategy(boolean horock) {
+    this.horock = horock;
+  }
+  
   @Override
   public List<Command> apply(State s) {
+    Cell goal = horock ? Cell.HoRock : Cell.Rock;
+    
     //   some rules: (internal representation is flipped!)
     //  if possible to push a higher-order rock so it will fall, do it
     //  if possible to clear earth around a higher-order rock, do it
@@ -30,7 +38,7 @@ public class MakeHoRockFallStrategy extends Strategy {
     
     //   R@_    r    _R@
     //   ??_    ->   ?._
-    if ((v[3][1] == Cell.HoRock) &&
+    if ((v[3][1] == goal) &&
         (v[4][1] == Cell.Empty) &&
         (v[4][0] == Cell.Empty)) {
       return Arrays.asList(Command.Right);
@@ -38,7 +46,7 @@ public class MakeHoRockFallStrategy extends Strategy {
     
     //   _@R    l    @R_
     //   _??    ->   _??
-    if ((v[1][1] == Cell.HoRock) &&
+    if ((v[1][1] == goal) &&
         (v[0][1] == Cell.Empty) &&
         (v[0][0] == Cell.Empty)) {
       return Arrays.asList(Command.Left);
@@ -53,7 +61,7 @@ public class MakeHoRockFallStrategy extends Strategy {
     //   @\R    l
     //   \_?    ->
     
-    if ((v[0][1] == Cell.HoRock) &&
+    if ((v[0][1] == goal) &&
         ((v[1][1] == Cell.Earth) || (v[1][1] == Cell.Lambda)) &&
         (v[0][0] == Cell.Lambda) &&
         (v[1][0] == Cell.Empty)) {
@@ -81,7 +89,7 @@ public class MakeHoRockFallStrategy extends Strategy {
     // R@?
     // \\?
     
-    if ((v[3][1] == Cell.HoRock) &&
+    if ((v[3][1] == goal) &&
         ((v[2][0] == Cell.Earth) || (v[2][0] == Cell.Empty) || (v[2][0] == Cell.Lambda)) &&
         (v[3][0] == Cell.Earth) || (v[3][0] == Cell.Lambda)) {
       return Arrays.asList(Command.Down, Command.Right, Command.Left);
@@ -100,7 +108,7 @@ public class MakeHoRockFallStrategy extends Strategy {
     // ?@R
     // ?\\
     
-    if ((v[1][1] == Cell.HoRock) &&
+    if ((v[1][1] == goal) &&
         ((v[2][0] == Cell.Earth) || (v[2][0] == Cell.Empty) || (v[2][0] == Cell.Lambda)) &&
         (v[1][0] == Cell.Earth) || (v[3][0] == Cell.Lambda)) {
       return Arrays.asList(Command.Down, Command.Left, Command.Right);
@@ -112,6 +120,8 @@ public class MakeHoRockFallStrategy extends Strategy {
   
   @Override
   public boolean wantsToApply(State s) {
+    Cell goal = horock ? Cell.HoRock : Cell.Rock;
+    
     // look for a higher-order rock in the vincinity:
     // ?????
     // ??R??
@@ -122,7 +132,7 @@ public class MakeHoRockFallStrategy extends Strategy {
     
     for (int i = -searchWidth; i <= searchWidth; i++) {
       for (int j = -searchHeight; j <= searchHeight; j++) {
-        if (s.board.get(s.robotCol + i, s.robotRow + j) == Cell.HoRock)
+        if (s.board.get(s.robotCol + i, s.robotRow + j) == goal)
           return true;
       }
     }
