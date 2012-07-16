@@ -506,8 +506,14 @@ public class Driver {
     
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-    Driver d = Driver.create(name, stdConfig, sconfig, state, 60);
-    d.run();
-    d.simulationWindow();    
+    if (Log.LOGGIN) {
+      Driver d = Driver.create(name, stdConfig, sconfig, state, 120);
+      d.run();
+      d.simulationWindow();
+    }
+    else {
+      Driver d = Driver.create(name, stdConfig, sconfig, state);
+      d.run();
+    }
   }
 }
