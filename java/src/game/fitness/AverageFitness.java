@@ -2,6 +2,7 @@ package game.fitness;
 
 import game.State;
 import game.ai.Fitness;
+import game.log.Log;
 
 /**
  * A scorer that returns the average score of a set of other scorers.
@@ -21,7 +22,9 @@ public class AverageFitness implements Fitness {
   public int evaluate(State state) {
     int sum = 0;
     for (Fitness scorer : scorers) {
-      sum += scorer.evaluate(state);
+      int f = scorer.evaluate(state);
+//      Log.println(scorer.evaluate(state));
+      sum += f;
     }
 
     return sum / scorers.length;
