@@ -30,7 +30,7 @@ public class SimpleSelectorConfig implements IDriverConfig {
         new LiftReachable(sconfig),
 //        new AliveFitness(),
         new ScoreFitness(), 
-        new StepCountFitness(sconfig), 
+        new StepCountFitness(), 
         new ClosestLambdaFitness(sconfig, initialState),
         new BeardNextToLiftFitness(),
         new BeardFitness(),

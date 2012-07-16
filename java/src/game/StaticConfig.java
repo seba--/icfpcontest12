@@ -1,10 +1,5 @@
 package game;
 
-import game.strategy.tom.WayCoordinateSimple;
-
-import java.util.PriorityQueue;
-
-import util.MathUtil;
 
 
 /**
@@ -17,8 +12,6 @@ public class StaticConfig {
    */
   public final int liftx;
   public final int lifty;
-  
-  public final int maxStepsAprox;
 
   /*
    * for flooding
@@ -62,51 +55,5 @@ public class StaticConfig {
 
     liftx = x;
     lifty = y;
-
-    /*
-     * Approximate needed number of steps:
-     * From the initial position go to each lambda and back to the initial position
-     */
-    State s = initialState;
-    WayCoordinateSimple[][] m = new WayCoordinateSimple[s.board.width][s.board.height];
-    PriorityQueue<WayCoordinateSimple> p = new PriorityQueue<WayCoordinateSimple>();
-    WayCoordinateSimple wc = new WayCoordinateSimple(s.robotCol, s.robotRow, 0, null);
-     
-    while (wc != null) {
-      if (m[wc.col][wc.row] == null || m[wc.col][wc.row].steps > wc.steps) { // not already better way
-
-        Cell c = s.board.get(wc.col, wc.row);
-        if (c == Cell.Earth || c == Cell.Empty || c == Cell.Lambda || c == Cell.Robot || c == Cell.Razor) { // may move there
-          
-          m[wc.col][wc.row] = wc;
-
-          // generate follow up moves
-          p.add(new WayCoordinateSimple(wc.col - 1, wc.row, wc.steps + 1, Command.Left));
-          p.add(new WayCoordinateSimple(wc.col + 1, wc.row, wc.steps + 1, Command.Right));
-          p.add(new WayCoordinateSimple(wc.col, wc.row + 1, wc.steps + 1, Command.Up));
-          if (s.board.get(wc.col, wc.row + 1) != Cell.Rock)
-            p.add(new WayCoordinateSimple(wc.col, wc.row - 1, wc.steps + 1, Command.Down));
-
-        }
-      } 
-      wc = p.poll();
-    }
-    
-    int steps = 0;
-    for (int lambda : initialState.lambdaPositions) {
-      wc = m[lambda / board.height][lambda % board.height];
-      if (wc == null)
-        steps += 2 * MathUtil.distanceToPos(s.robotCol, s.robotRow, lambda, board.height);
-      else
-        steps += 2 * wc.steps;
-    }
-    
-    wc = m[liftx][lifty];
-    if (wc == null)
-      steps += 2 * MathUtil.distanceToPos(s.robotCol, s.robotRow, liftx, lifty);
-    else
-      steps += 2 * wc.steps;
-
-    maxStepsAprox = steps;
   }
 }

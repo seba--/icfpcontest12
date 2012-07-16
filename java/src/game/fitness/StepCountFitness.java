@@ -1,7 +1,6 @@
 package game.fitness;
 
 import game.State;
-import game.StaticConfig;
 import game.ai.Fitness;
 
 /**
@@ -12,18 +11,13 @@ import game.ai.Fitness;
  */
 public class StepCountFitness implements Fitness {
 
-  private final StaticConfig sconfig;
-  
-  public StepCountFitness(StaticConfig sconfig) {
-    this.sconfig = sconfig;
-  }
-  
   /* (non-Javadoc)
    * @see game.ai.Fitness#evaluate(game.State)
    */
   @Override
   public int evaluate(State state) {
-    return (int) ((1 - ((double) state.steps / sconfig.maxStepsAprox)) * 100000);
+    int max = state.board.width * state.board.height;
+    return (int) ((1 - ((double) state.steps / max)) * 100000);
   }
 
 }
