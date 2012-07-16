@@ -19,7 +19,7 @@ public class BeardFitness implements Fitness {
   public int evaluate(State state) {
     // fitness is bad when the beard grows
     int beardCount = state.board.bitsets[Cell.Beard.ordinal()].size();
-    return (int) (1000000 * (1 - (beardCount / ((double) state.board.length))));
+    return (int) (1000000 * (1 - (beardCount / ((double) state.board.width * state.board.height))));
   }
 
 }

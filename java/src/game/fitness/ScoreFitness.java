@@ -19,7 +19,7 @@ public class ScoreFitness implements Fitness {
       maximalScore = 1;
     }
 
-    int fitness = (int) (((double) state.score /  maximalScore) * 1000000);
+    int fitness = (int) (((double) (state.score + maximalScore) /  (2*maximalScore)) * 1000000);
     return fitness;
   }
 }

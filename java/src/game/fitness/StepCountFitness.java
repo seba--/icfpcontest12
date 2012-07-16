@@ -23,7 +23,7 @@ public class StepCountFitness implements Fitness {
    */
   @Override
   public int evaluate(State state) {
-    return (int) ((1 - ((double) state.steps / sconfig.maxStepsAprox)) * 100000);
+    return (int) ((1 - ((double) state.steps / sconfig.maxStepsAprox)) * 1000000);
   }
 
 }
