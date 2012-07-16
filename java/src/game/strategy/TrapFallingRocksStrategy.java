@@ -8,6 +8,11 @@ import game.Command;
 import game.State;
 import game.ai.Strategy;
 
+/**
+ * Tries to cleverly trap a falling rock
+ * @author Felix Rieger
+ *
+ */
 public class TrapFallingRocksStrategy extends Strategy{
   @Override
   public boolean wantsToApply(State s) {
@@ -30,7 +35,11 @@ public class TrapFallingRocksStrategy extends Strategy{
     // ?|?  l  ?_?  r  ?_?  r  ?_?  l  ?_?
     // ?_?  -> ?|?  -> ?*?  -> ?_?  -> ?_?
     // ?R?     R_?     _R?     _|R     *R_  rock trapped!    
-    return Arrays.asList(Command.Left, Command.Right, Command.Left, Command.Right);
+    return Arrays.asList(Command.Left, Command.Right, Command.Right, Command.Left);
   }
   
+  @Override
+  public String toString() {
+    return "TrapFallingRockStrategy";
+  }
 }
