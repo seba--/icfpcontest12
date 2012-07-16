@@ -1,5 +1,6 @@
 package game.strategy;
 
+import game.Cell;
 import game.Command;
 import game.State;
 import game.StaticConfig;
@@ -23,7 +24,7 @@ public class ClosestManhattanLift extends Strategy {
   
   @Override
   public boolean wantsToApply(State s) {
-    return s.lambdaPositions.isEmpty();
+    return s.lambdaPositions.isEmpty() && s.board.bitsets[Cell.HoRock.ordinal()].isEmpty();
   }
   
   @Override
