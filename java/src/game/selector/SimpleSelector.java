@@ -53,15 +53,16 @@ public class SimpleSelector implements Selector {
       strategies.add(new ReachableUnderwaterLambda(sconfig));
       strategies.add(new DiveUpStrategy(sconfig));
     }
-    //the push rock strategies are way too expensive!
-    //strategies.add(new PushClosestPushableRockLeft());
-    //strategies.add(new PushClosestPushableRockRight());
     
     
     if (sconfig.boardHasHoRocks) {
       strategies.add(new ClosestWalkHoRock());
       strategies.add(new MakeHoRockFallStrategy());
     }
+    
+    //the push rock strategies are way too expensive!
+    strategies.add(new PushClosestPushableRockLeft(10));
+    strategies.add(new PushClosestPushableRockRight(10));
     
 //    strategies.add(new DiggingStrategy());
     

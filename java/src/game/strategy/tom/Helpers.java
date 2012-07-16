@@ -215,15 +215,17 @@ public class Helpers {
   
   /**
    * Moves to the n-th closest given area that is
-   * identified by the scout.
+   * identified by the scout. But do no more than
+   * given number of steps.
    * But does not consider rock movement. 
    * 
    * @param s starting state
    * @param areaScout area scout
    * @param N which match to go to
+   * @param maxSteps maximum number of steps to take
    * @return commands leading to destination or null if no way found
    */
-  public static List<Command> moveToAreaCell(State s, Scout areaScout, final int N) {
+  public static List<Command> moveToAreaCell(State s, Scout areaScout, final int N, int maxSteps) {
     
     WayCoordinateSimple[][] m = new WayCoordinateSimple[s.board.width][s.board.height];
     PriorityQueue<WayCoordinateSimple> p = new PriorityQueue<WayCoordinateSimple>();
@@ -247,11 +249,13 @@ public class Helpers {
           m[wc.col][wc.row] = wc;
 
           // generate follow up moves
-          p.add(new WayCoordinateSimple(wc.col - 1, wc.row, wc.steps + 1, Command.Left));
-          p.add(new WayCoordinateSimple(wc.col + 1, wc.row, wc.steps + 1, Command.Right));
-          p.add(new WayCoordinateSimple(wc.col, wc.row + 1, wc.steps + 1, Command.Up));
-          if (s.board.get(wc.col, wc.row + 1) != Cell.Rock)
-            p.add(new WayCoordinateSimple(wc.col, wc.row - 1, wc.steps + 1, Command.Down));
+          if (wc.steps < maxSteps) {
+            p.add(new WayCoordinateSimple(wc.col - 1, wc.row, wc.steps + 1, Command.Left));
+            p.add(new WayCoordinateSimple(wc.col + 1, wc.row, wc.steps + 1, Command.Right));
+            p.add(new WayCoordinateSimple(wc.col, wc.row + 1, wc.steps + 1, Command.Up));
+            if (s.board.get(wc.col, wc.row + 1) != Cell.Rock)
+              p.add(new WayCoordinateSimple(wc.col, wc.row - 1, wc.steps + 1, Command.Down));
+          }
 
         }
       } 

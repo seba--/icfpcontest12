@@ -10,25 +10,32 @@ import game.strategy.tom.Helpers;
 import game.strategy.tom.Scout;
 
 public class PushClosestPushableRockLeft extends Strategy {
-
+  final Cell[][] area = new Cell[][]{{Cell.Empty}, {Cell.Rock}, {Cell.AnyPassable}};
+  final Scout scout = new Scout(area, 2, 0);
+  
+  List<Command> cmds;
+  private final int searchDistance;
+  
+  public PushClosestPushableRockLeft(int searchDistance) {
+    this.searchDistance = searchDistance;
+  }
+  
   @Override
   public List<Command> apply(State state) {
-    //Cell[][] area = new Cell[][] {{Cell.AnyPassable, Cell.Rock, Cell.Empty}};
-    //Scout s1 = new Scout(area, 0, 0);
-    
-    Cell[][] area = new Cell[][]{{Cell.Empty}, {Cell.Rock}, {Cell.AnyPassable}};
-    Scout scout = new Scout(area, 2, 0);
-    
-    List<Command> cmds = Helpers.moveToAreaCell(state, scout, 1);
-    if (cmds == null) return null;
-    
     cmds.add(Command.Left);
-    
     return cmds;
   }
-
+  
+  @Override
+  public boolean wantsToApply(State s) {
+    cmds = Helpers.moveToAreaCell(s, scout, 1, searchDistance);
+    return (cmds != null);
+    
+  }
+  
   @Override
   public String toString() {
     return "PushClosestPushableRockLeft";
   }
+  
 }
