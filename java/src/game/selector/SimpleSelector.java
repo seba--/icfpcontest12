@@ -14,6 +14,9 @@ import game.strategy.DiveUpStrategy;
 import game.strategy.DownStrategy;
 import game.strategy.LeftStrategy;
 import game.strategy.MakeHoRockFallStrategy;
+import game.strategy.NClosestWalksLambda;
+import game.strategy.PushClosestPushableRockLeft;
+import game.strategy.PushClosestPushableRockRight;
 import game.strategy.ReachableUnderwaterLambda;
 import game.strategy.RightStrategy;
 import game.strategy.ShavingStrategy;
@@ -50,6 +53,10 @@ public class SimpleSelector implements Selector {
       strategies.add(new ReachableUnderwaterLambda(sconfig));
       strategies.add(new DiveUpStrategy(sconfig));
     }
+    //the push rock strategies are way too expensive!
+    //strategies.add(new PushClosestPushableRockLeft());
+    //strategies.add(new PushClosestPushableRockRight());
+    
     
     if (sconfig.boardHasHoRocks) {
       strategies.add(new ClosestWalkHoRock());
