@@ -141,6 +141,35 @@ public class MakeRockFallStrategy extends Strategy {
       return cmds;
     }
     
+    
+    
+//  01234     :2
+//  01R34     :1
+//  01234     :0
+
+    // idea: excavate earth below rock
+    
+    // R
+    // @    R@    @R
+    // . or  . or .
+    
+    List<Command> tempCmds = null;
+    if ((v[2][0] == goal)) { // robot above rock
+      tempCmds = Helpers.moveToSimple(s, rcol, rrow-1); // try to move below rock
+    }
+    if ((tempCmds == null) &&
+        (v[3][1] == goal)) { // robot left of rock
+      tempCmds = Helpers.moveToSimple(s, rcol+1, rrow-1);
+    }
+    if ((tempCmds == null) &&
+        (v[1][1] == goal)) {  // robot right of rock
+      tempCmds = Helpers.moveToSimple(s, rcol-1, rrow-1);
+    }
+    
+    if (tempCmds != null) {
+      cmds.addAll(tempCmds);
+      return cmds;
+    }
     return null;
     
   }
