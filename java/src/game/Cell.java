@@ -7,10 +7,50 @@ package game;
  *
  */
 public enum Cell {
-  Wall, Rock, Lambda, Earth, FallingRock, Trampoline, Target, Beard, Razor, HoRock, FallingHoRock, Robot, Lift, Empty, RobotAndLift;
+  Wall, Rock, Lambda, Earth, FallingRock, Trampoline, Target, Beard, Razor, HoRock, FallingHoRock, Robot, Lift, Empty, RobotAndLift, AnySolid, AnyPassable, Any;
     
   public String toString() {
     return shortName();
+  }
+  
+  public static boolean similar(Cell c1, Cell c2) {
+    if (c1 == c2) return true;
+    
+    Cell min = (c1.ordinal() < c2.ordinal()) ? c1 : c2;
+    Cell max = (c1.ordinal() > c2.ordinal()) ? c1 : c2;
+    
+    switch (max) {
+    case Any: return true;
+    case AnySolid: 
+      switch (min) {
+      case Wall:
+      case Rock:
+      case FallingRock:
+      case Trampoline:
+      case Target:
+      case Beard:
+      case HoRock:
+      case FallingHoRock:
+      case Lift:
+        return true;
+      default:
+        return false;
+      }
+    case AnyPassable:
+      switch (min) {
+      case Lambda:
+      case Earth:
+      case Razor:
+      case Empty:
+      case Robot:
+        return true;
+      default:
+        return false;
+      }
+    case Empty: 
+      return min == Robot; 
+    }
+    return false;
   }
   
   public String shortName() {

@@ -213,6 +213,78 @@ public class Helpers {
     return Arrays.asList(cmds);    
   }
   
+  /**
+   * Moves to the n-th closest given area that is
+   * identified by the scout.
+   * But does not consider rock movement. 
+   * 
+   * @param s starting state
+   * @param areaScout area scout
+   * @param N which match to go to
+   * @return commands leading to destination or null if no way found
+   */
+  public static List<Command> moveToAreaCell(State s, Scout areaScout, final int N) {
+    
+    WayCoordinateSimple[][] m = new WayCoordinateSimple[s.board.width][s.board.height];
+    PriorityQueue<WayCoordinateSimple> p = new PriorityQueue<WayCoordinateSimple>();
+    WayCoordinateSimple wc = new WayCoordinateSimple(s.robotCol, s.robotRow, 0, null);
+     
+    int seenTargets = 0;
+    
+    while (wc != null) {
+      Cell c = s.board.get(wc.col, wc.row);
+      
+      if (m[wc.col][wc.row] == null) { // not already better way
+        
+        if (areaScout.areaFits(s.board, wc.col, wc.row)) { //target area found
+          seenTargets++;
+          m[wc.col][wc.row] = wc;
+          if (seenTargets == N) break;
+        }
+        
+        if (Cell.similar(c, Cell.AnyPassable)) { // may move there
+          
+          m[wc.col][wc.row] = wc;
+
+          // generate follow up moves
+          p.add(new WayCoordinateSimple(wc.col - 1, wc.row, wc.steps + 1, Command.Left));
+          p.add(new WayCoordinateSimple(wc.col + 1, wc.row, wc.steps + 1, Command.Right));
+          p.add(new WayCoordinateSimple(wc.col, wc.row + 1, wc.steps + 1, Command.Up));
+          if (s.board.get(wc.col, wc.row + 1) != Cell.Rock)
+            p.add(new WayCoordinateSimple(wc.col, wc.row - 1, wc.steps + 1, Command.Down));
+
+        }
+      } 
+      wc = p.poll();
+    }
+     //here: wc is destination or null 
+    if (wc == null) return null;
+    
+    //now build commands that led here
+    Command[] cmds= new Command[wc.steps];
+    
+    for (int i = wc.steps - 1; i > 0; i--) {
+      cmds[i] = wc.steppedHereWith;
+      switch (wc.steppedHereWith) {
+      case Left: 
+        wc = m[wc.col+1][wc.row];
+        break;
+      case Right:
+        wc = m[wc.col-1][wc.row];
+        break;
+      case Up:
+        wc = m[wc.col][wc.row-1];
+        break;
+      case Down: 
+        wc = m[wc.col][wc.row+1];
+      }
+    }
+    if (cmds.length > 0)
+      cmds[0] = wc.steppedHereWith;
+    
+    
+    return Arrays.asList(cmds);    
+  }
   
   
   /**
