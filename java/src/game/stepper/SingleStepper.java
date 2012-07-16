@@ -49,8 +49,7 @@ public class SingleStepper {
       st.ending = Ending.Abort;
       return true;
     case Shave:
-      st.shaveBeard(st.robotCol, st.robotRow);
-      return true;
+      return st.shaveBeard(st.robotCol, st.robotRow);
     default:
       throw new IllegalArgumentException("Unknown command " + cmd);
     }
@@ -329,6 +328,7 @@ public class SingleStepper {
   public State step(State st, Command cmd) {
     State newSt = st.clone();
     newSt.steps++;
+    newSt.strats++;
     
     moveRobot(newSt, cmd);
     if (st.ending != Ending.Abort) {

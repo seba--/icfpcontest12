@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import util.FileCommands;
@@ -36,47 +37,38 @@ import util.Pair;
  */
 public class Driver {
   public static final int PRIORITY_QUEUE_CAPACITY = 5000;
-
+  
   public final String name;
   
+  public final IDriverConfig dconfig;
   public final StaticConfig sconfig;
   public final State initialState;
   public final MultiStepper stepper;
   public Comparator<State> comparator = new FitnessComparator();
   
-  /*
-   * Elements are ordered in ascending order: poll() retrieves the smallest state.
-   */
-  public PriorityQueue<State> liveStateQueue;
-  
-  /*
-   * Elements collected in list.
-   */
-  public ArrayList<State> liveStates;
-  public double liveStatesAverageFitness;
-  
-  // public Set<State> seenStates = new HashSet<State>();
-  public HashMap<Integer, State> seenStates = new HashMap<Integer, State>();
   public Fitness fitness;
   public Selector strategySelector;
 
   public State bestState;
 
   public boolean finished = false;
-  public int iterations;
   public boolean timed = false;
   public int lifeTime = 0;
   public long endTime;
 
   public long lastPrintInfoTime;
   public int lastPrintInfoIter;
+  
+  public int allIterations = 0;
+  public int allLivestates = 0;
 
-  public Driver(String name, StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
+  public Driver(String name, IDriverConfig dconfig, StaticConfig sconfig, State initialState) {
     this.name = name;
+    this.dconfig = dconfig;
     this.sconfig = sconfig;
     this.initialState = initialState;
-    this.strategySelector = strategySelector;
-    this.fitness = fitness;
+    this.strategySelector = dconfig.strategySelector(sconfig, initialState);
+    this.fitness = dconfig.fitnessFunction(sconfig, initialState);
     this.stepper = new MultiStepper(sconfig);
     this.timed = false;
   }
@@ -89,12 +81,13 @@ public class Driver {
    * @param lifetime
    *          max runtime in seconds
    */
-  public Driver(String name, StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, int lifetime) {
+  public Driver(String name, IDriverConfig dconfig, StaticConfig sconfig, State initialState, int lifetime) {
     this.name = name;
+    this.dconfig = dconfig;
     this.sconfig = sconfig;
     this.initialState = initialState;
-    this.strategySelector = strategySelector;
-    this.fitness = fitness;
+    this.strategySelector = dconfig.strategySelector(sconfig, initialState);
+    this.fitness = dconfig.fitnessFunction(sconfig, initialState);
     this.stepper = new MultiStepper(sconfig);
     this.lifeTime = lifetime;
     this.timed = true;
@@ -103,7 +96,9 @@ public class Driver {
   public void solveGreedy(State initial) {
     endTime = System.currentTimeMillis() + (1000 * lifeTime);
     
-    liveStateQueue = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
+    PriorityQueue<State> liveStateQueue = new PriorityQueue<State>(PRIORITY_QUEUE_CAPACITY, comparator);
+    HashMap<Integer, State> seenStates = new HashMap<Integer, State>();
+
     strategySelector.prepareState(initial);
     liveStateQueue.add(initial);
     initial.fitness = fitness.evaluate(initial);
@@ -113,13 +108,13 @@ public class Driver {
 
     // TODO when to stop?
 
-    iterations = 0;
+    int iterations = 0;
 
     // choose k, M, G more cleverly
     // choose 5000k more cleverly
     // explain final solution (what strategies)
 
-    printDataHeaderGreedy();
+    printDataHeaderGreedy(iterations);
     while (!liveStateQueue.isEmpty()) {
       // TODO why is this needed?
       if (timed && System.currentTimeMillis() >= endTime) {
@@ -148,7 +143,7 @@ public class Driver {
         if (commands != null) {
           assert (!commands.isEmpty());
           State newState = computeNextState(state, commands, strategy);
-          if (stateShouldBeConsidered(newState)) {
+          if (stateShouldBeConsidered(seenStates, newState)) {
             seenStates.put(newState.board.hashCode(), newState);
 
             if (newState.score > bestState.score) {
@@ -165,24 +160,29 @@ public class Driver {
       }
     }
     
-    liveStateQueue = null;
+    allIterations += iterations;
+    allLivestates += liveStateQueue.size();
   }
 
 
   public void solveEvolutionary(State initial) {
+//    int maxNumStates = 20000;
+    int maxNumStates = 10000000 / sconfig.maxStratsAprox;
+    Log.println(maxNumStates);
+    
     endTime = System.currentTimeMillis() + (1000 * lifeTime);
     
-    liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
+    ArrayList<State> liveStates = new ArrayList<State>(PRIORITY_QUEUE_CAPACITY);
     
     strategySelector.prepareState(initial);
     initial.fitness = fitness.evaluate(initial);
     liveStates.add(initial);
-    liveStatesAverageFitness = initial.fitness;
+    double liveStatesAverageFitness = initial.fitness;
 
     if (bestState == null)
       bestState = initial;
 
-    iterations = 0;
+    int iterations = 0;
     int keptStatesCount = 0;
     int newStatesCount = 0;
 
@@ -203,8 +203,7 @@ public class Driver {
       double newStatesNormalizer = liveStates.size();
       
       double size = liveStates.size();
-      int MAX_NUM_STATES = 10000;
-      double spaceFactor = (double) MAX_NUM_STATES / size;
+      double spaceFactor = (double) 0.5*maxNumStates / size;
 
       for (int i = 0; i < liveStates.size(); ) {
         State state = liveStates.get(i);
@@ -259,7 +258,7 @@ public class Driver {
       size = liveStates.size() + newStatesCount;
       double averageFitness = (liveStatesAverageFitness * (liveStates.size() / size) + newStatesAverageFitness * (newStatesCount / size));
       
-      spaceFactor = (double) MAX_NUM_STATES / size;
+      spaceFactor = (double) 0.5*maxNumStates / size;
       
       liveStatesAverageFitness = 0;
       for (int i = 0; i < liveStates.size(); i++) {
@@ -286,10 +285,12 @@ public class Driver {
     }
     
     printDataRowEvolutionary(iterations, bestState.score, liveStates.size(), keptStatesCount, newStatesCount, (int) liveStatesAverageFitness);
-    liveStates = null;
+    
+    allIterations += iterations;
+    allLivestates += liveStates.size();
   }
 
-  private void printDataHeaderGreedy() {
+  private void printDataHeaderGreedy(int iterations) {
     Log.printf(" iter    |  score  |  live   |  iter/sec  \n");
     Log.printf(" --------+---------+---------+------------\n");
 
@@ -315,14 +316,9 @@ public class Driver {
   private void printDataHeaderEvolutionary() {
     Log.printf(" iter    |  score  |  live   |  kept   |  new    | fitness \n");
     Log.printf(" --------+---------+---------+---------+---------+---------\n");
-
-    lastPrintInfoIter = iterations;
-    lastPrintInfoTime = System.currentTimeMillis();
   }
 
   private void printDataRowEvolutionary(int iterations, int score, int liveStates, int keptStates, int newStates, int fitness) {
-    long now = System.currentTimeMillis();
-
     Log.printf("%7d  |  %5d  |  %5d  |  %5d  |  %5d  |  %7d  \n",
         iterations,
         bestState.score,
@@ -330,10 +326,6 @@ public class Driver {
         keptStates,
         newStates,
         fitness);
-
-    lastPrintInfoIter = iterations;
-    lastPrintInfoTime = now;
-
   }
 
   /**
@@ -409,6 +401,7 @@ public class Driver {
 
   private State computeNextState(State state, List<Command> commands, Strategy strategy) {
     State result = stepper.multistep(state, commands);
+    result.strats++;
     int stepsPerformed = result.steps - state.steps;
     Command[] usedCommands = new Command[stepsPerformed];
     for (int i = 0; i < stepsPerformed; i++)
@@ -426,13 +419,13 @@ public class Driver {
   public static Driver create(String name, IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    return new Driver(name, sconfig, state, selector, fitness);
+    return new Driver(name, dconfig, sconfig, state);
   }
 
   public static Driver create(String name, IDriverConfig dconfig, StaticConfig sconfig, State state, int lifetime) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    return new Driver(name, sconfig, state, selector, fitness, lifetime);
+    return new Driver(name, dconfig, sconfig, state, lifetime);
   }
 
   public void run() {
@@ -446,13 +439,19 @@ public class Driver {
     this.lifeTime = lifeTime;
     
     Log.println();
+    if (bestState != null)
+      sconfig.maxStepsAprox = Math.min(
+          2 * bestState.steps, 
+          initialState.board.width * initialState.board.height);
+    strategySelector = dconfig.strategySelector(sconfig, initialState);
+    fitness = dconfig.fitnessFunction(sconfig, initialState);
     solveEvolutionary(initialState);
     
     ExitHandler.unregister(this);
     finished();
   }
 
-  private boolean stateShouldBeConsidered(State s) {
+  private boolean stateShouldBeConsidered(Map<Integer, State> seenStates, State s) {
     State oldState = seenStates.get(s.board.hashCode());
 
     if (oldState == null)

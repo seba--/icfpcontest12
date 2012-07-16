@@ -56,6 +56,11 @@ public class State {
    * steps taken since start of game.
    */
   public int steps;
+  
+  /**
+   * number of strategies used since start of game.
+   */
+  public int strats;
 
   /**
    * not yet applied strategies. gets set when state is created in driver.
@@ -122,7 +127,7 @@ public class State {
    */
   public int nClosestWalksStrategyIndex = 0;
 
-  public State(State previousState, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, List<Integer> lambdaPositions, int collectedLambdas, int steps, int waterLevel, int stepsUnderwater, int stepsSinceLastRise, int[] nextLambda) {
+  public State(State previousState, Board board, Set<Integer> activePositions, int score, int robotCol, int robotRow, List<Integer> lambdaPositions, int collectedLambdas, int steps, int strats, int waterLevel, int stepsUnderwater, int stepsSinceLastRise, int[] nextLambda) {
 //    this.previousState = previousState;
     this.board = board.clone();
     this.score = score;
@@ -136,6 +141,7 @@ public class State {
     this.lambdaPositions = new ArrayList<Integer>(lambdaPositions);
 
     this.steps = steps;
+    this.strats = strats;
 
     this.waterLevel = waterLevel;
     this.stepsUnderwater = stepsUnderwater;
@@ -159,6 +165,7 @@ public class State {
     this.collectedLambdas = 0;
     this.ending = Ending.None;
     this.steps = 0;
+    this.strats = 0;
     this.waterLevel = waterLevel;
     this.stepsUnderwater = 0;
     this.stepsSinceLastRise = 0;
@@ -283,7 +290,7 @@ public class State {
   /**
    * Shave a beard
    */
-  public void shaveBeard(int col, int row) {
+  public boolean shaveBeard(int col, int row) {
     if(board.razors > 0) {
       if(board.get(col+1, row+1) == Cell.Beard) {
         board.set(col+1, row+1, Cell.Empty);
@@ -310,6 +317,9 @@ public class State {
         board.set(col-1, row-1, Cell.Empty);
       }
       --board.razors;
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -434,6 +444,6 @@ public class State {
 
   public State clone() {
     nextLambdaShared = true;
-    return new State(this, board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, waterLevel, stepsUnderwater, stepsSinceLastRise, nextLambda);
+    return new State(this, board, activePositions, score, robotCol, robotRow, lambdaPositions, collectedLambdas, steps, strats, waterLevel, stepsUnderwater, stepsSinceLastRise, nextLambda);
   }
 }

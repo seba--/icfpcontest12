@@ -1,6 +1,7 @@
 package game;
 
 
+
 /**
  * @author seba
  */
@@ -12,6 +13,9 @@ public class StaticConfig {
   public final int liftx;
   public final int lifty;
   
+  public int maxStepsAprox;
+  public int maxStratsAprox;
+
   /*
    * for flooding
    */
@@ -20,6 +24,8 @@ public class StaticConfig {
   public final boolean boardHasTrampolines;
   public final boolean boardHasBeard;
   public final boolean boardHasWater;
+  public final boolean boardHasHoRocks;
+  
   
   /*
    * for beards
@@ -38,7 +44,10 @@ public class StaticConfig {
     Board board = initialState.board;
     this.boardHasTrampolines = !board.bitsets[Cell.Trampoline.ordinal()].isEmpty();
     this.boardHasBeard       = !board.bitsets[Cell.Beard.ordinal()].isEmpty();
+    this.boardHasHoRocks	 = !board.bitsets[Cell.HoRock.ordinal()].isEmpty();
     this.boardHasWater       = (initialState.waterLevel > 0 || floodingRate > 0);
+    this.maxStepsAprox = board.width * board.height;
+    this.maxStratsAprox = board.width * board.height;
     
     int x = -1;
     int y = -1;
