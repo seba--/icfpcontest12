@@ -1,5 +1,6 @@
 package game.strategy.tom;
 
+import game.Board;
 import game.Cell;
 import game.Command;
 import game.State;
@@ -24,16 +25,23 @@ public class Helpers {
    * @return commands leading to destination or null if no wa yfound
    */
   public static List<Command> moveToSimple(State s, int destCol, int destRow) {
+    return moveFromToSimple(s.board, s.robotCol, s.robotRow, destCol, destRow);
+  }
+  
+  public static List<Command> moveFromToSimple(Board board, int fromCol, int fromRow, int destCol, int destRow) {
     
-    WayCoordinateDirected[][] m = new WayCoordinateDirected[s.board.width][s.board.height];
+    if (board.get(destCol, destRow) == Cell.Wall)
+      return null;
+    
+    WayCoordinateDirected[][] m = new WayCoordinateDirected[board.width][board.height];
     PriorityQueue<WayCoordinateDirected> p = new PriorityQueue<WayCoordinateDirected>();
-    WayCoordinateDirected wc = new WayCoordinateDirected(s.robotCol, s.robotRow, destCol, destRow, 0, null);
+    WayCoordinateDirected wc = new WayCoordinateDirected(fromCol, fromRow, destCol, destRow, 0, null);
      
     
     while (wc != null && (wc.col != destCol || wc.row != destRow)) {
       if (m[wc.col][wc.row] == null || m[wc.col][wc.row].steps > wc.steps) { // not already better way
 
-        Cell c = s.board.get(wc.col, wc.row);
+        Cell c = board.get(wc.col, wc.row);
         if (c == Cell.Earth || c == Cell.Empty || c == Cell.Lambda || c == Cell.Robot || c == Cell.Razor) { // may move there
           
           m[wc.col][wc.row] = wc;
@@ -42,7 +50,7 @@ public class Helpers {
           p.add(new WayCoordinateDirected(wc.col - 1, wc.row, destCol, destRow, wc.steps + 1, Command.Left));
           p.add(new WayCoordinateDirected(wc.col + 1, wc.row, destCol, destRow, wc.steps + 1, Command.Right));
           p.add(new WayCoordinateDirected(wc.col, wc.row + 1, destCol, destRow, wc.steps + 1, Command.Up));
-          if (s.board.get(wc.col, wc.row + 1) != Cell.Rock)
+          if (board.get(wc.col, wc.row + 1) != Cell.Rock)
             p.add(new WayCoordinateDirected(wc.col, wc.row - 1, destCol, destRow, wc.steps + 1, Command.Down));
 
         }

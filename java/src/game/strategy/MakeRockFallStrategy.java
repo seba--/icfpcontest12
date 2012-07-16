@@ -49,6 +49,58 @@ public class MakeRockFallStrategy extends Strategy {
         v[i+2][j+1] = s.board.get(rcol + i, rrow + j);
       }
     }
+    
+    
+//  01234     :2
+//  01R34     :1
+//  01234     :0
+
+    // idea: excavate earth below rock
+    
+    // R
+    // @    R@    @R
+    // . or  . or .
+    
+    if (v[2][2] == goal) {
+      switch (v[1][1]) {
+      case Earth:
+      case Lambda:
+      case Empty:
+        cmds.add(Command.Left);
+        return cmds;
+      default :
+        break;
+      }
+      switch (v[3][1]) {
+      case Earth:
+      case Lambda:
+      case Empty:
+        cmds.add(Command.Right);
+        return cmds;
+      default :
+        break;
+      }
+    }
+    
+    List<Command> tempCmds = null;
+    if ((v[2][0] == goal)) { // robot above rock
+      tempCmds = Helpers.moveFromToSimple(s.board, rcol, rrow, rcol, rrow-1); // try to move below rock
+    }
+    if ((tempCmds == null) &&
+        (v[3][1] == goal)) { // robot left of rock
+      tempCmds = Helpers.moveFromToSimple(s.board, rcol, rrow, rcol+1, rrow-1);
+    }
+    if ((tempCmds == null) &&
+        (v[1][1] == goal)) {  // robot right of rock
+      tempCmds = Helpers.moveFromToSimple(s.board, rcol, rrow, rcol-1, rrow-1);
+    }
+    
+    if (tempCmds != null) {
+      cmds.addAll(tempCmds);
+      return cmds;
+    }
+
+    
         
     // -----------------------
     // idea: push higher-order rock from edge to make it fall
@@ -142,34 +194,6 @@ public class MakeRockFallStrategy extends Strategy {
     }
     
     
-    
-//  01234     :2
-//  01R34     :1
-//  01234     :0
-
-    // idea: excavate earth below rock
-    
-    // R
-    // @    R@    @R
-    // . or  . or .
-    
-    List<Command> tempCmds = null;
-    if ((v[2][0] == goal)) { // robot above rock
-      tempCmds = Helpers.moveToSimple(s, rcol, rrow-1); // try to move below rock
-    }
-    if ((tempCmds == null) &&
-        (v[3][1] == goal)) { // robot left of rock
-      tempCmds = Helpers.moveToSimple(s, rcol+1, rrow-1);
-    }
-    if ((tempCmds == null) &&
-        (v[1][1] == goal)) {  // robot right of rock
-      tempCmds = Helpers.moveToSimple(s, rcol-1, rrow-1);
-    }
-    
-    if (tempCmds != null) {
-      cmds.addAll(tempCmds);
-      return cmds;
-    }
     return null;
     
   }
