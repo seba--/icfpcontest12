@@ -166,6 +166,7 @@ public class Driver {
 
 
   public void solveEvolutionary(State initial) {
+//    int maxNumStates = 20000;
     int maxNumStates = 10000000 / sconfig.maxStratsAprox;
     Log.println(maxNumStates);
     
