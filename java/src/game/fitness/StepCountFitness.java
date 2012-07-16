@@ -7,7 +7,7 @@ import game.ai.Fitness;
 /**
  * Tries to minimizes numbers of steps.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  *
  */
 public class StepCountFitness implements Fitness {

@@ -3,7 +3,7 @@ package game;
 /**
  * Cells as defined in Section 2.1.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  *
  */
 public enum Cell {

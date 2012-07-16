@@ -3,7 +3,7 @@ package util;
 import java.util.Random;
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class MathUtil {
   /*

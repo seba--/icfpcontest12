@@ -8,7 +8,7 @@ import game.ai.Selector;
 /**
  * Configuration for the Driver.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public interface IDriverConfig {
   /**

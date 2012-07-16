@@ -13,7 +13,7 @@ import java.util.TreeMap;
  * Board as specified in Section 2.1
  * EXCEPT: we start counting at (0,0).
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class Board {
 

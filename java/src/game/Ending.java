@@ -1,7 +1,7 @@
 package game;
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  */
 public enum Ending {
   None, Win, LoseRock, LoseWater, Abort;

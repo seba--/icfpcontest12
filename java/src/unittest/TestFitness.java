@@ -20,7 +20,7 @@ import util.Pair;
 import junit.framework.TestCase;
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  *
  */
 public class TestFitness extends TestCase {

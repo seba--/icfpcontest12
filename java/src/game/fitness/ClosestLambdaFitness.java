@@ -13,7 +13,7 @@ import util.MathUtil;
  * Use the original lambda positions (from the intial state). If the
  * lambdas are gone, scoring will take care of that.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  *
  */
 public class ClosestLambdaFitness implements Fitness {

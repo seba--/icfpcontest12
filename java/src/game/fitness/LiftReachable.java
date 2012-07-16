@@ -10,7 +10,7 @@ import game.ai.Fitness;
  * A reachable lift is good.
  * Only looks at the 8-neighborhood of lift. 
  * 
- * @author seba
+ * @author Sebastian Erdweg
  *
  */
 public class LiftReachable implements Fitness {

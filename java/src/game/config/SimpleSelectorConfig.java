@@ -16,7 +16,7 @@ import game.fitness.StepCountFitness;
 import game.selector.SimpleSelector;
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  *
  */
 public class SimpleSelectorConfig implements IDriverConfig {

@@ -7,7 +7,7 @@ import game.ai.Fitness;
 /**
  * Tries to minize overall distance to all lambdas.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class AllLambdaManhattanFitness implements Fitness {
 

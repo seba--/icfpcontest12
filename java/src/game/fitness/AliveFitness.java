@@ -6,7 +6,7 @@ import game.ai.Fitness;
 /**
  * Dying is bad, aborting is not so good, winning and continuing is good.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class AliveFitness implements Fitness {
 

@@ -3,7 +3,7 @@ package game.util;
 import game.State;
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class Scoring {
   public static int totalScore(int steps, int collectedLambdas, boolean abort, boolean win) {

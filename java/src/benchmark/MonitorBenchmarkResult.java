@@ -9,7 +9,7 @@ import util.Pair;
 /**
  * Collection of other benchmark results.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class MonitorBenchmarkResult implements IBenchmarkResult {
   public final List<Pair<Long, IBenchmarkResult>> results;

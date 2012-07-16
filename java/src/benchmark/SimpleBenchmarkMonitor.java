@@ -5,7 +5,7 @@ import game.ai.Driver;
 /**
  * Simple monitor that reports SimpleBenchmarkResult's.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  *
  */
 public class SimpleBenchmarkMonitor implements IBenchmarkMonitor {

@@ -14,7 +14,7 @@ import java.net.URI;
 /**
  * Provides methods for doing stuff with files.
  * 
- * @author Sebastian Erdweg <seba at informatik uni-marburg de>
+ * @author Sebastian Erdweg
  */
 public class FileCommands {
 

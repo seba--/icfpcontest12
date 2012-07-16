@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 
 /**
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class SimpleBenchmarkResult implements IBenchmarkResult {
   

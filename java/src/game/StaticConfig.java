@@ -3,7 +3,7 @@ package game;
 
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class StaticConfig {
   

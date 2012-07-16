@@ -3,7 +3,7 @@ package game;
 /**
  * Commands as specified in Section 2.2.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public enum Command {
   Left, Right, Up, Down, Wait, Abort, Shave;

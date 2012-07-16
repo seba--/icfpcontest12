@@ -6,7 +6,7 @@ import game.ai.Fitness;
 /**
  * Increases the importance of the wrapped Fitness.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class CriticalFitness implements Fitness {
 

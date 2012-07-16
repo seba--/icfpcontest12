@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import util.Pair;
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class State {
 

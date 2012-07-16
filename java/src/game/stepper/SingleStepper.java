@@ -9,7 +9,7 @@ import game.StaticConfig;
 import game.util.Scoring;
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class SingleStepper {
 

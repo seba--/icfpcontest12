@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class GenericBenchmarkResult implements IBenchmarkResult {
   public List<String> headers = new ArrayList<String>();

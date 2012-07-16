@@ -6,7 +6,7 @@ import game.ai.Fitness;
 /**
  * Rewards eating lambdas.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  *
  */
 public class LambdasLeftFitness implements Fitness {

@@ -14,7 +14,7 @@ import game.fitness.StepCountFitness;
 import game.selector.BigStepSelector;
 
 /**
- * @author seba
+ * @author Sebastian Erdweg
  *
  */
 public class BigStepSelectorConfig implements IDriverConfig {

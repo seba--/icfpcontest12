@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Collects the data of one benchmark run.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public interface IBenchmarkResult {
   /**

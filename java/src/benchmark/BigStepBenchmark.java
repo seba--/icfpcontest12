@@ -6,7 +6,7 @@ import game.config.IDriverConfig;
 /**
  * The default benchmark.
  * 
- * @author seba
+ * @author Sebastian Erdweg
  */
 public class BigStepBenchmark extends Benchmark {
 
