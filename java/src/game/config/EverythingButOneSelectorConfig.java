@@ -30,6 +30,6 @@ public class EverythingButOneSelectorConfig implements IDriverConfig {
 
   @Override
   public Fitness fitnessFunction(StaticConfig sconfig, State initialState) {
-    return new AverageFitness(new ScoreFitness(), new StepCountFitness(), new ClosestLambdaFitness(sconfig, initialState));
+    return new AverageFitness(new ScoreFitness(), new StepCountFitness(sconfig), new ClosestLambdaFitness(sconfig, initialState));
   }
 }
