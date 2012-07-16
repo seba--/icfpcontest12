@@ -112,7 +112,11 @@ public class SingleStepper {
     case Trampoline:
       int trampolinePos = st.board.position(nextCol, nextRow);
       String trampoline = st.board.trampolinePos.get(trampolinePos);
-      st.board.set(nextCol, nextRow, Cell.Empty);
+      
+      //TH: do not use the following line
+      //    done better in removeTrampolines (has to trigger activePositions)
+      //st.board.set(nextCol, nextRow, Cell.Empty);
+      
       String target = st.board.trampolineTargets.get(trampoline);
       int jumpPos = st.board.targetPos.get(target);
       st.board.set(jumpPos, Cell.Empty);

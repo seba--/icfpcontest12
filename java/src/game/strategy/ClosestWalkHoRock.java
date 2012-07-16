@@ -1,31 +1,37 @@
 package game.strategy;
 
-import java.util.List;
-
 import game.Cell;
 import game.Command;
 import game.State;
 import game.ai.Strategy;
 import game.strategy.tom.Helpers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClosestWalkHoRock extends Strategy {
 
-	public ClosestWalkHoRock() {
-		
-	}
-	
-	@Override
-	public List<Command> apply(State s) {
-	  return Helpers.moveToCell(s, Cell.HoRock, 1);
-	}
-	  
-	@Override
-	public boolean wantsToApply(State s) {
-	  return !s.board.bitsets[Cell.HoRock.ordinal()].isEmpty();
-    }
+  @Override
+  public List<Command> apply(State state) {
+    List<Command> cmds = Helpers.moveToCell(state, Cell.HoRock, 1);
+    if (cmds == null)
+      return null;
+    cmds = new ArrayList<Command>(cmds);
+    cmds.remove(cmds.size() - 1); // do not actually go on top of the
+                                  // higher-order rock, just go to the field
+                                  // next to it.
+                                  // there are better strategies for dealing
+                                  // with higher-order rocks
+    return cmds;
+  }
 
-	public String toString() {
-		return "ClosestWalkHoRock";
-	}
+  @Override
+  public boolean wantsToApply(State s) {
+    return !s.board.bitsets[Cell.HoRock.ordinal()].isEmpty();
+  }
 
+  @Override
+  public String toString() {
+    return "ClosestWalkHoRock";
+  }
 }

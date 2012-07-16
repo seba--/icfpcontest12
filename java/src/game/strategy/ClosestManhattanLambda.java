@@ -23,8 +23,6 @@ public class ClosestManhattanLambda extends Strategy {
   
   @Override
   public List<Command> apply(State s) {
-    if (s.lambdaPositions.isEmpty()) return null;
-    
     int lambda = s.nextLambda(s.robotCol, s.robotRow);
     if (lambda < 0)
       return null;

@@ -10,6 +10,7 @@ import game.ai.Driver;
 import game.ai.Fitness;
 import game.config.IDriverConfig;
 import game.config.SimpleSelectorConfig;
+import game.log.Log;
 import game.stepper.SingleStepper;
 
 import org.junit.Test;
@@ -37,11 +38,11 @@ public class TestFitness extends TestCase {
     SingleStepper stepper = new SingleStepper(p.a);
     
     State st = p.b;
-    System.out.println(f.evaluate(st));
-    System.out.println(f.evaluate(stepper.step(st, Command.Up)));
-    System.out.println(f.evaluate(stepper.step(st, Command.Down)));
-    System.out.println(f.evaluate(stepper.step(st, Command.Left)));
-    System.out.println(f.evaluate(stepper.step(st, Command.Right)));
+    Log.println(f.evaluate(st));
+    Log.println(f.evaluate(stepper.step(st, Command.Up)));
+    Log.println(f.evaluate(stepper.step(st, Command.Down)));
+    Log.println(f.evaluate(stepper.step(st, Command.Left)));
+    Log.println(f.evaluate(stepper.step(st, Command.Right)));
     
     Driver.create("test", config, p.a, p.b).run();
   }

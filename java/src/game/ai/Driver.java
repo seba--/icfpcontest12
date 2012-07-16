@@ -238,7 +238,8 @@ public class Driver {
                 newState.fitness = fitness.evaluate(newState);
                 
                 double fitnessFactor = newState.fitness / liveStatesAverageFitness;
-                boolean keep = fitnessFactor * spaceFactor > MathUtil.RANDOM.nextDouble();
+                boolean keep = fitnessFactor * spaceFactor > MathUtil.RANDOM.nextDouble()
+                               || liveStates.size() < 50;
                 
                 if (keep) {
                   // the kid is better than the average of all parents
@@ -264,7 +265,8 @@ public class Driver {
       for (int i = 0; i < liveStates.size(); i++) {
         State s = liveStates.get(i);
         double fitnessFactor = s.fitness / averageFitness;
-        boolean keep = spaceFactor * fitnessFactor > MathUtil.RANDOM.nextDouble();
+        boolean keep = spaceFactor * fitnessFactor > MathUtil.RANDOM.nextDouble()
+                       || liveStates.size() < 50;
         if (keep) {
           newStates.add(s);
           liveStatesAverageFitness += s.fitness / liveStates.size();
@@ -343,13 +345,15 @@ public class Driver {
     Log.println();
 
     // print solution
+    StringBuilder sb = new StringBuilder();
     if (bestState.solution != null) {
       Command[] commands = bestState.solution.allCommands();
       for (Command command : commands) {
-        System.out.append(command.shortName());
+        sb.append(command.shortName());
       }
     }
-    System.out.println("A");
+    sb.append("A");
+    System.out.println(sb);
     System.out.flush();
   }
 

@@ -7,6 +7,7 @@ import game.ai.Selector;
 import game.fitness.AverageFitness;
 import game.fitness.BeardFitness;
 import game.fitness.BeardNextToLiftFitness;
+import game.fitness.HoRockRemainingFitness;
 import game.fitness.LiftReachable;
 import game.fitness.ClosestLambdaFitness;
 import game.fitness.RazorsAvailableFitness;
@@ -34,7 +35,8 @@ public class SimpleSelectorConfig implements IDriverConfig {
         new ClosestLambdaFitness(sconfig, initialState),
         new BeardNextToLiftFitness(),
         new BeardFitness(),
-        new RazorsAvailableFitness()
+        new RazorsAvailableFitness(),
+        new HoRockRemainingFitness(initialState)
     );
   }
 }

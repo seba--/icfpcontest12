@@ -6,14 +6,17 @@ import game.ai.Selector;
 import game.ai.Strategy;
 import game.strategy.ClosestManhattanLift;
 import game.strategy.ClosestWalkBeard;
+import game.strategy.ClosestWalkHoRock;
 import game.strategy.ClosestWalkLambda;
 import game.strategy.ClosestWalkRazor;
 import game.strategy.ClosestWalkTrampoline;
-import game.strategy.DiggingStrategy;
 import game.strategy.DiveUpStrategy;
 import game.strategy.DownStrategy;
 import game.strategy.LeftStrategy;
+import game.strategy.MakeHoRockFallStrategy;
 import game.strategy.NClosestWalksLambda;
+import game.strategy.PushClosestPushableRockLeft;
+import game.strategy.PushClosestPushableRockRight;
 import game.strategy.ReachableUnderwaterLambda;
 import game.strategy.RightStrategy;
 import game.strategy.ShavingStrategy;
@@ -51,6 +54,16 @@ public class SimpleSelector implements Selector {
       strategies.add(new DiveUpStrategy(sconfig));
     }
     
+    
+    if (sconfig.boardHasHoRocks) {
+      strategies.add(new ClosestWalkHoRock());
+      strategies.add(new MakeHoRockFallStrategy());
+    }
+    
+    //the push rock strategies are way too expensive!
+    strategies.add(new PushClosestPushableRockLeft(10));
+    strategies.add(new PushClosestPushableRockRight(10));
+    
 //    strategies.add(new DiggingStrategy());
     
     strategies.add(new LeftStrategy());
@@ -58,7 +71,6 @@ public class SimpleSelector implements Selector {
     strategies.add(new UpStrategy());
     strategies.add(new DownStrategy());
     strategies.add(new WaitStrategy());
-    
   }
   
   public SimpleSelector(StaticConfig sconfig, Strategy ... strategies) {

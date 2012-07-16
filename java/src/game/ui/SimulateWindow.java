@@ -175,7 +175,7 @@ public class SimulateWindow extends JFrame implements KeyListener {
 	  jplContentPane.setPreferredSize(new Dimension(400, 100));
 	  jplContentPane.add(tbar, BorderLayout.NORTH);
 	  jplContentPane.add(textArea, BorderLayout.CENTER);
-	  System.out.println(" ---> " + textArea.getGraphics());
+	  Log.println(" ---> " + textArea.getGraphics());
 	  //Graphics2D g = (Graphics2D) textArea.getGraphics();
 	  //g.setColor(new Color(1.0f, 0.0f, 0.0f));
     //g.fillOval(10, 30, 100, 200);
