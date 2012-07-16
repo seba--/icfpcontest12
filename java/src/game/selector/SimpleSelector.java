@@ -9,7 +9,9 @@ import game.strategy.ClosestWalkBeard;
 import game.strategy.ClosestWalkHoRock;
 import game.strategy.ClosestWalkLambda;
 import game.strategy.ClosestWalkRazor;
+import game.strategy.ClosestWalkRock;
 import game.strategy.ClosestWalkTrampoline;
+import game.strategy.ComposedStrategy;
 import game.strategy.DiveUpStrategy;
 import game.strategy.DownStrategy;
 import game.strategy.LeftStrategy;
@@ -55,7 +57,7 @@ public class SimpleSelector implements Selector {
     
     
     if (sconfig.boardHasHoRocks) {
-      strategies.add(new ClosestWalkHoRock());
+//      strategies.add(new ClosestWalkHoRock());
       strategies.add(new MakeRockFallStrategy(true));
     }
     

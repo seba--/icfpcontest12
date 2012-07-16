@@ -506,7 +506,7 @@ public class Driver {
     
     IDriverConfig stdConfig = new SimpleSelectorConfig();
 
-    Driver d = Driver.create(name, stdConfig, sconfig, state, 140);
+    Driver d = Driver.create(name, stdConfig, sconfig, state, 10);
     d.run();
     d.simulationWindow();    
   }

@@ -1,12 +1,16 @@
 package game.strategy;
 
-import java.util.Arrays;
-import java.util.List;
-
 import game.Cell;
 import game.Command;
 import game.State;
 import game.ai.Strategy;
+import game.strategy.tom.Helpers;
+import game.strategy.tom.WayCoordinateSimple;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import util.Pair;
 
 public class MakeRockFallStrategy extends Strategy {
 
@@ -20,6 +24,19 @@ public class MakeRockFallStrategy extends Strategy {
   public List<Command> apply(State s) {
     Cell goal = horock ? Cell.HoRock : Cell.Rock;
     
+    Pair<List<Command>, WayCoordinateSimple> res = Helpers.moveToFallableCell(s, goal, 1);
+    if (res == null)
+      return null;
+    ArrayList<Command> cmds = new ArrayList<Command>(res.a);
+    cmds.remove(cmds.size() - 1); // do not actually go on top of the
+                                  // higher-order rock, just go to the field
+                                  // next to it.
+                                  // there are better strategies for dealing
+                                  // with higher-order rocks
+
+    int rcol = res.b == null ? s.robotCol : res.b.col;
+    int rrow = res.b == null ? s.robotRow : res.b.row;
+    
     //   some rules: (internal representation is flipped!)
     //  if possible to push a higher-order rock so it will fall, do it
     //  if possible to clear earth around a higher-order rock, do it
@@ -29,7 +46,7 @@ public class MakeRockFallStrategy extends Strategy {
     Cell[][] v = new Cell[5][3];
     for (int i = -2; i < 2+1; i++) {
       for (int j = -1; j < 1+1; j++) {
-        v[i+2][j+1] = s.board.get(s.robotCol + i, s.robotRow + j);
+        v[i+2][j+1] = s.board.get(rcol + i, rrow + j);
       }
     }
         
@@ -41,7 +58,8 @@ public class MakeRockFallStrategy extends Strategy {
     if ((v[3][1] == goal) &&
         (v[4][1] == Cell.Empty) &&
         (v[4][0] == Cell.Empty)) {
-      return Arrays.asList(Command.Right);
+      cmds.add(Command.Right);
+      return cmds;
     }
     
     //   _@R    l    @R_
@@ -49,7 +67,8 @@ public class MakeRockFallStrategy extends Strategy {
     if ((v[1][1] == goal) &&
         (v[0][1] == Cell.Empty) &&
         (v[0][0] == Cell.Empty)) {
-      return Arrays.asList(Command.Left);
+      cmds.add(Command.Left);
+      return cmds;
     }
     
     // ---------------------------
@@ -65,7 +84,9 @@ public class MakeRockFallStrategy extends Strategy {
         ((v[1][1] == Cell.Earth) || (v[1][1] == Cell.Lambda)) &&
         (v[0][0] == Cell.Lambda) &&
         (v[1][0] == Cell.Empty)) {
-      return Arrays.asList(Command.Left, Command.Right);  // TODO: is L, R the best here? 
+      cmds.add(Command.Left);
+      cmds.add(Command.Right);  // TODO: is L, R the best here?
+      return cmds;
     }
     
 
@@ -92,7 +113,10 @@ public class MakeRockFallStrategy extends Strategy {
     if ((v[3][1] == goal) &&
         ((v[2][0] == Cell.Earth) || (v[2][0] == Cell.Empty) || (v[2][0] == Cell.Lambda)) &&
         (v[3][0] == Cell.Earth) || (v[3][0] == Cell.Lambda)) {
-      return Arrays.asList(Command.Down, Command.Right, Command.Left);
+      cmds.add(Command.Down);
+      cmds.add(Command.Right);
+      cmds.add(Command.Left);
+      return cmds;
     }
     
     // ?@R
@@ -111,7 +135,10 @@ public class MakeRockFallStrategy extends Strategy {
     if ((v[1][1] == goal) &&
         ((v[2][0] == Cell.Earth) || (v[2][0] == Cell.Empty) || (v[2][0] == Cell.Lambda)) &&
         (v[1][0] == Cell.Earth) || (v[3][0] == Cell.Lambda)) {
-      return Arrays.asList(Command.Down, Command.Left, Command.Right);
+      cmds.add(Command.Down);
+      cmds.add(Command.Left);
+      cmds.add(Command.Right);
+      return cmds;
     }
     
     return null;
@@ -122,21 +149,23 @@ public class MakeRockFallStrategy extends Strategy {
   public boolean wantsToApply(State s) {
     Cell goal = horock ? Cell.HoRock : Cell.Rock;
     
-    // look for a higher-order rock in the vincinity:
-    // ?????
-    // ??R??
-    // ?????
+    return !s.board.bitsets[goal.ordinal()].isEmpty();
     
-    int searchWidth = 2;
-    int searchHeight = 1;
-    
-    for (int i = -searchWidth; i <= searchWidth; i++) {
-      for (int j = -searchHeight; j <= searchHeight; j++) {
-        if (s.board.get(s.robotCol + i, s.robotRow + j) == goal)
-          return true;
-      }
-    }
-    return false;
+//    // look for a higher-order rock in the vincinity:
+//    // ?????
+//    // ??R??
+//    // ?????
+//    
+//    int searchWidth = 2;
+//    int searchHeight = 1;
+//    
+//    for (int i = -searchWidth; i <= searchWidth; i++) {
+//      for (int j = -searchHeight; j <= searchHeight; j++) {
+//        if (s.board.get(rcol + i, rrow + j) == goal)
+//          return true;
+//      }
+//    }
+//    return false;
   }
   
 
