@@ -20,6 +20,7 @@ public class StaticConfig {
   public final boolean boardHasTrampolines;
   public final boolean boardHasBeard;
   public final boolean boardHasWater;
+  public final boolean boardHasHoRocks;
   
   /*
    * for beards
@@ -39,6 +40,7 @@ public class StaticConfig {
     this.boardHasTrampolines = !board.bitsets[Cell.Trampoline.ordinal()].isEmpty();
     this.boardHasBeard       = !board.bitsets[Cell.Beard.ordinal()].isEmpty();
     this.boardHasWater       = (initialState.waterLevel > 0 || floodingRate > 0);
+    this.boardHasHoRocks     = !board.bitsets[Cell.HoRock.ordinal()].isEmpty();
     
     int x = -1;
     int y = -1;
