@@ -283,7 +283,7 @@ public class State {
   /**
    * Shave a beard
    */
-  public void shaveBeard(int col, int row) {
+  public boolean shaveBeard(int col, int row) {
     if(board.razors > 0) {
       if(board.get(col+1, row+1) == Cell.Beard) {
         board.set(col+1, row+1, Cell.Empty);
@@ -310,6 +310,9 @@ public class State {
         board.set(col-1, row-1, Cell.Empty);
       }
       --board.razors;
+      return true;
+    } else {
+      return false;
     }
   }
 
