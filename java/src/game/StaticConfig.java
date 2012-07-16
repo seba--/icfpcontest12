@@ -12,6 +12,8 @@ public class StaticConfig {
    */
   public final int liftx;
   public final int lifty;
+  
+  public int maxStepsAprox;
 
   /*
    * for flooding
@@ -41,6 +43,7 @@ public class StaticConfig {
     this.boardHasTrampolines = !board.bitsets[Cell.Trampoline.ordinal()].isEmpty();
     this.boardHasBeard       = !board.bitsets[Cell.Beard.ordinal()].isEmpty();
     this.boardHasWater       = (initialState.waterLevel > 0 || floodingRate > 0);
+    this.maxStepsAprox = board.width * board.height;
     
     int x = -1;
     int y = -1;

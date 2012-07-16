@@ -42,6 +42,7 @@ public class Driver {
 
   public final String name;
   
+  public final IDriverConfig dconfig;
   public final StaticConfig sconfig;
   public final State initialState;
   public final MultiStepper stepper;
@@ -63,12 +64,13 @@ public class Driver {
   public int allIterations = 0;
   public int allLivestates = 0;
 
-  public Driver(String name, StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness) {
+  public Driver(String name, IDriverConfig dconfig, StaticConfig sconfig, State initialState) {
     this.name = name;
+    this.dconfig = dconfig;
     this.sconfig = sconfig;
     this.initialState = initialState;
-    this.strategySelector = strategySelector;
-    this.fitness = fitness;
+    this.strategySelector = dconfig.strategySelector(sconfig, initialState);
+    this.fitness = dconfig.fitnessFunction(sconfig, initialState);
     this.stepper = new MultiStepper(sconfig);
     this.timed = false;
   }
@@ -81,12 +83,13 @@ public class Driver {
    * @param lifetime
    *          max runtime in seconds
    */
-  public Driver(String name, StaticConfig sconfig, State initialState, Selector strategySelector, Fitness fitness, int lifetime) {
+  public Driver(String name, IDriverConfig dconfig, StaticConfig sconfig, State initialState, int lifetime) {
     this.name = name;
+    this.dconfig = dconfig;
     this.sconfig = sconfig;
     this.initialState = initialState;
-    this.strategySelector = strategySelector;
-    this.fitness = fitness;
+    this.strategySelector = dconfig.strategySelector(sconfig, initialState);
+    this.fitness = dconfig.fitnessFunction(sconfig, initialState);
     this.stepper = new MultiStepper(sconfig);
     this.lifeTime = lifetime;
     this.timed = true;
@@ -413,13 +416,13 @@ public class Driver {
   public static Driver create(String name, IDriverConfig dconfig, StaticConfig sconfig, State state) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    return new Driver(name, sconfig, state, selector, fitness);
+    return new Driver(name, dconfig, sconfig, state);
   }
 
   public static Driver create(String name, IDriverConfig dconfig, StaticConfig sconfig, State state, int lifetime) {
     Selector selector = dconfig.strategySelector(sconfig, state);
     Fitness fitness = dconfig.fitnessFunction(sconfig, state);
-    return new Driver(name, sconfig, state, selector, fitness, lifetime);
+    return new Driver(name, dconfig, sconfig, state, lifetime);
   }
 
   public void run() {
@@ -433,6 +436,14 @@ public class Driver {
     this.lifeTime = lifeTime;
     
     Log.println();
+    if (bestState != null)
+      sconfig.maxStepsAprox = Math.min(
+          2 * bestState.steps, 
+          initialState.board.width * initialState.board.height);
+    Log.println(sconfig.maxStepsAprox);
+    Log.println(initialState.board.width * initialState.board.height);
+    strategySelector = dconfig.strategySelector(sconfig, initialState);
+    fitness = dconfig.fitnessFunction(sconfig, initialState);
     solveEvolutionary(initialState);
     
     ExitHandler.unregister(this);
