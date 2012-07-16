@@ -188,6 +188,10 @@ public class Helpers {
           default:
             break;
           }
+          
+          stop |= s.board.get(wc.col - 1, wc.row - 1) == Cell.Empty
+               || s.board.get(wc.col + 1, wc.row - 1) == Cell.Empty;
+          
           if (stop)
             break;
         }
