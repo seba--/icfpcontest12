@@ -1,7 +1,7 @@
 package game.log;
 
 public class Log {
-  private static final boolean LOGGIN = true;
+  private static final boolean LOGGIN = false;
   
   public static void println() {
     if (LOGGIN)
