@@ -328,6 +328,7 @@ public class SingleStepper {
   public State step(State st, Command cmd) {
     State newSt = st.clone();
     newSt.steps++;
+    newSt.strats++;
     
     moveRobot(newSt, cmd);
     if (st.ending != Ending.Abort) {
