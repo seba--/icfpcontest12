@@ -9,12 +9,12 @@ MZ11010101
 Members
 -------
 
-Yi Dai
-Sebastian Erdweg
-Thomas Horstmeyer
-Tillmann Rendel
-Felix Rieger
-Christoph Weygand
+Yi Dai  
+Sebastian Erdweg  
+Thomas Horstmeyer  
+Tillmann Rendel  
+Felix Rieger  
+Christoph Weygand  
 
 Installation
 ------------
